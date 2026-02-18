@@ -1,0 +1,288 @@
+/* =========================================================
+   FullMargin Notes — Overrides BlockNote + Mantine (Dark)
+   Portals 100% dark — version finale
+   (actif seulement quand l’éditeur est ouvert)
+   ========================================================= */
+
+/* Base editor */
+.fm-notes-editor .bn-editor,
+.fm-notes-editor .bn-editor .ProseMirror {
+  background: transparent !important;
+}
+.fm-notes-editor .bn-prose {
+  color: currentColor !important;
+}
+.fm-notes-editor .bn-prose * {
+  color: inherit;
+}
+.fm-notes-editor .bn-editor .ProseMirror p.is-empty::before {
+  color: currentColor;
+  opacity: 0.55;
+}
+
+/* Compact mobile */
+@media (max-width: 480px) {
+  .fm-notes-editor .bn-prose,
+  .fm-notes-editor .bn-editor .ProseMirror {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* Dark: contenu sans fonds clairs */
+.dark .fm-notes-editor .bn-prose :is(p, h1, h2, h3, ul, ol, blockquote) {
+  background: transparent !important;
+}
+
+/* =================== 1) Variables globales forcées =================== */
+.dark.fm-notes-open,
+.dark .fm-notes-editor {
+  color-scheme: dark;
+
+  /* Mantine v7 */
+  --mantine-color-body: #0b1220 !important;
+  --mantine-color-text: #e2e8f0 !important;
+  --mantine-color-surface: #0b1220 !important;
+  --mantine-color-default: #0f172a !important;
+  --mantine-color-white: #0b1220 !important; /* clé contre les fonds blancs */
+  --mantine-shadow-lg: none !important;
+
+  /* Palette pour nos états */
+  --fm-bg-900: #0b1220;
+  --fm-bg-800: #10182b;
+  --fm-bg-700: #1a2235;
+  --fm-bg-600: #2a344d;
+  --fm-fg-100: #e2e8f0;
+  --fm-fg-200: #cbd5e1;
+  --fm-brd: rgba(255, 255, 255, 0.12);
+  --fm-ring: rgba(168, 85, 247, 0.5);
+}
+
+/* Propage la variable "white" à tout le sous-arbre portals */
+.dark.fm-notes-open * {
+  --mantine-color-white: #0b1220 !important;
+}
+
+/* =================== 2) UI internes BlockNote =================== */
+.dark
+  .fm-notes-editor
+  :is(
+    .bn-suggestion-menu,
+    .bn-toolbar,
+    .bn-floating-toolbar,
+    .bn-link-toolbar,
+    .bn-dropdown
+  ) {
+  background: var(--fm-bg-900) !important;
+  color: var(--fm-fg-100) !important;
+  border: 1px solid var(--fm-brd) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+.dark .fm-notes-editor .bn-suggestion-menu *:not(input):not(textarea) {
+  background: transparent !important;
+}
+.dark .fm-notes-editor .bn-suggestion-menu *::before,
+.dark .fm-notes-editor .bn-suggestion-menu *::after {
+  background: transparent !important;
+}
+.dark .fm-notes-editor .bn-suggestion-item,
+.dark .fm-notes-editor .bn-dropdown button {
+  background: transparent !important;
+  color: var(--fm-fg-100) !important;
+}
+.dark .fm-notes-editor .bn-suggestion-item:hover,
+.dark .fm-notes-editor .bn-dropdown button:hover,
+.dark .fm-notes-editor .bn-suggestion-menu [data-hovered="true"] {
+  background: var(--fm-bg-700) !important;
+}
+.dark .fm-notes-editor .bn-suggestion-menu [data-selected="true"] {
+  background: var(--fm-bg-600) !important;
+  border-color: var(--fm-ring) !important;
+}
+
+.dark
+  .fm-notes-editor
+  :is(.bn-toolbar, .bn-floating-toolbar)
+  :is(button, [role="button"], .mantine-Button-root) {
+  background: transparent !important;
+  color: var(--fm-fg-100) !important;
+  border: 1px solid var(--fm-brd) !important;
+}
+.dark
+  .fm-notes-editor
+  :is(.bn-toolbar, .bn-floating-toolbar)
+  :is(button, [role="button"]):hover {
+  background: var(--fm-bg-700) !important;
+}
+.dark
+  .fm-notes-editor
+  :is(.bn-toolbar, .bn-floating-toolbar)
+  :is([data-active="true"], [aria-pressed="true"], .is-active) {
+  background: var(--fm-bg-600) !important;
+  border-color: var(--fm-ring) !important;
+}
+.dark
+  .fm-notes-editor
+  :is(.bn-toolbar, .bn-link-toolbar)
+  :is(.mantine-Select-input, .mantine-Input-input, input) {
+  background: #0f172a !important;
+  color: var(--fm-fg-100) !important;
+  border: 1px solid var(--fm-brd) !important;
+}
+
+/* Bulles/Color picker BN */
+.dark
+  .fm-notes-editor
+  :is(.bn-bubble-menu, .bn-color-menu, [class*="bn-"][class*="color"]) {
+  background: var(--fm-bg-900) !important;
+  color: var(--fm-fg-100) !important;
+  border: 1px solid var(--fm-brd) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* =================== 3) Mantine PORTALS (dropdowns / popovers / combobox / modals / tooltips) =================== */
+.dark.fm-notes-open
+  :is(
+    .mantine-Menu-dropdown,
+    .mantine-Popover-dropdown,
+    .mantine-Tooltip-tooltip,
+    .mantine-Modal-content,
+    .mantine-Drawer-content,
+    .mantine-Combobox-dropdown,
+    .mantine-Select-dropdown,
+    .mantine-DatePicker-dropdown,
+    .mantine-Calendar-root,
+    .mantine-ScrollArea-viewport
+  ) {
+  background: var(--fm-bg-900) !important;
+  color: var(--fm-fg-100) !important;
+  border: 1px solid var(--fm-brd) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Supprime voiles/ombres/degradés de ScrollArea et options */
+.dark.fm-notes-open [class^="mantine-"]::before,
+.dark.fm-notes-open [class^="mantine-"]::after,
+.dark.fm-notes-open .mantine-Combobox-options[data-shadow]::before,
+.dark.fm-notes-open .mantine-Combobox-options[data-shadow]::after {
+  display: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Options + états */
+.dark.fm-notes-open
+  :is(.mantine-Combobox-option, .mantine-Select-item, .mantine-Menu-item) {
+  background: transparent !important;
+  color: var(--fm-fg-100) !important;
+}
+.dark.fm-notes-open
+  :is(
+    .mantine-Combobox-option[data-hovered],
+    .mantine-Select-item[data-hovered],
+    .mantine-Menu-item[data-hovered]
+  ) {
+  background: var(--fm-bg-700) !important;
+}
+.dark.fm-notes-open
+  :is(
+    .mantine-Combobox-option[aria-selected="true"],
+    .mantine-Select-item[aria-selected="true"]
+  ) {
+  background: var(--fm-bg-600) !important;
+  border-color: var(--fm-ring) !important;
+}
+.dark.fm-notes-open .mantine-Combobox-label {
+  color: var(--fm-fg-200) !important;
+  background: transparent !important;
+}
+.dark.fm-notes-open .mantine-Combobox-divider {
+  border-color: var(--fm-brd) !important;
+}
+
+/* Inputs dans portals */
+.dark.fm-notes-open
+  :is(.mantine-Input-input, .mantine-Select-input, .mantine-Combobox-input) {
+  background: #0f172a !important;
+  color: var(--fm-fg-100) !important;
+  border: 1px solid var(--fm-brd) !important;
+}
+
+/* Icônes */
+.dark.fm-notes-open
+  :is(
+    .mantine-Menu-item svg,
+    .mantine-Select-item svg,
+    .mantine-Combobox-option svg
+  ) {
+  color: var(--fm-fg-100) !important;
+  stroke: currentColor !important;
+}
+
+/* =================== 4) Tooltips (Mantine + Floating UI + Tippy) =================== */
+.dark.fm-notes-open
+  :is(.mantine-Tooltip-tooltip, [role="tooltip"], .tippy-box) {
+  background: #1a2235 !important;
+  color: var(--fm-fg-100) !important;
+  border: 1px solid var(--fm-brd) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+.dark.fm-notes-open
+  :is(
+    .mantine-Tooltip-arrow,
+    .tippy-arrow,
+    [role="tooltip"]::before,
+    [role="tooltip"]::after
+  ) {
+  color: #1a2235 !important;
+  background: #1a2235 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* =================== 5) ScrollArea & coins =================== */
+.dark.fm-notes-open .mantine-ScrollArea-viewport,
+.dark.fm-notes-open .mantine-ScrollArea-root,
+.dark.fm-notes-open .mantine-ScrollArea-scrollbar,
+.dark.fm-notes-open .mantine-ScrollArea-corner {
+  background: #0b1220 !important;
+  box-shadow: none !important;
+}
+.dark.fm-notes-open .mantine-ScrollArea-scrollbar div {
+  background: #27324a !important;
+}
+
+/* Supprime tous les dégradés top/bottom des listes */
+.dark.fm-notes-open [data-scrollbars="y"]::before,
+.dark.fm-notes-open [data-scrollbars="y"]::after,
+.dark.fm-notes-open .mantine-Combobox-options::before,
+.dark.fm-notes-open .mantine-Combobox-options::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* =================== 6) Divers =================== */
+.dark.fm-notes-open kbd {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--fm-fg-200) !important;
+  border: 1px solid var(--fm-brd) !important;
+}
+.dark.fm-notes-open :focus-visible {
+  outline: 2px solid var(--fm-ring) !important;
+  outline-offset: 2px !important;
+}
+.dark.fm-notes-open *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.dark.fm-notes-open *::-webkit-scrollbar-thumb {
+  background: #27324a;
+  border-radius: 8px;
+}
+.dark.fm-notes-open *::-webkit-scrollbar-track {
+  background: var(--fm-bg-900);
+}

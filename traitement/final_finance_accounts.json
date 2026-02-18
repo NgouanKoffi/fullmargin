@@ -1,0 +1,1202 @@
+[
+  {
+    "_id": "690fc75d5f622f33f4a88237",
+    "user": "690b1d57881fa30257ab0b3b",
+    "name": "Compte Epargne",
+    "currency": "USD",
+    "initial": 10,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-06-23T08:57:23.000Z",
+    "updatedAt": "2025-06-23T08:57:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 22,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88238",
+    "user": "690b1d57881fa30257ab0b3b",
+    "name": "Compte Crypto",
+    "currency": "USD",
+    "initial": 30,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-06-23T08:58:10.000Z",
+    "updatedAt": "2025-06-23T08:58:10.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 23,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88239",
+    "user": "690b1d57881fa30257ab0b73",
+    "name": "compte kossi",
+    "currency": "USD",
+    "initial": 259,
+    "description": "cotisation pour pouvoir louer ma maison",
+    "deletedAt": null,
+    "createdAt": "2025-07-04T14:58:31.000Z",
+    "updatedAt": "2025-07-04T14:58:31.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 33,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8823a",
+    "user": "690b1d57881fa30257ab0ba3",
+    "name": "4572×××7132",
+    "currency": "USD",
+    "initial": 50,
+    "description": "Compte utiliser pour faire grandir mon patrimoine.",
+    "deletedAt": null,
+    "createdAt": "2025-07-04T18:31:08.000Z",
+    "updatedAt": "2025-07-04T18:31:08.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 34,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8823b",
+    "user": "690b1d57881fa30257ab0b4d",
+    "name": "Momo",
+    "currency": "USD",
+    "initial": 300000,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-07-04T18:41:17.000Z",
+    "updatedAt": "2025-07-04T18:41:17.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 35,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8823c",
+    "user": "690b1d57881fa30257ab0b4d",
+    "name": "Compte bancaire",
+    "currency": "USD",
+    "initial": 250000,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-07-04T18:41:42.000Z",
+    "updatedAt": "2025-07-04T18:41:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 36,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8823d",
+    "user": "690b1d57881fa30257ab0bc0",
+    "name": "demo test",
+    "currency": "USD",
+    "initial": 350,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-07-05T07:33:25.000Z",
+    "updatedAt": "2025-07-05T07:33:25.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 37,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8823e",
+    "user": "690b1d57881fa30257ab0bcb",
+    "name": "Quant Tekel",
+    "currency": "USD",
+    "initial": 0,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-07-05T17:32:57.000Z",
+    "updatedAt": "2025-07-05T17:32:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 38,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8823f",
+    "user": "690b1d57881fa30257ab0c0d",
+    "name": "Deriv (My Solo Leving*2 # )",
+    "currency": "USD",
+    "initial": 10,
+    "description": "Compte de travail a but progressive danq loption de pouvoir financer mes divers projets soit la Room space et la constitution d\\'epagne de sécurité et de capital consequent",
+    "deletedAt": null,
+    "createdAt": "2025-07-07T15:05:58.000Z",
+    "updatedAt": "2025-07-07T15:05:58.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 41,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88240",
+    "user": "690b1d57881fa30257ab0c4c",
+    "name": "Compte Propfim",
+    "currency": "USD",
+    "initial": 5000,
+    "description": "Compte pour l\\'amélioration de ma boutique de pièces de camion .",
+    "deletedAt": null,
+    "createdAt": "2025-07-07T23:17:00.000Z",
+    "updatedAt": "2025-07-07T23:17:00.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 42,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88241",
+    "user": "690b1d57881fa30257ab0c5b",
+    "name": "MT5",
+    "currency": "USD",
+    "initial": 3000,
+    "description": "Compte utilisé pour td",
+    "deletedAt": null,
+    "createdAt": "2025-07-08T15:16:59.000Z",
+    "updatedAt": "2025-07-08T15:16:59.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 43,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88242",
+    "user": "690b1d57881fa30257ab0c69",
+    "name": "Deriv",
+    "currency": "USD",
+    "initial": 19999,
+    "description": "Mon compte démo à faire évoluer",
+    "deletedAt": null,
+    "createdAt": "2025-07-08T22:11:19.000Z",
+    "updatedAt": "2025-07-08T22:11:19.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 44,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88243",
+    "user": "690b1d57881fa30257ab0c70",
+    "name": "XM",
+    "currency": "USD",
+    "initial": 55,
+    "description": "Compte utilisé pour faire croitre mon capital",
+    "deletedAt": null,
+    "createdAt": "2025-07-09T07:50:44.000Z",
+    "updatedAt": "2025-07-09T07:50:44.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 45,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88244",
+    "user": "690b1d57881fa30257ab0bad",
+    "name": "Compte D\\\\\\\\\\\\\\'investissement💰🏦",
+    "currency": "USD",
+    "initial": 0,
+    "description": "C\\\\\\\\\\\\\\'est un compte D\\\\\\\\\\\\\\'investissement pour assurer mon avenir💰🏡",
+    "deletedAt": null,
+    "createdAt": "2025-07-09T18:38:59.000Z",
+    "updatedAt": "2025-07-09T18:38:59.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 46,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88245",
+    "user": "690b1d57881fa30257ab0bad",
+    "name": "Fond d\\\\\\'urgence",
+    "currency": "USD",
+    "initial": 0,
+    "description": "C\\\\\\'est un compte de dépenses pour les besoins urgent❓",
+    "deletedAt": null,
+    "createdAt": "2025-07-09T18:42:19.000Z",
+    "updatedAt": "2025-07-09T18:42:19.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 47,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88246",
+    "user": "690b1d57881fa30257ab0bad",
+    "name": "Compte de dépenses",
+    "currency": "USD",
+    "initial": 0,
+    "description": "C\\\\\\\\\\\\\\'est un compte pour toutes les dépenses💸✈️",
+    "deletedAt": null,
+    "createdAt": "2025-07-09T18:45:16.000Z",
+    "updatedAt": "2025-07-09T18:45:16.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 48,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88247",
+    "user": "690b1d57881fa30257ab0c92",
+    "name": "Gold",
+    "currency": "USD",
+    "initial": 50,
+    "description": "Pour économiser pour ma maison.",
+    "deletedAt": null,
+    "createdAt": "2025-07-11T02:12:49.000Z",
+    "updatedAt": "2025-07-11T02:12:49.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 50,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88248",
+    "user": "690b1d57881fa30257ab0c08",
+    "name": "Compte bancaire",
+    "currency": "USD",
+    "initial": 5,
+    "description": "Compte utilisé pour les projet futurs",
+    "deletedAt": null,
+    "createdAt": "2025-07-11T07:48:49.000Z",
+    "updatedAt": "2025-07-11T07:48:49.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 51,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88249",
+    "user": "690b1d57881fa30257ab0ca0",
+    "name": "Jirelkaf",
+    "currency": "USD",
+    "initial": 11,
+    "description": "Gerer mes finances",
+    "deletedAt": null,
+    "createdAt": "2025-07-12T11:50:43.000Z",
+    "updatedAt": "2025-07-12T11:50:43.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 52,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8824a",
+    "user": "690b1d57881fa30257ab0c9b",
+    "name": "Compte pro",
+    "currency": "USD",
+    "initial": 10,
+    "description": "Mon compte sérieux",
+    "deletedAt": null,
+    "createdAt": "2025-07-16T19:54:09.000Z",
+    "updatedAt": "2025-07-16T19:54:09.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 56,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8824b",
+    "user": "690b1d57881fa30257ab0cd5",
+    "name": "Compte a discipline",
+    "currency": "USD",
+    "initial": 50,
+    "description": "Compte pour trader",
+    "deletedAt": null,
+    "createdAt": "2025-07-17T18:21:43.000Z",
+    "updatedAt": "2025-07-17T18:21:43.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 57,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8824c",
+    "user": "690b1d57881fa30257ab0ce5",
+    "name": "Compte bancaire",
+    "currency": "USD",
+    "initial": 5000,
+    "description": "Utilisé pour trader",
+    "deletedAt": null,
+    "createdAt": "2025-07-19T20:25:17.000Z",
+    "updatedAt": "2025-07-19T20:25:17.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 59,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8824d",
+    "user": "690b1d57881fa30257ab0cca",
+    "name": "Momo 53",
+    "currency": "USD",
+    "initial": 23727,
+    "description": "Compte utilisé pour les dépenses",
+    "deletedAt": null,
+    "createdAt": "2025-07-19T21:55:11.000Z",
+    "updatedAt": "2025-07-19T21:55:11.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 60,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8824e",
+    "user": "690b1d57881fa30257ab0cca",
+    "name": "Momo 67",
+    "currency": "USD",
+    "initial": 0,
+    "description": "Compte d\\'épargne",
+    "deletedAt": null,
+    "createdAt": "2025-07-19T21:55:29.000Z",
+    "updatedAt": "2025-07-19T21:55:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 61,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8824f",
+    "user": "690b1d57881fa30257ab0cca",
+    "name": "Flooz",
+    "currency": "USD",
+    "initial": 0,
+    "description": "Compte pour la connexion internet",
+    "deletedAt": null,
+    "createdAt": "2025-07-19T21:56:12.000Z",
+    "updatedAt": "2025-07-19T21:56:12.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 62,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88250",
+    "user": "690b1d57881fa30257ab0cca",
+    "name": "Deriv Esther",
+    "currency": "USD",
+    "initial": 0,
+    "description": "Mon compte de trading",
+    "deletedAt": null,
+    "createdAt": "2025-07-19T21:57:24.000Z",
+    "updatedAt": "2025-07-19T21:57:24.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 63,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88251",
+    "user": "690b1d57881fa30257ab0c6d",
+    "name": "Compte de dépense journalier",
+    "currency": "USD",
+    "initial": 250,
+    "description": "Compte utilisé pour les dépenses journalier",
+    "deletedAt": null,
+    "createdAt": "2025-07-20T14:49:11.000Z",
+    "updatedAt": "2025-07-20T14:49:11.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 64,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88252",
+    "user": "690b1d57881fa30257ab0bf1",
+    "name": "funded5k",
+    "currency": "USD",
+    "initial": 5000,
+    "description": "je dois le garder longtemps",
+    "deletedAt": null,
+    "createdAt": "2025-07-23T14:57:55.000Z",
+    "updatedAt": "2025-07-23T14:57:55.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 65,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88253",
+    "user": "690b1d57881fa30257ab0ba0",
+    "name": "deriv",
+    "currency": "USD",
+    "initial": 200,
+    "description": "je l\\'utilise pour de dépecé mensuel mais bien modéré",
+    "deletedAt": null,
+    "createdAt": "2025-07-28T22:17:01.000Z",
+    "updatedAt": "2025-07-28T22:17:01.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 67,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88254",
+    "user": "690b1d57881fa30257ab0d13",
+    "name": "Mon compte trading privé",
+    "currency": "USD",
+    "initial": 50,
+    "description": "Évolution après chaque semaine",
+    "deletedAt": null,
+    "createdAt": "2025-07-29T05:51:53.000Z",
+    "updatedAt": "2025-07-29T05:51:53.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 68,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88255",
+    "user": "690b1d57881fa30257ab0d13",
+    "name": "Mon compte détaillé",
+    "currency": "USD",
+    "initial": 50,
+    "description": "Évaluer à chaque transfert de dépôt et retrait + dépense",
+    "deletedAt": null,
+    "createdAt": "2025-07-31T05:54:11.000Z",
+    "updatedAt": "2025-07-31T05:54:11.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 69,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88256",
+    "user": "690b1d57881fa30257ab0b3a",
+    "name": "Momo",
+    "currency": "USD",
+    "initial": 0,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-08-04T02:03:50.000Z",
+    "updatedAt": "2025-08-04T02:03:50.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 70,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88257",
+    "user": "690b1d57881fa30257ab0b48",
+    "name": "AS CAPITAL",
+    "currency": "USD",
+    "initial": 5000,
+    "description": "FX DESK",
+    "deletedAt": null,
+    "createdAt": "2025-08-05T13:05:10.000Z",
+    "updatedAt": "2025-08-05T13:05:10.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 71,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88258",
+    "user": "690b1d57881fa30257ab0c5d",
+    "name": "PATEL VICTOIRE STD CT N",
+    "currency": "USD",
+    "initial": 1000,
+    "description": "Compte normal",
+    "deletedAt": null,
+    "createdAt": "2025-08-09T22:47:02.000Z",
+    "updatedAt": "2025-08-09T22:47:02.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 72,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88259",
+    "user": "690b1d57881fa30257ab0c5d",
+    "name": "PATEL VICTOIRE STD CT RR",
+    "currency": "USD",
+    "initial": 512,
+    "description": "Compte à augmenter",
+    "deletedAt": null,
+    "createdAt": "2025-08-09T22:47:49.000Z",
+    "updatedAt": "2025-08-09T22:47:49.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 73,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8825a",
+    "user": "690b1d57881fa30257ab0d81",
+    "name": "Compte DERIV DEMO",
+    "currency": "USD",
+    "initial": 10000,
+    "description": "COMPTE DEMO STRATEGIE SMC",
+    "deletedAt": null,
+    "createdAt": "2025-08-11T12:51:36.000Z",
+    "updatedAt": "2025-08-11T12:51:36.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 74,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8825b",
+    "user": "690b1d57881fa30257ab0d84",
+    "name": "Disnat",
+    "currency": "USD",
+    "initial": 0,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-08-11T17:06:27.000Z",
+    "updatedAt": "2025-08-11T17:06:27.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 76,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8825c",
+    "user": "690b1d57881fa30257ab0d84",
+    "name": "Disnat_REER",
+    "currency": "USD",
+    "initial": 1,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-08-11T17:07:54.000Z",
+    "updatedAt": "2025-08-11T17:07:54.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 77,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8825d",
+    "user": "690b1d57881fa30257ab0d52",
+    "name": "EXNESS MT5",
+    "currency": "USD",
+    "initial": 20553,
+    "description": "compte trading exnness",
+    "deletedAt": null,
+    "createdAt": "2025-08-12T17:05:31.000Z",
+    "updatedAt": "2025-08-12T17:05:31.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 78,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8825e",
+    "user": "690b1d57881fa30257ab0d7f",
+    "name": "1er compte test",
+    "currency": "USD",
+    "initial": 100000,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-08-14T22:17:42.000Z",
+    "updatedAt": "2025-08-14T22:17:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 79,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8825f",
+    "user": "690b1d57881fa30257ab0da4",
+    "name": "DERIV",
+    "currency": "USD",
+    "initial": 100,
+    "description": "COMPTE DE TRADING SUR DERIV",
+    "deletedAt": null,
+    "createdAt": "2025-08-18T18:59:19.000Z",
+    "updatedAt": "2025-08-18T18:59:19.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 80,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88260",
+    "user": "690b1d57881fa30257ab0da4",
+    "name": "WELTRADE",
+    "currency": "USD",
+    "initial": 15,
+    "description": "COMPTE DE TRADING SUR WELTRA",
+    "deletedAt": null,
+    "createdAt": "2025-08-18T19:01:23.000Z",
+    "updatedAt": "2025-08-18T19:01:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 81,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88261",
+    "user": "690b1d57881fa30257ab0db9",
+    "name": "Compte réel",
+    "currency": "USD",
+    "initial": 19,
+    "description": "Je veut trader avec la discipline et pas pour doubler avec ce compte",
+    "deletedAt": null,
+    "createdAt": "2025-08-21T11:21:49.000Z",
+    "updatedAt": "2025-08-21T11:21:49.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 82,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88262",
+    "user": "690b1d57881fa30257ab0dc3",
+    "name": "Deriv synthetics account",
+    "currency": "USD",
+    "initial": 7,
+    "description": "To be use to obtain monthly data plan fee",
+    "deletedAt": null,
+    "createdAt": "2025-08-23T00:35:03.000Z",
+    "updatedAt": "2025-08-23T00:35:03.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 83,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88263",
+    "user": "690b1d57881fa30257ab0d1d",
+    "name": "Compte deriv",
+    "currency": "USD",
+    "initial": 30,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-08-28T10:53:27.000Z",
+    "updatedAt": "2025-08-28T10:53:27.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 85,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88264",
+    "user": "690b1d57881fa30257ab0dff",
+    "name": "Compte 5Ers 5K",
+    "currency": "USD",
+    "initial": 5000,
+    "description": "compte utilisé pour les dépenses mensuel et pour l\\'achat d\\'un challenge de 6K chez FN",
+    "deletedAt": null,
+    "createdAt": "2025-09-02T13:31:38.000Z",
+    "updatedAt": "2025-09-02T13:31:38.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 86,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88265",
+    "user": "690b1d57881fa30257ab0e09",
+    "name": "Djino",
+    "currency": "USD",
+    "initial": 63,
+    "description": "Win",
+    "deletedAt": null,
+    "createdAt": "2025-09-03T00:29:52.000Z",
+    "updatedAt": "2025-09-03T00:29:52.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 87,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88266",
+    "user": "690b1d57881fa30257ab0e1c",
+    "name": "Perse PAKA",
+    "currency": "USD",
+    "initial": 5000,
+    "description": "Compte utiliser pour tester ma stratégie sur un compte financer Funded Next de 5K",
+    "deletedAt": null,
+    "createdAt": "2025-09-04T00:53:23.000Z",
+    "updatedAt": "2025-09-04T00:53:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 88,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88267",
+    "user": "690b1d57881fa30257ab0e29",
+    "name": "Test 1 forex",
+    "currency": "USD",
+    "initial": 20,
+    "description": "Compte de trading essaie 1",
+    "deletedAt": null,
+    "createdAt": "2025-09-06T12:33:04.000Z",
+    "updatedAt": "2025-09-06T12:33:04.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 89,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88268",
+    "user": "690b1d57881fa30257ab0e24",
+    "name": "deriv 93",
+    "currency": "USD",
+    "initial": 70,
+    "description": "compte de gestion",
+    "deletedAt": null,
+    "createdAt": "2025-09-06T19:23:12.000Z",
+    "updatedAt": "2025-09-06T19:23:12.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 90,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88269",
+    "user": "690b1d57881fa30257ab0e42",
+    "name": "Deriv MT5/Trader",
+    "currency": "EUR",
+    "initial": 0,
+    "description": "Gains et Pertes avec Deriv.",
+    "deletedAt": null,
+    "createdAt": "2025-09-12T02:57:57.000Z",
+    "updatedAt": "2025-09-12T02:57:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 92,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8826a",
+    "user": "690b1d57881fa30257ab0e2b",
+    "name": "COMPTE EPARGNE",
+    "currency": "USD",
+    "initial": 0,
+    "description": "10% de tous mes bénéfices ou revenus",
+    "deletedAt": null,
+    "createdAt": "2025-09-15T17:17:40.000Z",
+    "updatedAt": "2025-09-15T17:17:40.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 93,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8826b",
+    "user": "690b1d57881fa30257ab0e2b",
+    "name": "COMPTE INVESTISSEMENTS",
+    "currency": "USD",
+    "initial": 0,
+    "description": "50% de mes revenus",
+    "deletedAt": null,
+    "createdAt": "2025-09-15T17:22:46.000Z",
+    "updatedAt": "2025-09-15T17:22:46.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 94,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8826c",
+    "user": "690b1d57881fa30257ab0e1d",
+    "name": "Deriv 1 divisé",
+    "currency": "USD",
+    "initial": 20,
+    "description": "Voir comment je vais développer ce petit compte",
+    "deletedAt": null,
+    "createdAt": "2025-09-18T13:10:46.000Z",
+    "updatedAt": "2025-09-18T13:10:46.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 95,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8826d",
+    "user": "690b1d57881fa30257ab0e9d",
+    "name": "Deriv",
+    "currency": "USD",
+    "initial": 25,
+    "description": "Pour trader",
+    "deletedAt": null,
+    "createdAt": "2025-09-21T13:44:07.000Z",
+    "updatedAt": "2025-09-21T13:44:07.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 96,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8826e",
+    "user": "690b1d57881fa30257ab0eb7",
+    "name": "XM",
+    "currency": "USD",
+    "initial": 75,
+    "description": "Compte utilisé pour arrondir mes fin du mois et acheter des prop firm",
+    "deletedAt": null,
+    "createdAt": "2025-09-24T05:18:06.000Z",
+    "updatedAt": "2025-09-24T05:18:06.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 97,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8826f",
+    "user": "690b1d57881fa30257ab0d0c",
+    "name": "XM",
+    "currency": "USD",
+    "initial": 24,
+    "description": "compte dinvestisment",
+    "deletedAt": null,
+    "createdAt": "2025-09-26T18:06:01.000Z",
+    "updatedAt": "2025-09-26T18:06:01.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 98,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88270",
+    "user": "690b1d57881fa30257ab0e42",
+    "name": "Deriv Cash",
+    "currency": "EUR",
+    "initial": 0,
+    "description": "Argent Deriv sur Compte Bancaire.",
+    "deletedAt": null,
+    "createdAt": "2025-09-27T14:36:31.000Z",
+    "updatedAt": "2025-09-27T14:36:31.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 100,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88271",
+    "user": "690b1d57881fa30257ab0d28",
+    "name": "Fundednext",
+    "currency": "USD",
+    "initial": 5000,
+    "description": "Compte pour trading",
+    "deletedAt": null,
+    "createdAt": "2025-09-30T11:01:55.000Z",
+    "updatedAt": "2025-09-30T11:01:55.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 101,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88272",
+    "user": "690b1d57881fa30257ab0e42",
+    "name": "Mon Compte (Principale)",
+    "currency": "USD",
+    "initial": 0,
+    "description": "Compte principal d\\\\\\\\\\\\\\'entrées et sorties d\\\\\\\\\\\\\\'argents",
+    "deletedAt": null,
+    "createdAt": "2025-10-02T00:39:21.000Z",
+    "updatedAt": "2025-10-02T00:39:21.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 102,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88273",
+    "user": "690b1d57881fa30257ab0f09",
+    "name": "Tc",
+    "currency": "USD",
+    "initial": 5000,
+    "description": "Full risk",
+    "deletedAt": null,
+    "createdAt": "2025-10-05T13:19:57.000Z",
+    "updatedAt": "2025-10-05T13:19:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 103,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88274",
+    "user": "690b1d5a881fa30257ab0f3c",
+    "name": "Forex XM CP",
+    "currency": "USD",
+    "initial": 120,
+    "description": "7$ par trade",
+    "deletedAt": null,
+    "createdAt": "2025-10-13T09:31:08.000Z",
+    "updatedAt": "2025-10-13T09:31:08.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 105,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88275",
+    "user": "690b1d5a881fa30257ab0f56",
+    "name": "FTMO 10K",
+    "currency": "USD",
+    "initial": 10000,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-10-14T04:18:24.000Z",
+    "updatedAt": "2025-10-14T04:18:24.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 107,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88276",
+    "user": "690b1d57881fa30257ab0e0f",
+    "name": "ECOBANK",
+    "currency": "USD",
+    "initial": 0,
+    "description": "Compte utilisé pour mes dépenses mensuelles",
+    "deletedAt": null,
+    "createdAt": "2025-10-15T11:20:51.000Z",
+    "updatedAt": "2025-10-15T11:20:51.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 108,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88277",
+    "user": "690b1d57881fa30257ab0e0f",
+    "name": "CORIS",
+    "currency": "USD",
+    "initial": 0,
+    "description": "Compte utilisé pour mes dépenses mensuelles",
+    "deletedAt": null,
+    "createdAt": "2025-10-15T11:22:29.000Z",
+    "updatedAt": "2025-10-15T11:22:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 109,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88278",
+    "user": "690b1d57881fa30257ab0e8e",
+    "name": "BINANCE",
+    "currency": "USD",
+    "initial": 26,
+    "description": "EPARGNE",
+    "deletedAt": null,
+    "createdAt": "2025-10-16T01:58:56.000Z",
+    "updatedAt": "2025-10-16T01:58:56.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 110,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88279",
+    "user": "690b1d5a881fa30257ab0f66",
+    "name": "Nkoua Excellent Bill",
+    "currency": "USD",
+    "initial": 5000,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-10-16T21:26:35.000Z",
+    "updatedAt": "2025-10-16T21:26:35.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 111,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8827a",
+    "user": "690b1d5a881fa30257ab0f6c",
+    "name": "Demo.compte",
+    "currency": "USD",
+    "initial": 50,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-10-17T19:05:14.000Z",
+    "updatedAt": "2025-10-17T19:05:14.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 112,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8827b",
+    "user": "690b1d5a881fa30257ab0f67",
+    "name": "40803077",
+    "currency": "USD",
+    "initial": 1000,
+    "description": "Démo",
+    "deletedAt": null,
+    "createdAt": "2025-10-18T07:54:40.000Z",
+    "updatedAt": "2025-10-18T07:54:40.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 113,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8827c",
+    "user": "690b1d57881fa30257ab0eff",
+    "name": "ihitame or",
+    "currency": "USD",
+    "initial": 150,
+    "description": "compte or",
+    "deletedAt": null,
+    "createdAt": "2025-10-22T11:16:14.000Z",
+    "updatedAt": "2025-10-22T11:16:14.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 117,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8827d",
+    "user": "690b1d57881fa30257ab0d05",
+    "name": "Mes finances",
+    "currency": "USD",
+    "initial": 500,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-10-24T15:35:18.000Z",
+    "updatedAt": "2025-10-24T15:35:18.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 118,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8827e",
+    "user": "690b1d57881fa30257ab0eff",
+    "name": "USDCAD",
+    "currency": "USD",
+    "initial": 164,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-10-27T18:32:41.000Z",
+    "updatedAt": "2025-10-27T18:32:41.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 119,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a8827f",
+    "user": "690b1d5a881fa30257ab0f98",
+    "name": "COMPTE BOA",
+    "currency": "USD",
+    "initial": 50,
+    "description": "Compte utilisé pour les dépenses",
+    "deletedAt": null,
+    "createdAt": "2025-10-29T05:00:50.000Z",
+    "updatedAt": "2025-10-29T05:00:50.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 120,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88280",
+    "user": "690b1d5a881fa30257ab0fb9",
+    "name": "challenge1000$",
+    "currency": "USD",
+    "initial": 0,
+    "description": "pour mes projets uniquement",
+    "deletedAt": null,
+    "createdAt": "2025-11-02T20:42:18.000Z",
+    "updatedAt": "2025-11-02T20:42:18.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 121,
+      "account_type": ""
+    }
+  },
+  {
+    "_id": "690fc75d5f622f33f4a88281",
+    "user": "690b1d57881fa30257ab0d41",
+    "name": "new game",
+    "currency": "USD",
+    "initial": 1,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-11-05T17:30:24.000Z",
+    "updatedAt": "2025-11-05T17:30:24.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_accounts",
+      "sqlId": 122,
+      "account_type": ""
+    }
+  }
+]

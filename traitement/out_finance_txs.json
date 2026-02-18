@@ -1,0 +1,2871 @@
+[
+  {
+    "user": 1,
+    "account": 7,
+    "type": "expense",
+    "amount": 500,
+    "date": "2025-05-04T09:59:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-04T07:59:58.000Z",
+    "updatedAt": "2025-05-04T07:59:58.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 71,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 6,
+    "type": "expense",
+    "amount": 600,
+    "date": "2025-05-01T10:00:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-04T08:00:35.000Z",
+    "updatedAt": "2025-05-04T08:00:35.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 72,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 1,
+    "type": "income",
+    "amount": 600,
+    "date": "2025-05-03T10:00:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-04T08:01:01.000Z",
+    "updatedAt": "2025-05-04T08:01:01.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 73,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 7,
+    "type": "income",
+    "amount": 950,
+    "date": "2025-04-29T10:01:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-04T08:01:18.000Z",
+    "updatedAt": "2025-05-04T08:01:18.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 74,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 6,
+    "type": "expense",
+    "amount": 95,
+    "date": "2025-05-02T10:01:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-04T08:01:44.000Z",
+    "updatedAt": "2025-05-04T08:01:44.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 75,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 800.04,
+    "date": "2025-05-12T23:55:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "je le dis",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:56:01.000Z",
+    "updatedAt": "2025-05-12T21:56:01.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 86,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 49.98,
+    "date": "2025-05-05T23:56:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:56:24.000Z",
+    "updatedAt": "2025-05-12T21:56:24.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 87,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "income",
+    "amount": 55,
+    "date": "2025-01-01T23:56:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:56:46.000Z",
+    "updatedAt": "2025-10-12T22:05:10.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 88,
+      "lastDuplicatedAt": "2025-10-12 22:05:10"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "income",
+    "amount": 55,
+    "date": "2025-02-01T23:56:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:56:46.000Z",
+    "updatedAt": "2025-05-12T21:56:46.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 89,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "income",
+    "amount": 55,
+    "date": "2025-03-01T23:56:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +2)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:56:46.000Z",
+    "updatedAt": "2025-05-12T21:56:46.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 90,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "income",
+    "amount": 55,
+    "date": "2025-04-01T23:56:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +3)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:56:46.000Z",
+    "updatedAt": "2025-05-12T21:56:46.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 91,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "income",
+    "amount": 55,
+    "date": "2025-05-01T23:56:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +4)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:56:46.000Z",
+    "updatedAt": "2025-05-12T21:56:46.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 92,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 13,
+    "type": "income",
+    "amount": 7999.99,
+    "date": "2025-05-11T23:57:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:57:20.000Z",
+    "updatedAt": "2025-05-12T21:57:20.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 93,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2024-12-06T23:57:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:57:45.000Z",
+    "updatedAt": "2025-10-12T22:05:10.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 94,
+      "lastDuplicatedAt": "2025-10-12 22:05:10"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2025-01-06T23:57:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:57:47.000Z",
+    "updatedAt": "2025-05-12T21:57:47.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 95,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2025-02-06T23:57:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +2)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:57:47.000Z",
+    "updatedAt": "2025-05-12T21:57:47.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 96,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2025-03-06T23:57:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +3)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:57:47.000Z",
+    "updatedAt": "2025-05-12T21:57:47.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 97,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2025-04-06T23:57:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +4)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:57:47.000Z",
+    "updatedAt": "2025-05-12T21:57:47.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 98,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2025-05-06T23:57:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +5)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:57:47.000Z",
+    "updatedAt": "2025-05-12T21:57:47.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 99,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 13,
+    "type": "expense",
+    "amount": 500,
+    "date": "2025-04-13T00:00:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T21:58:45.000Z",
+    "updatedAt": "2025-10-13T00:11:13.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 100,
+      "lastDuplicatedAt": "2025-10-13 00:11:13"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 90000,
+    "date": "2025-01-02T00:01:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:02:36.000Z",
+    "updatedAt": "2025-10-12T22:22:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 101,
+      "lastDuplicatedAt": "2025-10-12 22:22:23"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 90000,
+    "date": "2025-02-02T00:01:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:02:37.000Z",
+    "updatedAt": "2025-05-12T22:02:37.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 102,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 90000,
+    "date": "2025-03-02T00:01:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +2)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:02:37.000Z",
+    "updatedAt": "2025-05-12T22:02:37.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 103,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 90000,
+    "date": "2025-04-02T00:01:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +3)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:02:37.000Z",
+    "updatedAt": "2025-05-12T22:02:37.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 104,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 90000,
+    "date": "2025-05-02T00:01:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +4)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:02:37.000Z",
+    "updatedAt": "2025-05-12T22:02:37.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 105,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2024-08-05T00:08:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:08:42.000Z",
+    "updatedAt": "2025-10-12T22:22:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 106,
+      "lastDuplicatedAt": "2025-10-12 22:22:23"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2024-09-05T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:08:42.000Z",
+    "updatedAt": "2025-05-12T22:08:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 107,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2024-10-05T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +2)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:08:42.000Z",
+    "updatedAt": "2025-05-12T22:08:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 108,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2024-11-05T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +3)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:08:42.000Z",
+    "updatedAt": "2025-05-12T22:08:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 109,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2024-12-06T00:08:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "je l\\'a jfopg",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:08:42.000Z",
+    "updatedAt": "2025-10-12T22:22:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 110,
+      "lastDuplicatedAt": "2025-10-12 22:22:23"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2025-01-05T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +5)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:08:42.000Z",
+    "updatedAt": "2025-05-12T22:08:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 111,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2025-02-05T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +6)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:08:42.000Z",
+    "updatedAt": "2025-05-12T22:08:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 112,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2025-03-05T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +7)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:08:42.000Z",
+    "updatedAt": "2025-05-12T22:08:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 113,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2025-04-05T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +8)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:08:42.000Z",
+    "updatedAt": "2025-05-12T22:08:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 114,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2025-05-05T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +9)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:08:42.000Z",
+    "updatedAt": "2025-05-12T22:08:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 115,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2025-01-06T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:11:44.000Z",
+    "updatedAt": "2025-05-12T22:11:44.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 116,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2025-02-06T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +2)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:11:44.000Z",
+    "updatedAt": "2025-05-12T22:11:44.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 117,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2025-03-06T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +3)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:11:44.000Z",
+    "updatedAt": "2025-05-12T22:11:44.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 118,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2025-04-06T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +4)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:11:44.000Z",
+    "updatedAt": "2025-05-12T22:11:44.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 119,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2025-05-06T00:08:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +5)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:11:44.000Z",
+    "updatedAt": "2025-05-12T22:11:44.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 120,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2024-04-11T00:12:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:28.000Z",
+    "updatedAt": "2025-10-12T22:22:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 121,
+      "lastDuplicatedAt": "2025-10-12 22:22:23"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2024-05-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 122,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2024-06-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +2)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 123,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2024-07-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +3)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 124,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2024-08-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +4)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 125,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2024-09-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +5)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 126,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2024-10-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +6)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 127,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2024-11-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +7)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 128,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2024-12-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +8)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 129,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2025-01-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +9)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 130,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2025-02-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +10)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 131,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2025-03-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +11)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 132,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2025-04-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +12)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 133,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2025-05-11T00:12:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +13)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-12T22:12:29.000Z",
+    "updatedAt": "2025-05-12T22:12:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 134,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 13,
+    "type": "expense",
+    "amount": 500,
+    "date": "2025-05-13T00:00:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-13T00:02:54.000Z",
+    "updatedAt": "2025-05-13T00:02:54.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 135,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 25000,
+    "date": "2025-03-05T10:20:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-14T08:21:26.000Z",
+    "updatedAt": "2025-10-14T08:31:31.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 136,
+      "lastDuplicatedAt": "2025-10-14 08:31:31"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 25000,
+    "date": "2025-04-05T10:20:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-14T08:21:27.000Z",
+    "updatedAt": "2025-05-14T08:21:27.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 137,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 25000,
+    "date": "2025-05-05T10:20:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +2)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-14T08:21:27.000Z",
+    "updatedAt": "2025-05-14T08:21:27.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 138,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 13,
+    "type": "expense",
+    "amount": 60,
+    "date": "2025-05-07T10:27:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-14T08:27:51.000Z",
+    "updatedAt": "2025-05-14T08:27:51.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 139,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 16,
+    "type": "expense",
+    "amount": 50,
+    "date": "2025-05-14T10:33:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "l\\'argent que je dois à Koffi",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-14T08:33:54.000Z",
+    "updatedAt": "2025-05-14T08:33:54.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 140,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 16,
+    "type": "income",
+    "amount": 58,
+    "date": "2025-05-15T10:34:00.000Z",
+    "recurrence": "fixe",
+    "detail": "epargne",
+    "comment": "depot",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-14T08:35:07.000Z",
+    "updatedAt": "2025-05-14T08:35:07.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 141,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 17,
+    "type": "income",
+    "amount": 550,
+    "date": "2025-01-05T15:35:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "investissement",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-15T13:36:23.000Z",
+    "updatedAt": "2025-10-15T13:41:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 142,
+      "lastDuplicatedAt": "2025-10-15 13:41:42"
+    }
+  },
+  {
+    "user": 1,
+    "account": 17,
+    "type": "income",
+    "amount": 550,
+    "date": "2025-02-05T15:35:00.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-15T13:36:23.000Z",
+    "updatedAt": "2025-05-15T13:36:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 143,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 17,
+    "type": "income",
+    "amount": 550,
+    "date": "2025-03-05T15:35:00.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Duplication automatique (Mois +2)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-15T13:36:23.000Z",
+    "updatedAt": "2025-05-15T13:36:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 144,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 17,
+    "type": "income",
+    "amount": 550,
+    "date": "2025-04-05T15:35:00.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Duplication automatique (Mois +3)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-15T13:36:23.000Z",
+    "updatedAt": "2025-05-15T13:36:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 145,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 17,
+    "type": "income",
+    "amount": 550,
+    "date": "2025-05-05T15:35:00.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Duplication automatique (Mois +4)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-05-15T13:36:23.000Z",
+    "updatedAt": "2025-05-15T13:36:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 146,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 18,
+    "type": "income",
+    "amount": 500,
+    "date": "2025-06-02T10:09:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-02T08:12:35.000Z",
+    "updatedAt": "2025-06-02T08:12:35.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 147,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 28,
+    "account": 19,
+    "type": "expense",
+    "amount": 200,
+    "date": "2025-06-02T10:05:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Simple.",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-02T09:06:08.000Z",
+    "updatedAt": "2025-06-02T09:06:08.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 148,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 20,
+    "type": "expense",
+    "amount": 50,
+    "date": "2025-06-06T11:05:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "khm",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-06T09:05:42.000Z",
+    "updatedAt": "2025-06-06T09:05:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 149,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "income",
+    "amount": 55,
+    "date": "2025-06-12T21:56:46.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-12T22:00:02.000Z",
+    "updatedAt": "2025-06-12T22:00:02.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 150,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2025-06-12T21:57:47.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-12T22:00:02.000Z",
+    "updatedAt": "2025-06-12T22:00:02.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 151,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 90000,
+    "date": "2025-06-12T22:02:37.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-12T22:03:18.000Z",
+    "updatedAt": "2025-06-12T22:03:18.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 152,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2025-06-12T22:08:42.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-12T22:08:45.000Z",
+    "updatedAt": "2025-06-12T22:08:45.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 153,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2025-06-12T22:11:44.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-12T22:13:58.000Z",
+    "updatedAt": "2025-06-12T22:13:58.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 154,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2025-06-12T22:12:29.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-12T22:13:58.000Z",
+    "updatedAt": "2025-06-12T22:13:58.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 155,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 13,
+    "type": "expense",
+    "amount": 500,
+    "date": "2025-06-13T00:02:54.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-13T00:03:30.000Z",
+    "updatedAt": "2025-06-13T00:03:30.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 156,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 30,
+    "account": 21,
+    "type": "expense",
+    "amount": 50,
+    "date": "2025-06-13T13:41:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Jejj",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-13T12:41:39.000Z",
+    "updatedAt": "2025-06-13T12:41:39.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 157,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 25000,
+    "date": "2025-06-14T08:21:27.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-14T08:21:54.000Z",
+    "updatedAt": "2025-06-14T08:21:54.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 158,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 17,
+    "type": "income",
+    "amount": 550,
+    "date": "2025-06-15T13:36:23.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-15T13:36:23.000Z",
+    "updatedAt": "2025-06-15T13:36:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 159,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 37,
+    "account": 23,
+    "type": "income",
+    "amount": 200,
+    "date": "2025-06-23T10:00:00.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-23T09:02:42.000Z",
+    "updatedAt": "2025-06-23T09:02:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 160,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 37,
+    "account": 23,
+    "type": "expense",
+    "amount": 300,
+    "date": "2025-06-23T10:03:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-23T09:03:32.000Z",
+    "updatedAt": "2025-06-23T09:03:32.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 161,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 37,
+    "account": 22,
+    "type": "income",
+    "amount": 900,
+    "date": "2025-06-23T10:04:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-23T09:04:12.000Z",
+    "updatedAt": "2025-06-23T09:04:12.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 162,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 7,
+    "account": 28,
+    "type": "expense",
+    "amount": 123456,
+    "date": "2025-06-29T13:24:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "AZERTYU",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-29T13:24:30.000Z",
+    "updatedAt": "2025-10-29T13:39:41.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 163,
+      "lastDuplicatedAt": "2025-10-29 13:39:41"
+    }
+  },
+  {
+    "user": 4,
+    "account": 24,
+    "type": "income",
+    "amount": 50,
+    "date": "2025-06-30T15:14:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-30T13:14:50.000Z",
+    "updatedAt": "2025-06-30T13:14:50.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 165,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 4,
+    "account": 29,
+    "type": "income",
+    "amount": 20,
+    "date": "2025-07-03T02:55:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Paiement du systeme PEKA à venir",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-03T00:55:37.000Z",
+    "updatedAt": "2025-07-03T00:55:37.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 166,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 99,
+    "account": 33,
+    "type": "expense",
+    "amount": 10,
+    "date": "2025-07-04T15:02:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-04T15:03:04.000Z",
+    "updatedAt": "2025-11-04T15:05:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 167,
+      "lastDuplicatedAt": "2025-11-04 15:05:57"
+    }
+  },
+  {
+    "user": 39,
+    "account": 35,
+    "type": "expense",
+    "amount": 15350,
+    "date": "2025-07-03T19:42:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-04T18:42:55.000Z",
+    "updatedAt": "2025-07-04T18:42:55.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 168,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 247,
+    "account": 51,
+    "type": "income",
+    "amount": 5,
+    "date": "2025-07-11T09:48:00.000Z",
+    "recurrence": "fixe",
+    "detail": "epargne",
+    "comment": "Projet",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-11T07:50:07.000Z",
+    "updatedAt": "2025-07-11T07:50:07.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 175,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "income",
+    "amount": 55,
+    "date": "2025-07-12T22:00:02.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-12T22:00:19.000Z",
+    "updatedAt": "2025-07-12T22:00:19.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 176,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2025-07-12T22:00:02.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-12T22:00:19.000Z",
+    "updatedAt": "2025-07-12T22:00:19.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 177,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 90000,
+    "date": "2025-07-12T22:03:18.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-12T22:06:22.000Z",
+    "updatedAt": "2025-07-12T22:06:22.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 178,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2025-07-12T22:08:45.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-12T22:14:49.000Z",
+    "updatedAt": "2025-07-12T22:14:49.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 179,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2025-07-12T22:13:58.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-12T22:14:49.000Z",
+    "updatedAt": "2025-07-12T22:14:49.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 180,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2025-07-12T22:13:58.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-12T22:14:49.000Z",
+    "updatedAt": "2025-07-12T22:14:49.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 181,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 13,
+    "type": "expense",
+    "amount": 500,
+    "date": "2025-07-13T00:03:30.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-13T00:04:50.000Z",
+    "updatedAt": "2025-07-13T00:04:50.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 182,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 25000,
+    "date": "2025-07-14T08:21:54.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-14T08:23:25.000Z",
+    "updatedAt": "2025-07-14T08:23:25.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 183,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 17,
+    "type": "income",
+    "amount": 550,
+    "date": "2025-07-15T13:36:23.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-15T13:37:50.000Z",
+    "updatedAt": "2025-07-15T13:37:50.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 184,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 4,
+    "account": 24,
+    "type": "income",
+    "amount": 594,
+    "date": "2025-07-10T16:45:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-15T14:45:23.000Z",
+    "updatedAt": "2025-07-15T14:45:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 185,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 220,
+    "account": 65,
+    "type": "income",
+    "amount": 150,
+    "date": "2025-11-08T22:40:45.088Z",
+    "recurrence": "fixe",
+    "detail": "retrait",
+    "comment": "payout.",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-23T14:59:52.000Z",
+    "updatedAt": "2025-07-23T14:59:52.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 186,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 7,
+    "account": 28,
+    "type": "expense",
+    "amount": 123456,
+    "date": "2025-07-29T13:24:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-29T13:34:31.000Z",
+    "updatedAt": "2025-07-29T13:34:31.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 187,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 99,
+    "account": 33,
+    "type": "expense",
+    "amount": 10,
+    "date": "2025-08-04T15:02:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-04T15:02:32.000Z",
+    "updatedAt": "2025-08-04T15:02:32.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 188,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "income",
+    "amount": 55,
+    "date": "2025-08-12T22:00:19.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-12T22:03:01.000Z",
+    "updatedAt": "2025-08-12T22:03:01.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 189,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2025-08-12T22:00:19.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-12T22:03:01.000Z",
+    "updatedAt": "2025-08-12T22:03:01.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 190,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 90000,
+    "date": "2025-08-12T22:06:22.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-12T22:21:19.000Z",
+    "updatedAt": "2025-08-12T22:21:19.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 191,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2025-08-12T22:14:49.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-12T22:21:19.000Z",
+    "updatedAt": "2025-08-12T22:21:19.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 192,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2025-08-12T22:14:49.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-12T22:21:19.000Z",
+    "updatedAt": "2025-08-12T22:21:19.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 193,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2025-08-12T22:14:49.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-12T22:21:19.000Z",
+    "updatedAt": "2025-08-12T22:21:19.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 194,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 13,
+    "type": "expense",
+    "amount": 500,
+    "date": "2025-08-13T00:04:50.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-13T00:06:16.000Z",
+    "updatedAt": "2025-08-13T00:06:16.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 195,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 25000,
+    "date": "2025-08-14T08:23:25.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-14T08:24:59.000Z",
+    "updatedAt": "2025-08-14T08:24:59.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 196,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 17,
+    "type": "income",
+    "amount": 550,
+    "date": "2025-08-15T13:37:50.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-15T13:38:29.000Z",
+    "updatedAt": "2025-08-15T13:38:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 197,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 7,
+    "account": 28,
+    "type": "expense",
+    "amount": 123456,
+    "date": "2025-08-29T13:34:31.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-29T13:34:31.000Z",
+    "updatedAt": "2025-08-29T13:34:31.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 198,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 99,
+    "account": 33,
+    "type": "expense",
+    "amount": 10,
+    "date": "2025-09-04T15:02:32.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-04T15:03:41.000Z",
+    "updatedAt": "2025-09-04T15:03:41.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 199,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 824,
+    "account": 92,
+    "type": "expense",
+    "amount": 550,
+    "date": "2025-09-01T23:59:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T03:02:29.000Z",
+    "updatedAt": "2025-09-27T14:31:49.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 201,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "income",
+    "amount": 55,
+    "date": "2025-09-12T22:03:01.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T22:03:02.000Z",
+    "updatedAt": "2025-09-12T22:03:02.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 204,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2025-09-12T22:03:01.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T22:03:02.000Z",
+    "updatedAt": "2025-09-12T22:03:02.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 205,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 90000,
+    "date": "2025-09-12T22:21:19.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T22:22:06.000Z",
+    "updatedAt": "2025-09-12T22:22:06.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 206,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2025-09-12T22:21:19.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T22:22:06.000Z",
+    "updatedAt": "2025-09-12T22:22:06.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 207,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2025-09-12T22:21:19.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T22:22:06.000Z",
+    "updatedAt": "2025-09-12T22:22:06.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 208,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2025-09-12T22:21:19.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T22:22:06.000Z",
+    "updatedAt": "2025-09-12T22:22:06.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 209,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 824,
+    "account": 92,
+    "type": "expense",
+    "amount": 103.4,
+    "date": "2025-09-08T19:51:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T22:55:10.000Z",
+    "updatedAt": "2025-09-27T14:31:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 211,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 824,
+    "account": 92,
+    "type": "expense",
+    "amount": 20.45,
+    "date": "2025-09-08T17:26:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T23:27:37.000Z",
+    "updatedAt": "2025-09-27T14:30:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 214,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 13,
+    "type": "expense",
+    "amount": 500,
+    "date": "2025-09-13T00:06:16.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-13T00:06:16.000Z",
+    "updatedAt": "2025-09-13T00:06:16.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 217,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 25000,
+    "date": "2025-09-14T08:24:59.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-14T08:28:16.000Z",
+    "updatedAt": "2025-09-14T08:28:16.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 218,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 824,
+    "account": 92,
+    "type": "expense",
+    "amount": 100,
+    "date": "2025-09-14T18:05:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-14T21:02:10.000Z",
+    "updatedAt": "2025-09-27T14:31:36.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 220,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 17,
+    "type": "income",
+    "amount": 550,
+    "date": "2025-09-15T13:38:29.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-15T13:40:56.000Z",
+    "updatedAt": "2025-09-15T13:40:56.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 221,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 786,
+    "account": 95,
+    "type": "expense",
+    "amount": 20,
+    "date": "2025-09-18T13:14:00.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Dépôt fictive de 20dollar sur compte Deriv 1 divisé \nJe doit faire grossier ce capital afin de voir mes performances en trading",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-18T13:16:04.000Z",
+    "updatedAt": "2025-09-18T13:16:04.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 222,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 824,
+    "account": 92,
+    "type": "expense",
+    "amount": 140,
+    "date": "2025-09-27T11:37:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-27T14:38:02.000Z",
+    "updatedAt": "2025-09-27T14:38:02.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 223,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 7,
+    "account": 28,
+    "type": "expense",
+    "amount": 123456,
+    "date": "2025-09-29T13:34:31.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-29T13:37:37.000Z",
+    "updatedAt": "2025-09-29T13:37:37.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 224,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 537,
+    "account": 101,
+    "type": "expense",
+    "amount": 40,
+    "date": "2025-09-30T12:02:00.000Z",
+    "recurrence": "fixe",
+    "detail": "retrait",
+    "comment": "Trander",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-30T11:04:05.000Z",
+    "updatedAt": "2025-09-30T11:04:05.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 225,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 824,
+    "account": 102,
+    "type": "income",
+    "amount": 500,
+    "date": "2025-10-09T21:40:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-02T00:41:01.000Z",
+    "updatedAt": "2025-10-02T00:41:01.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 226,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 99,
+    "account": 33,
+    "type": "expense",
+    "amount": 10,
+    "date": "2025-10-04T15:03:41.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-04T15:05:47.000Z",
+    "updatedAt": "2025-10-04T15:05:47.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 227,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "income",
+    "amount": 55,
+    "date": "2025-10-12T22:03:02.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-12T22:05:10.000Z",
+    "updatedAt": "2025-10-12T22:05:10.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 229,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 15,
+    "type": "expense",
+    "amount": 755,
+    "date": "2025-10-12T22:03:02.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-12T22:05:10.000Z",
+    "updatedAt": "2025-10-12T22:05:10.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 230,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 90000,
+    "date": "2025-10-12T22:22:06.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-12T22:22:23.000Z",
+    "updatedAt": "2025-10-12T22:22:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 231,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 80000,
+    "date": "2025-10-12T22:22:06.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-12T22:22:23.000Z",
+    "updatedAt": "2025-10-12T22:22:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 232,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "expense",
+    "amount": 800,
+    "date": "2025-10-12T22:22:06.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-12T22:22:23.000Z",
+    "updatedAt": "2025-10-12T22:22:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 233,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 7500,
+    "date": "2025-10-12T22:22:06.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-12T22:22:23.000Z",
+    "updatedAt": "2025-10-12T22:22:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 234,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 13,
+    "type": "expense",
+    "amount": 500,
+    "date": "2025-10-13T00:06:16.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-13T00:11:13.000Z",
+    "updatedAt": "2025-10-13T00:11:13.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 235,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1069,
+    "account": 105,
+    "type": "income",
+    "amount": 5,
+    "date": "2025-10-13T10:32:00.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "1er trade sur GOLD",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-13T09:33:46.000Z",
+    "updatedAt": "2025-10-13T09:33:46.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 236,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 14,
+    "type": "income",
+    "amount": 25000,
+    "date": "2025-10-14T08:28:16.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-14T08:31:31.000Z",
+    "updatedAt": "2025-10-14T08:31:31.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 238,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1,
+    "account": 17,
+    "type": "income",
+    "amount": 550,
+    "date": "2025-10-15T13:40:56.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-15T13:41:42.000Z",
+    "updatedAt": "2025-10-15T13:41:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 239,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 895,
+    "account": 110,
+    "type": "expense",
+    "amount": 200,
+    "date": "2025-10-15T16:58:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-16T02:01:55.000Z",
+    "updatedAt": "2025-10-16T02:01:55.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 241,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 895,
+    "account": 110,
+    "type": "income",
+    "amount": 300,
+    "date": "2025-10-16T02:16:00.000Z",
+    "recurrence": "fixe",
+    "detail": "epargne",
+    "comment": "Profit sur mes trades XAUUSD ET BTC",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-16T02:11:57.000Z",
+    "updatedAt": "2025-10-16T02:11:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 242,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 895,
+    "account": 110,
+    "type": "income",
+    "amount": 300,
+    "date": "2025-10-16T14:23:00.000Z",
+    "recurrence": "fixe",
+    "detail": "epargne",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-16T21:54:28.000Z",
+    "updatedAt": "2025-10-16T21:54:28.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 243,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 895,
+    "account": 110,
+    "type": "expense",
+    "amount": 215,
+    "date": "2025-10-16T16:24:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-16T21:55:29.000Z",
+    "updatedAt": "2025-10-16T21:55:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 244,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 895,
+    "account": 110,
+    "type": "income",
+    "amount": 100,
+    "date": "2025-10-16T14:34:00.000Z",
+    "recurrence": "fixe",
+    "detail": "epargne",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-16T21:56:53.000Z",
+    "updatedAt": "2025-10-16T21:56:53.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 245,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 497,
+    "account": 118,
+    "type": "expense",
+    "amount": 20,
+    "date": "2025-10-24T16:36:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-24T15:37:04.000Z",
+    "updatedAt": "2025-10-24T15:37:04.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 246,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1163,
+    "account": 120,
+    "type": "expense",
+    "amount": 22,
+    "date": "2025-10-29T06:04:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-29T05:04:40.000Z",
+    "updatedAt": "2025-10-29T05:04:40.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 247,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 7,
+    "account": 28,
+    "type": "expense",
+    "amount": 123456,
+    "date": "2025-10-29T13:37:37.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-29T13:39:41.000Z",
+    "updatedAt": "2025-10-29T13:39:41.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 248,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 1194,
+    "account": 121,
+    "type": "expense",
+    "amount": 250,
+    "date": "2025-11-02T21:05:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "emprunt d\\'argents pour faire quelques sommes si possible",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-11-02T20:48:35.000Z",
+    "updatedAt": "2025-11-02T20:48:35.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 249,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": 99,
+    "account": 33,
+    "type": "expense",
+    "amount": 10,
+    "date": "2025-11-04T15:05:47.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-11-04T15:05:57.000Z",
+    "updatedAt": "2025-11-04T15:05:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 250,
+      "lastDuplicatedAt": "NULL"
+    }
+  }
+]

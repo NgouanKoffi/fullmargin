@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"order":{"$numberInt":"1"},"product":{"$numberInt":"1"}},"name":"order_1_product_1","background":true,"unique":true}],"uuid":"575e2ac6cd734b069bcfc1cbadc0d59d","collectionName":"admincommissions","type":"collection"}

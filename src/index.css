@@ -1,0 +1,672 @@
+/* ============================================================
+   src/index.css
+   - Tailwind + base typographique sans scroll doux global
+   - Variables de thème (jour/nuit)
+   - Effets de fond (orbes, grille, chandelles, gains/pertes)
+   - Aides perf (content-visibility) — GATED au 1er paint
+   - Utilitaires (no-scrollbar, sheet mobile, hide support FAB)
+   ============================================================ */
+
+/*IMPORTANT PERF:
+   On SUPPRIME l'import Google Fonts ici.
+   Les fonts doivent être chargées UNE SEULE FOIS dans index.html (avec preconnect). */
+
+/* @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"); */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =================== Base typographique & scroll =================== */
+@layer base {
+  html {
+    @apply font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* ❗ Pas de scroll doux global pour éviter le "jump" en navigation
+       (si tu veux du smooth ponctuel, ajoute la classe .smooth-scroll sur <html>) */
+    /* scroll-behavior: smooth; */
+
+    /* Garde un gutter stable sans réserve à gauche sur Windows */
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* optionnel : utilitaire si un jour tu veux réactiver un scroll doux ciblé */
+html.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* ===================================================================
+      THÈME (variables CSS)
+      =================================================================== */
+/* JOUR */
+:root {
+  --bg: 255 255 255;
+  --header: 255 255 255;
+  --surface: 255 255 255;
+  --text: 0 0 0;
+  --muted: 55 65 81;
+  --border: 0 0 0;
+  --ring: 17 24 39;
+
+  --primary: 111 60 255;
+  --accent: 134 56 255;
+  --on-primary: 255 255 255;
+
+  --tile: 241 234 255;
+  --tile-strong: 232 224 255;
+
+  /* Grille jour → lignes noires/gris très foncé (lisible) */
+  --grid-major: 30 32 36; /* ~#1E2124 */
+  --grid-minor: 18 20 24; /* ~#121418 */
+
+  /* ScrollCue easing/durée */
+  --cue-ease: cubic-bezier(0.22, 0.9, 0.25, 1);
+  --cue-dur: 0.7s;
+}
+
+/* NUIT */
+.dark {
+  --bg: 10 12 24;
+  --header: 12 14 30;
+  --surface: 22 18 45;
+
+  --text: 255 255 255;
+  --muted: 182 188 210;
+
+  --border: 64 52 112;
+  --ring: 149 100 255;
+
+  --primary: 149 100 255;
+  --accent: 134 56 255;
+  --on-primary: 255 255 255;
+
+  --tile: 36 28 84;
+  --tile-strong: 48 38 110;
+
+  /* Grille nuit (violet doux) */
+  --grid-major: 118 87 199;
+  --grid-minor: 67 50 120;
+}
+
+/* Fond page */
+html,
+body {
+  background: rgb(var(--bg));
+  color: rgb(var(--text));
+  min-height: 100%;
+}
+
+/* Dégradé subtil en mode nuit */
+html.dark body {
+  background:
+    radial-gradient(
+      1100px 700px at 15% 0%,
+      rgba(149, 100, 255, 0.22) 0%,
+      rgba(149, 100, 255, 0) 55%
+    ),
+    radial-gradient(
+      900px 600px at 95% 10%,
+      rgba(134, 56, 255, 0.16) 0%,
+      rgba(134, 56, 255, 0) 60%
+    ),
+    rgb(var(--bg));
+}
+
+/* ===================================================================
+      Scrollbar & utilitaires
+      =================================================================== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Cache le bouton support quand data-hide-support est posé sur <html> */
+[data-hide-support="true"] .fm-support-fab {
+  display: none !important;
+}
+
+/* ===================================================================
+      View Transitions (switch thème)
+      =================================================================== */
+body {
+  view-transition-name: theme;
+}
+:root {
+  --vt-x: 50vw;
+  --vt-y: 50vh;
+  --vt-r: 140vmax;
+  --vt-duration: 900ms;
+}
+::view-transition-old(theme) {
+  animation: none;
+}
+::view-transition-new(theme) {
+  animation: fm-theme-reveal var(--vt-duration) cubic-bezier(0.22, 0.8, 0.3, 1)
+    both;
+}
+@keyframes fm-theme-reveal {
+  from {
+    clip-path: circle(0 at var(--vt-x) var(--vt-y));
+  }
+  to {
+    clip-path: circle(var(--vt-r) at var(--vt-x) var(--vt-y));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(theme),
+  ::view-transition-old(theme) {
+    animation: none !important;
+  }
+}
+
+/* ===================================================================
+      ScrollCue (révélations au scroll) — GPU + easing “glissant”
+      =================================================================== */
+.cue {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0) scale(0.985);
+  transition:
+    opacity var(--cue-dur) var(--cue-ease),
+    transform var(--cue-dur) var(--cue-ease);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+.cue-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+[data-cue="slide-up"] {
+  transform: translate3d(0, 18px, 0);
+}
+[data-cue="slide-right"] {
+  transform: translate3d(-18px, 0, 0);
+}
+[data-cue="zoom"] {
+  transform: scale(0.965);
+}
+.fm-pulse {
+  box-shadow: 0 0 0 0 rgba(111, 60, 255, 0.35);
+  animation: fm-pulse 1.6s cubic-bezier(0.22, 0.8, 0.3, 1) infinite;
+}
+@keyframes fm-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(111, 60, 255, 0.35);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgba(111, 60, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(111, 60, 255, 0);
+  }
+}
+
+/* ===================================================================
+      BACKGROUND FX : orbes, grille, chandelles, gains/pertes
+      =================================================================== */
+.fm-bg {
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+/* ---------- ORBES ---------- */
+.fm-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  animation: fm-orb-float 22s ease-in-out infinite alternate;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+}
+html:not(.dark) .fm-orb {
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+  filter: blur(50px);
+}
+.fm-orb--a {
+  width: 46vmin;
+  height: 46vmin;
+  top: -6vmin;
+  left: 8vmin;
+  background: radial-gradient(
+    closest-side,
+    rgba(var(--primary), 0.5),
+    transparent 70%
+  );
+}
+.fm-orb--b {
+  width: 52vmin;
+  height: 52vmin;
+  top: 18vh;
+  right: -10vmin;
+  background: radial-gradient(
+    closest-side,
+    rgba(var(--accent), 0.45),
+    transparent 70%
+  );
+  animation-delay: 0.6s;
+}
+.fm-orb--c {
+  width: 38vmin;
+  height: 38vmin;
+  bottom: 10vh;
+  left: -8vmin;
+  background: radial-gradient(
+    closest-side,
+    rgba(134, 56, 255, 0.45),
+    transparent 70%
+  );
+  animation-delay: 0.3s;
+}
+.fm-orb--d {
+  width: 42vmin;
+  height: 42vmin;
+  bottom: -8vmin;
+  right: 10vmin;
+  background: radial-gradient(
+    closest-side,
+    rgba(149, 100, 255, 0.4),
+    transparent 70%
+  );
+  animation-delay: 1.2s;
+}
+@keyframes fm-orb-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2vmin, -2vmin, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(-2vmin, 1.5vmin, 0) scale(1.08);
+  }
+}
+
+/* ---------- GRILLE marché ---------- */
+.fm-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: background-position, opacity;
+  transform: translateZ(0);
+}
+html:not(.dark) .fm-grid {
+  mix-blend-mode: normal;
+  opacity: 0.45;
+}
+.dark .fm-grid {
+  mix-blend-mode: screen;
+  opacity: 0.55;
+}
+
+.fm-grid {
+  background-image:
+       /* minor (24px) */
+    repeating-linear-gradient(
+      0deg,
+      rgba(var(--grid-minor) / 0.22) 0 1px,
+      transparent 1px 24px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(var(--grid-minor) / 0.22) 0 1px,
+      transparent 1px 24px
+    ),
+    /* major (120px) */
+    repeating-linear-gradient(
+        0deg,
+        rgba(var(--grid-major) / 0.3) 0 1px,
+        transparent 1px 120px
+      ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(var(--grid-major) / 0.3) 0 1px,
+      transparent 1px 120px
+    );
+  background-size:
+    130% 130%,
+    130% 130%,
+    130% 130%,
+    130% 130%;
+  animation: fm-grid-pan 60s linear infinite;
+  -webkit-mask-image: radial-gradient(
+    1400px 900px at 50% 38%,
+    #000 72%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    1400px 900px at 50% 38%,
+    #000 72%,
+    transparent 100%
+  );
+}
+
+/* Hairline explicite en mode jour (0.5px) */
+html:not(.dark) .fm-grid {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.16) 0 0.5px,
+      transparent 0.5px 24px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.16) 0 0.5px,
+      transparent 0.5px 24px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.2) 0 0.5px,
+      transparent 0.5px 120px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.2) 0 0.5px,
+      transparent 0.5px 120px
+    );
+}
+
+.fm-grid--hero {
+  opacity: 0.7;
+}
+@keyframes fm-grid-pan {
+  0% {
+    background-position:
+      0px 0px,
+      0px 0px,
+      0px 0px,
+      0px 0px;
+  }
+  100% {
+    background-position:
+      240px 150px,
+      -180px 0px,
+      140px 90px,
+      -140px 0px;
+  }
+}
+
+/* ---------- Chandelles ---------- */
+.fm-candle {
+  position: absolute;
+  bottom: -60px;
+  width: 12px;
+  height: 96px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  animation: fm-rise 12s linear infinite;
+  opacity: 0.28;
+  backface-visibility: hidden;
+}
+.fm-candle::before {
+  content: "";
+  width: 2px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 9999px;
+}
+.fm-candle-body {
+  width: 8px;
+  height: 22px;
+  border-radius: 3px;
+  margin-bottom: 26px;
+  background: linear-gradient(to bottom, #22c55e, #16a34a);
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.18);
+}
+.fm-candle:nth-child(2n) .fm-candle-body {
+  background: linear-gradient(to bottom, #ef4444, #b91c1c);
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.18);
+}
+@keyframes fm-rise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.95);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.28;
+  }
+  50% {
+    transform: translate3d(6px, -34vh, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(-6px, -68vh, 0) scale(1.04);
+    opacity: 0;
+  }
+}
+
+/* ---------- Gains/Perte ---------- */
+.fm-gains {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.fm-gain {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 0.14rem 0.34rem;
+  border-radius: 9999px;
+  font:
+    700 9px/1 Inter,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto;
+  letter-spacing: 0.01em;
+  opacity: 0.38;
+  filter: drop-shadow(0 0 4px rgba(134, 56, 255, 0.12));
+  animation: fm-gain-float 10s var(--cue-ease) infinite;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+.fm-gain.g {
+  color: #16a34a;
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.22);
+}
+.fm-gain.r {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+@keyframes fm-gain-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(10px);
+  }
+  14% {
+    opacity: 0.42;
+  }
+  78% {
+    opacity: 0.42;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(-22px);
+  }
+}
+
+/* Positions & dé-synchronisation */
+.fm-gain:nth-child(1) {
+  left: 12%;
+  top: 42%;
+  animation-delay: 0.2s;
+  animation-duration: 9.5s;
+}
+.fm-gain:nth-child(2) {
+  left: 22%;
+  top: 36%;
+  animation-delay: 1.2s;
+  animation-duration: 10.5s;
+}
+.fm-gain:nth-child(3) {
+  left: 31%;
+  top: 48%;
+  animation-delay: 2.2s;
+  animation-duration: 11.2s;
+}
+.fm-gain:nth-child(4) {
+  left: 41%;
+  top: 40%;
+  animation-delay: 3s;
+  animation-duration: 9.8s;
+}
+.fm-gain:nth-child(5) {
+  left: 53%;
+  top: 44%;
+  animation-delay: 4.1s;
+  animation-duration: 10.8s;
+}
+.fm-gain:nth-child(6) {
+  left: 63%;
+  top: 34%;
+  animation-delay: 5s;
+  animation-duration: 9.2s;
+}
+.fm-gain:nth-child(7) {
+  left: 72%;
+  top: 46%;
+  animation-delay: 6s;
+  animation-duration: 11.6s;
+}
+.fm-gain:nth-child(8) {
+  left: 82%;
+  top: 38%;
+  animation-delay: 7s;
+  animation-duration: 10.2s;
+}
+.fm-gain:nth-child(9) {
+  left: 18%;
+  top: 58%;
+  animation-delay: 8s;
+  animation-duration: 9.8s;
+}
+.fm-gain:nth-child(10) {
+  left: 28%;
+  top: 64%;
+  animation-delay: 8.8s;
+  animation-duration: 10.8s;
+}
+.fm-gain:nth-child(11) {
+  left: 46%;
+  top: 60%;
+  animation-delay: 9.6s;
+  animation-duration: 11.4s;
+}
+.fm-gain:nth-child(12) {
+  left: 58%;
+  top: 66%;
+  animation-delay: 10.4s;
+  animation-duration: 9.4s;
+}
+.fm-gain:nth-child(13) {
+  left: 74%;
+  top: 58%;
+  animation-delay: 11.2s;
+  animation-duration: 10.6s;
+}
+.fm-gain:nth-child(14) {
+  left: 86%;
+  top: 64%;
+  animation-delay: 12s;
+  animation-duration: 11.8s;
+}
+
+/* ===================================================================
+      Sections paresseuses (boost perf scroll) — GATED
+      =================================================================== */
+.fm-section {
+  transform: translateZ(0);
+  will-change: contents, transform;
+  contain: layout paint style; /* isolement layout/paint */
+}
+
+/* Gate content-visibility:
+      - OFF (visible) au 1er paint => pas de "page trop courte"
+      - ON (auto) immédiatement après hydratation (voir main.tsx)
+   */
+@supports (content-visibility: auto) {
+  html[data-cv="off"] .cv-auto {
+    content-visibility: visible;
+    contain-intrinsic-size: auto;
+  }
+  html[data-cv="on"] .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 720px;
+  }
+}
+
+/* ===================================================================
+      Responsive & motion-reduce
+      =================================================================== */
+@media (max-width: 640px) {
+  .fm-orb {
+    filter: blur(40px);
+    opacity: 0.42;
+  }
+  .fm-grid {
+    animation-duration: 80s;
+  } /* pan plus lent = moins de travail */
+}
+@media (prefers-reduced-motion: reduce) {
+  .fm-orb,
+  .fm-grid,
+  .fm-candle,
+  .fm-gain {
+    animation: none !important;
+  }
+  .fm-gains {
+    display: none;
+  }
+}
+
+/* ===================================================================
+      Sheets mobiles (slide-up) — centralisé ici (optionnel)
+      =================================================================== */
+.sheet {
+  transform: translateY(100%);
+  transition: transform 320ms cubic-bezier(0.22, 0.8, 0.3, 1);
+  will-change: transform;
+}
+.sheet--open {
+  transform: translateY(0);
+}
+
+/* ===================================================================
+      Header: état actif (dans index.css, PAS de fichier active.css)
+      =================================================================== */
+@layer components {
+  .fm-active {
+    position: relative;
+    border-radius: 14px;
+    background: #7c3aed; /* violet-600 */
+    color: #fff !important; /* texte blanc */
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    transition: background-color 150ms ease-out;
+  }
+
+  .fm-active:hover {
+    background: #8b5cf6; /* violet-500 */
+  }
+
+  .fm-active svg {
+    color: inherit;
+    stroke: currentColor;
+  }
+
+  .fm-active .text-skin-base,
+  .fm-active .text-skin-muted {
+    color: #fff !important;
+  }
+}

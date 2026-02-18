@@ -1,0 +1,534 @@
+[
+  {
+    "user": "690b1d57881fa30257ab0b3b",
+    "account": "690fc75d5f622f33f4a88238",
+    "type": "income",
+    "amount": 200,
+    "date": "2025-06-23T10:00:00.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-23T09:02:42.000Z",
+    "updatedAt": "2025-06-23T09:02:42.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 160,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0b3b",
+    "account": "690fc75d5f622f33f4a88238",
+    "type": "expense",
+    "amount": 300,
+    "date": "2025-06-23T10:03:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-23T09:03:32.000Z",
+    "updatedAt": "2025-06-23T09:03:32.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 161,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0b3b",
+    "account": "690fc75d5f622f33f4a88237",
+    "type": "income",
+    "amount": 900,
+    "date": "2025-06-23T10:04:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-06-23T09:04:12.000Z",
+    "updatedAt": "2025-06-23T09:04:12.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 162,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0b73",
+    "account": "690fc75d5f622f33f4a88239",
+    "type": "expense",
+    "amount": 10,
+    "date": "2025-07-04T15:02:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-04T15:03:04.000Z",
+    "updatedAt": "2025-11-04T15:05:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 167,
+      "lastDuplicatedAt": "2025-11-04 15:05:57"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0b4d",
+    "account": "690fc75d5f622f33f4a8823b",
+    "type": "expense",
+    "amount": 15350,
+    "date": "2025-07-03T19:42:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-04T18:42:55.000Z",
+    "updatedAt": "2025-07-04T18:42:55.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 168,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0c08",
+    "account": "690fc75d5f622f33f4a88248",
+    "type": "income",
+    "amount": 5,
+    "date": "2025-07-11T09:48:00.000Z",
+    "recurrence": "fixe",
+    "detail": "epargne",
+    "comment": "Projet",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-11T07:50:07.000Z",
+    "updatedAt": "2025-07-11T07:50:07.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 175,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0bf1",
+    "account": "690fc75d5f622f33f4a88252",
+    "type": "income",
+    "amount": 150,
+    "date": "2025-11-08T22:40:45.088Z",
+    "recurrence": "fixe",
+    "detail": "retrait",
+    "comment": "payout.",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-07-23T14:59:52.000Z",
+    "updatedAt": "2025-07-23T14:59:52.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 186,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0b73",
+    "account": "690fc75d5f622f33f4a88239",
+    "type": "expense",
+    "amount": 10,
+    "date": "2025-08-04T15:02:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-08-04T15:02:32.000Z",
+    "updatedAt": "2025-08-04T15:02:32.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 188,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0b73",
+    "account": "690fc75d5f622f33f4a88239",
+    "type": "expense",
+    "amount": 10,
+    "date": "2025-09-04T15:02:32.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-04T15:03:41.000Z",
+    "updatedAt": "2025-09-04T15:03:41.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 199,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e42",
+    "account": "690fc75d5f622f33f4a88269",
+    "type": "expense",
+    "amount": 550,
+    "date": "2025-09-01T23:59:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T03:02:29.000Z",
+    "updatedAt": "2025-09-27T14:31:49.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 201,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e42",
+    "account": "690fc75d5f622f33f4a88269",
+    "type": "expense",
+    "amount": 103.4,
+    "date": "2025-09-08T19:51:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T22:55:10.000Z",
+    "updatedAt": "2025-09-27T14:31:23.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 211,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e42",
+    "account": "690fc75d5f622f33f4a88269",
+    "type": "expense",
+    "amount": 20.45,
+    "date": "2025-09-08T17:26:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-12T23:27:37.000Z",
+    "updatedAt": "2025-09-27T14:30:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 214,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e42",
+    "account": "690fc75d5f622f33f4a88269",
+    "type": "expense",
+    "amount": 100,
+    "date": "2025-09-14T18:05:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-14T21:02:10.000Z",
+    "updatedAt": "2025-09-27T14:31:36.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 220,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e1d",
+    "account": "690fc75d5f622f33f4a8826c",
+    "type": "expense",
+    "amount": 20,
+    "date": "2025-09-18T13:14:00.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "Dépôt fictive de 20dollar sur compte Deriv 1 divisé \nJe doit faire grossier ce capital afin de voir mes performances en trading",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-18T13:16:04.000Z",
+    "updatedAt": "2025-09-18T13:16:04.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 222,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e42",
+    "account": "690fc75d5f622f33f4a88269",
+    "type": "expense",
+    "amount": 140,
+    "date": "2025-09-27T11:37:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-27T14:38:02.000Z",
+    "updatedAt": "2025-09-27T14:38:02.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 223,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0d28",
+    "account": "690fc75d5f622f33f4a88271",
+    "type": "expense",
+    "amount": 40,
+    "date": "2025-09-30T12:02:00.000Z",
+    "recurrence": "fixe",
+    "detail": "retrait",
+    "comment": "Trander",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-09-30T11:04:05.000Z",
+    "updatedAt": "2025-09-30T11:04:05.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 225,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e42",
+    "account": "690fc75d5f622f33f4a88272",
+    "type": "income",
+    "amount": 500,
+    "date": "2025-10-09T21:40:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-02T00:41:01.000Z",
+    "updatedAt": "2025-10-02T00:41:01.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 226,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0b73",
+    "account": "690fc75d5f622f33f4a88239",
+    "type": "expense",
+    "amount": 10,
+    "date": "2025-10-04T15:03:41.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-04T15:05:47.000Z",
+    "updatedAt": "2025-10-04T15:05:47.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 227,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d5a881fa30257ab0f3c",
+    "account": "690fc75d5f622f33f4a88274",
+    "type": "income",
+    "amount": 5,
+    "date": "2025-10-13T10:32:00.000Z",
+    "recurrence": "fixe",
+    "detail": "investissement",
+    "comment": "1er trade sur GOLD",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-13T09:33:46.000Z",
+    "updatedAt": "2025-10-13T09:33:46.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 236,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e8e",
+    "account": "690fc75d5f622f33f4a88278",
+    "type": "expense",
+    "amount": 200,
+    "date": "2025-10-15T16:58:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-16T02:01:55.000Z",
+    "updatedAt": "2025-10-16T02:01:55.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 241,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e8e",
+    "account": "690fc75d5f622f33f4a88278",
+    "type": "income",
+    "amount": 300,
+    "date": "2025-10-16T02:16:00.000Z",
+    "recurrence": "fixe",
+    "detail": "epargne",
+    "comment": "Profit sur mes trades XAUUSD ET BTC",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-16T02:11:57.000Z",
+    "updatedAt": "2025-10-16T02:11:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 242,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e8e",
+    "account": "690fc75d5f622f33f4a88278",
+    "type": "income",
+    "amount": 300,
+    "date": "2025-10-16T14:23:00.000Z",
+    "recurrence": "fixe",
+    "detail": "epargne",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-16T21:54:28.000Z",
+    "updatedAt": "2025-10-16T21:54:28.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 243,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e8e",
+    "account": "690fc75d5f622f33f4a88278",
+    "type": "expense",
+    "amount": 215,
+    "date": "2025-10-16T16:24:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-16T21:55:29.000Z",
+    "updatedAt": "2025-10-16T21:55:29.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 244,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0e8e",
+    "account": "690fc75d5f622f33f4a88278",
+    "type": "income",
+    "amount": 100,
+    "date": "2025-10-16T14:34:00.000Z",
+    "recurrence": "fixe",
+    "detail": "epargne",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-16T21:56:53.000Z",
+    "updatedAt": "2025-10-16T21:56:53.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 245,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0d05",
+    "account": "690fc75d5f622f33f4a8827d",
+    "type": "expense",
+    "amount": 20,
+    "date": "2025-10-24T16:36:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-24T15:37:04.000Z",
+    "updatedAt": "2025-10-24T15:37:04.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 246,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d5a881fa30257ab0f98",
+    "account": "690fc75d5f622f33f4a8827f",
+    "type": "expense",
+    "amount": 22,
+    "date": "2025-10-29T06:04:00.000Z",
+    "recurrence": "mensuel",
+    "detail": "autre",
+    "comment": "",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-10-29T05:04:40.000Z",
+    "updatedAt": "2025-10-29T05:04:40.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 247,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d5a881fa30257ab0fb9",
+    "account": "690fc75d5f622f33f4a88280",
+    "type": "expense",
+    "amount": 250,
+    "date": "2025-11-02T21:05:00.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "emprunt d\\'argents pour faire quelques sommes si possible",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-11-02T20:48:35.000Z",
+    "updatedAt": "2025-11-02T20:48:35.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 249,
+      "lastDuplicatedAt": "NULL"
+    }
+  },
+  {
+    "user": "690b1d57881fa30257ab0b73",
+    "account": "690fc75d5f622f33f4a88239",
+    "type": "expense",
+    "amount": 10,
+    "date": "2025-11-04T15:05:47.000Z",
+    "recurrence": "fixe",
+    "detail": "autre",
+    "comment": "Duplication automatique (Mois +1)",
+    "parentId": null,
+    "deletedAt": null,
+    "createdAt": "2025-11-04T15:05:57.000Z",
+    "updatedAt": "2025-11-04T15:05:57.000Z",
+    "legacy": {
+      "sqlTable": "wp_finance_transactions",
+      "sqlId": 250,
+      "lastDuplicatedAt": "NULL"
+    }
+  }
+]

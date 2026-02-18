@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"user":{"$numberInt":"1"}},"name":"user_1","background":true},{"v":{"$numberInt":"2"},"key":{"deletedAt":{"$numberInt":"1"}},"name":"deletedAt_1","background":true}],"uuid":"0f8ee0185aca45d291eebbc4636e6578","collectionName":"kanban_projects","type":"collection"}

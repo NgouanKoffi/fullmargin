@@ -1,0 +1,32 @@
+[
+  {
+    "_id": "690fc4ac61c1ef0b0d57faad",
+    "user": "68e617218387d5faadd35cbc",
+    "name": "DERIV",
+    "currency": "USD",
+    "initial": 460,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-06-23T09:20:19.000Z",
+    "updatedAt": "2025-06-23T09:20:19.000Z",
+    "legacy": {
+      "sqlTable": "wp_compte_journal",
+      "sqlId": 15
+    }
+  },
+  {
+    "_id": "690fc4ac61c1ef0b0d57faae",
+    "user": "68e617218387d5faadd35cbc",
+    "name": "WELTRADE",
+    "currency": "USD",
+    "initial": 90,
+    "description": "",
+    "deletedAt": null,
+    "createdAt": "2025-06-23T09:20:38.000Z",
+    "updatedAt": "2025-06-23T09:20:38.000Z",
+    "legacy": {
+      "sqlTable": "wp_compte_journal",
+      "sqlId": 16
+    }
+  }
+]
