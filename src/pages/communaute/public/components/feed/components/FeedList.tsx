@@ -205,13 +205,19 @@ export default function FeedList({
       const ac = new AbortController();
       abortRef.current = ac;
       try {
+        // 🔑 Quand un scope est actif (my-communities / public-others),
+        //    on ne passe PAS communityId : le backend doit chercher dans
+        //    toutes les communautés de l'utilisateur, pas une seule.
         const qs = new URLSearchParams({
-          communityId,
           page: String(p),
           limit: String(pageSize),
         });
+        if (visibilityScope) {
+          qs.set("scope", visibilityScope);
+        } else if (communityId) {
+          qs.set("communityId", communityId);
+        }
         if (authorIdFilter) qs.set("authorId", authorIdFilter);
-        if (visibilityScope) qs.set("scope", visibilityScope);
 
         // 🔐 on ajoute le token si dispo, pour que le backend sache si on est membre
         const token = (loadSession() as { token?: string } | null)?.token;
@@ -295,12 +301,15 @@ export default function FeedList({
 
     try {
       const qs = new URLSearchParams({
-        communityId,
         page: "1",
         limit: String(Math.max(pageSize, idsOnScreen.length)),
       });
+      if (visibilityScope) {
+        qs.set("scope", visibilityScope);
+      } else if (communityId) {
+        qs.set("communityId", communityId);
+      }
       if (authorIdFilter) qs.set("authorId", authorIdFilter);
-      if (visibilityScope) qs.set("scope", visibilityScope);
 
       const token = (loadSession() as { token?: string } | null)?.token;
       const headers: HeadersInit = { Accept: "application/json" };
