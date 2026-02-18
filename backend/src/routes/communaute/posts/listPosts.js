@@ -59,10 +59,9 @@ module.exports = async function listPosts(req, res) {
       $or: [{ isPublished: true }, { isPublished: { $exists: false } }],
     };
 
-    if (hasId) {
-      // vue d'une communauté précise → pas de filtre scope
-      q.communityId = rawId;
-    } else if (userId && scope === "my-communities") {
+    // 🔑 Quand un scope est fourni, il prime sur le communityId individuel.
+    //    Le communityId seul sert pour la vue d'une communauté précise (pas de scope).
+    if (userId && scope === "my-communities") {
       // "Ma communauté" → posts des communautés où je suis membre/owner
       if (myCommunityIds.size === 0) {
         // pas d'abonnements → retourner vide directement
@@ -78,6 +77,9 @@ module.exports = async function listPosts(req, res) {
       if (myCommunityIds.size > 0) {
         q.communityId = { $nin: Array.from(myCommunityIds) };
       }
+    } else if (hasId) {
+      // vue d'une communauté précise (pas de scope)
+      q.communityId = rawId;
     } else if (!userId) {
       // non connecté → uniquement posts publics
       q.visibility = "public";
