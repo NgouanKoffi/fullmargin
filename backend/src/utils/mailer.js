@@ -146,7 +146,7 @@ async function sendLicenseRenewedEmail({
   });
 }
 
-// ✅ NOUVEAU : Email Succès Commande Stripe/Générique
+// Email Succès Commande Stripe/Générique
 async function sendMarketplaceOrderSuccessEmail({
   to,
   fullName = "",
@@ -193,7 +193,7 @@ async function sendMarketplaceCryptoRejectedEmail({
   });
 }
 
-// Notification Vendeur
+// Notification Vendeur Marketplace
 async function sendMarketplaceSaleNotificationEmail({
   to,
   fullName = "",
@@ -209,6 +209,26 @@ async function sendMarketplaceSaleNotificationEmail({
       customer: { name: customerName },
       items,
       totalEarnings,
+    },
+  });
+}
+
+// ✅ NOUVEAU : Notification Vendeur Formation (Cours)
+async function sendCourseSaleNotificationEmail({
+  to,
+  fullName = "",
+  buyerName = "Un client",
+  courseTitle = "Formation",
+  earnings = "",
+}) {
+  const firstName = String(fullName || "").split(" ")[0] || "Formateur";
+  return renderAndSend("course.sale_notification", {
+    to,
+    context: {
+      user: { firstName, fullName },
+      buyer: { name: buyerName },
+      course: { title: courseTitle },
+      earnings,
     },
   });
 }
@@ -360,6 +380,36 @@ async function sendFmMetrixCanceledEmail({
   });
 }
 
+// backend/src/utils/mailer.js
+
+// backend/src/utils/mailer.js
+
+async function sendAdminPromotionEmail(
+  to,
+  fullName = "",
+  permissionsString = "",
+  redirectLink = "https://fullmargin.net/admin",
+) {
+  const firstName = String(fullName || "").split(" ")[0] || "Bonjour";
+  return renderAndSend("admin.user_promoted", {
+    to,
+    context: {
+      user: { firstName, fullName },
+      permissionsString,
+      redirectUrl: redirectLink,
+    },
+  });
+}
+
+// ✅ LA FONCTION MANQUANTE POUR LA RÉTROGRADATION
+async function sendAdminDemotionEmail(to, fullName = "") {
+  const firstName = String(fullName || "").split(" ")[0] || "Bonjour";
+  return renderAndSend("admin.user_demoted", {
+    to,
+    context: { user: { firstName, fullName } },
+  });
+}
+
 module.exports = {
   sendEmail,
   sendLoginCode,
@@ -369,12 +419,15 @@ module.exports = {
   sendServiceDeletedEmail,
   sendLicenseIssuedEmail,
   sendLicenseRenewedEmail,
-  sendMarketplaceOrderSuccessEmail, // ✅ Exporté
+  sendMarketplaceOrderSuccessEmail,
   sendMarketplaceCryptoApprovedEmail,
   sendMarketplaceCryptoRejectedEmail,
   sendMarketplaceSaleNotificationEmail,
-  sendWithdrawalApprovedEmail, // ✅ Nouveau
-  sendWithdrawalRejectedEmail, // ✅ Nouveau
+  sendCourseSaleNotificationEmail, // ✅ Exporté
+  sendAdminPromotionEmail,
+  sendAdminDemotionEmail,
+  sendWithdrawalApprovedEmail,
+  sendWithdrawalRejectedEmail,
   sendFmMetrixPremiumActivatedEmail,
   sendFmMetrixExpiringSoonEmail,
   sendFmMetrixRenewedEmail,

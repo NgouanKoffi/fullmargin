@@ -1,3 +1,4 @@
+// C:\Users\ADMIN\Desktop\fullmargin-site\backend\src\routes\communaute\communauties\create.js
 const {
   upload,
   requireAuth,
@@ -114,6 +115,6 @@ module.exports = (router) => {
           .status(500)
           .json({ ok: false, error: "Création impossible" });
       }
-    }
+    },
   );
 };

@@ -1,10 +1,7 @@
-// C:\Users\ADMIN\Desktop\fullmargin-site\backend\src\routes\payments\features\fmmetrix\fmmetrix.controller.js
+// backend/src/routes/payments/features/fmmetrix/fmmetrix.controller.js
 
-// ✅ CORRECTION : Import des helpers d'auth
 const { verifyAuthHeader, fail, ok } = require("../../../auth/_helpers");
 const Service = require("./fmmetrix.service");
-
-// ✅ Import des modèles
 const FmMetrix = require("../../../../models/fmmetrix.model");
 const FmMetrixSubscription = require("../../../../models/fmmetrixSubscription.model");
 
@@ -13,6 +10,19 @@ exports.checkout = async (req, res) => {
     const { userId } = verifyAuthHeader(req);
     if (!userId) return fail(res, "Non authentifié", 401);
 
+    const method = String(req.body.method || "stripe").toLowerCase();
+
+    // ✅ CAS FEEXPAY (Mobile Money)
+    if (method === "feexpay") {
+      const { url } = await Service.createFeexPaySession({
+        userId,
+        redirectBase: req.body.redirectBase,
+        origin: req.headers.origin,
+      });
+      return ok(res, { url });
+    }
+
+    // ✅ CAS STRIPE (Par défaut)
     const { url } = await Service.createCheckoutSession({
       userId,
       amount: req.body.amount,
@@ -61,7 +71,6 @@ exports.getAccess = async (req, res) => {
     }
 
     const now = new Date();
-    // Sécurisation de la date ici aussi (déjà présent mais bonne pratique)
     const expiresAt = sub.validUntil ? new Date(sub.validUntil) : null;
     const msLeft = expiresAt ? expiresAt.getTime() - now.getTime() : -1;
     const allowed = expiresAt && msLeft > 0;
@@ -93,7 +102,6 @@ exports.getHistory = async (req, res) => {
 
     const now = new Date();
 
-    // Gestion de l'état actuel (Current)
     const currentValidUntil = currentDoc?.validUntil
       ? new Date(currentDoc.validUntil)
       : null;
@@ -106,14 +114,13 @@ exports.getHistory = async (req, res) => {
           startedAt: currentDoc.startedAt,
           validUntil: currentDoc.validUntil,
           status: isCurrentActive ? "active" : "expired",
+          // ✅ AJOUT : Indique au frontend si l'abonnement doit être renouvelé
+          autoRenew: currentDoc.raw?.autoRenew !== false,
         }
       : null;
 
-    // Gestion de l'historique (Liste)
     const history = historyDocs.map((h) => {
-      // ✅ FIX MAJEUR ICI : Conversion explicite en Date
       const endDate = h.periodEnd ? new Date(h.periodEnd) : null;
-      // Comparaison par timestamp pour être sûr à 100%
       const isActive = endDate && endDate.getTime() > now.getTime();
 
       const raw = h.raw || {};
@@ -121,7 +128,6 @@ exports.getHistory = async (req, res) => {
       let amount = null;
       let currency = null;
 
-      // Logique de détection du provider
       if (
         raw.provider === "manual_crypto" ||
         h.stripeCustomerId === "MANUAL_CRYPTO"
@@ -129,6 +135,10 @@ exports.getHistory = async (req, res) => {
         provider = "manual_crypto";
         amount = raw.declaredAmount || 0;
         currency = "usd";
+      } else if (raw.fm_provider === "feexpay") {
+        provider = "feexpay";
+        amount = raw.amount || 0;
+        currency = raw.currency || "xof";
       } else if (raw.source === "manual_admin") {
         provider = "manual_grant";
       } else {
@@ -143,7 +153,6 @@ exports.getHistory = async (req, res) => {
         id: String(h._id),
         periodStart: h.periodStart,
         periodEnd: h.periodEnd,
-        // On force le statut basé sur la date, sauf si le doc dit explicitement "pending_crypto" ou autre
         status:
           h.status === "pending_crypto"
             ? h.status
@@ -154,7 +163,6 @@ exports.getHistory = async (req, res) => {
         provider,
         amount,
         currency,
-        // On passe aussi l'invoice ID si dispo pour le lien "Voir la facture"
         invoiceId: raw.invoice || null,
       };
     });
@@ -163,5 +171,59 @@ exports.getHistory = async (req, res) => {
   } catch (e) {
     console.error("[fm-metrix] history error:", e);
     return fail(res, "Erreur historique", 500);
+  }
+};
+
+// ✅ NOUVELLE ROUTE : Annulation du renouvellement
+exports.cancelRenew = async (req, res) => {
+  try {
+    const { userId } = verifyAuthHeader(req);
+    if (!userId) return fail(res, "Non authentifié", 401);
+
+    await Service.cancelAutoRenew(userId);
+    return ok(res, {
+      message: "Renouvellement automatique annulé avec succès.",
+    });
+  } catch (e) {
+    console.error("[fm-metrix] cancel error:", e);
+    return fail(res, e.message || "Erreur de résiliation", 500);
+  }
+};
+
+// ✅ Fonction pour valider l'abonnement depuis le SDK FeexPay
+exports.verifyFeexPay = async (req, res) => {
+  try {
+    const { userId } = verifyAuthHeader(req);
+    if (!userId) return fail(res, "Non authentifié", 401);
+
+    const { reference } = req.body;
+
+    // On appelle la fonction de grantManuel existante pour activer 1 mois
+    await Service.grantManualAccess({
+      userId,
+      months: 1, // 1 mois d'abonnement pour ce paiement
+      adminId: "FEEXPAY_SDK_AUTO",
+    });
+
+    // Mettre à jour l'historique de l'abonnement pour indiquer FeexPay
+    await FmMetrixSubscription.findOneAndUpdate(
+      { userId, "raw.adminId": "FEEXPAY_SDK_AUTO" },
+      {
+        $set: {
+          "raw.fm_provider": "feexpay",
+          "raw.feexpay_ref": reference || "ref_inconnue",
+          "raw.source": "mobile_money_feexpay",
+        },
+      },
+      { sort: { createdAt: -1 } },
+    );
+
+    return ok(res, {
+      saved: true,
+      message: "Abonnement activé avec succès via FeexPay.",
+    });
+  } catch (e) {
+    console.error("[fm-metrix] verifyFeexPay error:", e);
+    return fail(res, e.message || "Erreur Validation FeexPay", 500);
   }
 };

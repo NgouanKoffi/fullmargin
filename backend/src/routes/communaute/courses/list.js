@@ -23,10 +23,8 @@ module.exports = (router) => {
       const match = { deletedAt: null };
 
       if (String(all) === "1") {
-        // 🔍 MODE GLOBAL (page Formations publique)
         match.isActive = true;
       } else {
-        // 🔍 MODE COMMUNAUTÉ : on exige un communityId valide
         if (!communityId) {
           return res.json({ ok: true, data: { items: [] } });
         }
@@ -65,7 +63,6 @@ module.exports = (router) => {
 
       /* ---------------------------------------------------------
        * 3) LOOKUP INSCRIPTIONS (CourseEnrollment)
-       *    → enrollmentCount
        * --------------------------------------------------------- */
       pipeline.push(
         {
@@ -80,17 +77,16 @@ module.exports = (router) => {
           $addFields: {
             enrollmentCount: { $size: "$enrolls" },
           },
-        }
+        },
       );
 
       /* ---------------------------------------------------------
        * 4) LOOKUP COMMUNAUTÉ (Community)
-       *    → communityName + communitySlug
        * --------------------------------------------------------- */
       pipeline.push(
         {
           $lookup: {
-            from: Community.collection.name, // "communities"
+            from: Community.collection.name,
             localField: "communityId",
             foreignField: "_id",
             as: "community",
@@ -107,10 +103,15 @@ module.exports = (router) => {
             communityName: { $ifNull: ["$community.name", ""] },
             communitySlug: { $ifNull: ["$community.slug", ""] },
           },
-        }
+        },
+        {
+          $match: {
+            "community.deletedAt": null,
+            "community.status": { $nin: ["deleted_by_admin", "deleted_by_owner"] }
+          }
+        },
       );
 
-      // On nettoie quelques champs techniques avant la suite
       pipeline.push({
         $project: {
           enrolls: 0,
@@ -121,12 +122,11 @@ module.exports = (router) => {
 
       /* ---------------------------------------------------------
        * 5) LOOKUP OWNER (User)
-       *    → ownerName + ownerAvatar
        * --------------------------------------------------------- */
       pipeline.push(
         {
           $lookup: {
-            from: User.collection.name, // "users"
+            from: User.collection.name,
             localField: "ownerId",
             foreignField: "_id",
             as: "owner",
@@ -142,10 +142,11 @@ module.exports = (router) => {
           $addFields: {
             ownerName: { $ifNull: ["$owner.fullName", ""] },
             ownerAvatar: { $ifNull: ["$owner.avatarUrl", ""] },
+            ownerEmail: { $ifNull: ["$owner.email", ""] }, // ✅ AJOUT : Extraction de l'email de l'auteur
           },
         },
         { $project: { owner: 0 } },
-        { $sort: { createdAt: -1 } }
+        { $sort: { createdAt: -1 } },
       );
 
       /* ---------------------------------------------------------
@@ -157,14 +158,8 @@ module.exports = (router) => {
 
       /* ---------------------------------------------------------
        * 7) FILTRAGE VISIBILITÉ
-       *
-       *  - v = "public" par défaut si pas de champ visibility
-       *  - private :
-       *      MODE COMMUNAUTÉ   → visible si owner communauté, membre communauté, owner du cours
-       *      MODE GLOBAL (all) → visible si owner cours, owner communauté ou membre communauté
        * --------------------------------------------------------- */
 
-      // ---------- MODE COMMUNAUTÉ (avec ?communityId=...) ----------
       if (String(all) !== "1") {
         const commIdStr = String(communityId || "");
 
@@ -205,23 +200,17 @@ module.exports = (router) => {
           return isOwnerCommunity || isMemberCommunity || isOwnerCourse;
         });
       } else {
-        // ---------- MODE GLOBAL (page Formations publique, all=1) ----------
         if (!userId) {
-          // Pas connecté → on ne montre JAMAIS les private
           items = rows.filter(
             (r) =>
-              (r.visibility === "private" ? "private" : "public") === "public"
+              (r.visibility === "private" ? "private" : "public") === "public",
           );
         } else {
-          // Connecté → autoriser private si :
-          //  - owner du cours
-          //  - OU owner de la communauté
-          //  - OU membre de la communauté
           const privateWithCommunity = rows.filter(
             (r) =>
               r.visibility === "private" &&
               r.communityId &&
-              mongoose.isValidObjectId(r.communityId)
+              mongoose.isValidObjectId(r.communityId),
           );
 
           let ownerCommunities = new Set();
@@ -230,7 +219,7 @@ module.exports = (router) => {
           if (privateWithCommunity.length > 0) {
             const communityIds = [
               ...new Set(
-                privateWithCommunity.map((r) => String(r.communityId))
+                privateWithCommunity.map((r) => String(r.communityId)),
               ),
             ];
 
@@ -253,11 +242,11 @@ module.exports = (router) => {
             ownerCommunities = new Set(
               communities
                 .filter((c) => String(c.ownerId) === String(userId))
-                .map((c) => String(c._id))
+                .map((c) => String(c._id)),
             );
 
             memberCommunities = new Set(
-              memberships.map((m) => String(m.communityId))
+              memberships.map((m) => String(m.communityId)),
             );
           }
 
@@ -265,7 +254,6 @@ module.exports = (router) => {
             const v = r.visibility === "private" ? "private" : "public";
 
             if (v === "public") {
-              // public → visible pour tous (connectés ou non)
               return true;
             }
 
@@ -290,7 +278,7 @@ module.exports = (router) => {
         id: String(r._id),
         ownerName: r.ownerName || "",
         ownerAvatar: r.ownerAvatar || "",
-        // 👉 par défaut, on considère "public"
+        ownerEmail: r.ownerEmail || "", // ✅ AJOUT : Transmission de l'email
         visibility: r.visibility === "private" ? "private" : "public",
       }));
 

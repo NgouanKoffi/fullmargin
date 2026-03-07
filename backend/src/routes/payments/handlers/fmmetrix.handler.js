@@ -4,6 +4,7 @@ const FmMetrix = require("../../../models/fmmetrix.model");
 const FmMetrixSubscription = require("../../../models/fmmetrixSubscription.model");
 const User = require("../../../models/user.model");
 const AffiliationCommission = require("../../../models/affiliationCommission.model");
+const FmMetrixNotifier = require("../../../services/fmmetrixNotifier.service");
 
 function normalizeProvider(payment) {
   const v = String(
@@ -20,7 +21,8 @@ function normalizeProvider(payment) {
   if (!v) return "unknown";
   if (v.includes("nowpayments")) return "nowpayments";
   if (v.includes("stripe")) return "stripe";
-  if (v.includes("fedapay")) return "fedapay";
+  if (v.includes("feexpay")) return "feexpay";
+
   return v;
 }
 
@@ -32,18 +34,10 @@ function pickFirst(...vals) {
   return null;
 }
 
-/**
- * On extrait une référence "stable" pour dédoublonner.
- * NOWPayments: payment_id / id / invoice_id
- * FedaPay: transaction.id / transaction.reference
- * Stripe: id (session) / subscription / customer
- * Fallback: order_id / meta.orderId / meta.orderRef / tx
- */
 function extractStableRef(payment) {
   const raw = payment?.raw || {};
   const meta = payment?.meta || {};
 
-  // NOWPayments
   const nowRef = pickFirst(
     raw.payment_id,
     raw.paymentId,
@@ -55,28 +49,25 @@ function extractStableRef(payment) {
     raw.order_id,
   );
 
-  // FedaPay
-  const fedaRef = pickFirst(
-    raw?.transaction?.id,
-    raw?.transaction?.reference,
-    raw?.transaction?.ref,
+  const feexRef = pickFirst(
+    raw?.reference,
+    raw?.id,
     raw?.transaction_id,
+    meta?.customId,
+    meta?.orderId,
   );
 
-  // Stripe & Manual Crypto
   const stripeRef = pickFirst(
     raw.id,
     raw.session_id,
     raw.checkout_session_id,
     raw.subscription,
     raw.subscriptionId,
-    // ✅ CORRECTION ICI : On ajoute le champ utilisé par le Crypto Manuel
     raw.stripeSubscriptionId,
     raw.customer,
     raw.customerId,
   );
 
-  // Generic fallbacks
   const generic = pickFirst(
     meta.orderId,
     meta.orderRef,
@@ -91,10 +82,10 @@ function extractStableRef(payment) {
   const provider = normalizeProvider(payment);
 
   if (provider === "nowpayments") return nowRef || generic;
-  if (provider === "fedapay") return fedaRef || generic;
+  if (provider === "feexpay") return feexRef || generic;
   if (provider === "stripe") return stripeRef || generic;
 
-  return nowRef || fedaRef || stripeRef || generic;
+  return nowRef || feexRef || stripeRef || generic;
 }
 
 async function handleFmMetrixPaymentEvent(payment) {
@@ -102,21 +93,65 @@ async function handleFmMetrixPaymentEvent(payment) {
     const meta = payment?.meta || {};
     const userId = meta.userId || meta.user_id || null;
 
+    // 🛑 GESTION DE L'ÉCHEC DU PAIEMENT (Prélèvement Automatique Refusé)
+    if (payment?.status === "failed") {
+      const raw = payment?.raw || {};
+      const stripeSubscriptionId = raw.subscription; // id de l'abonnement stripe
+
+      if (stripeSubscriptionId) {
+        const sub = await FmMetrixSubscription.findOne({
+          stripeSubscriptionId,
+        }).lean();
+
+        if (sub) {
+          const uId = sub.userId;
+          const now = new Date();
+
+          // 1. Couper l'accès global
+          await FmMetrix.updateOne(
+            { userId: uId },
+            { $set: { validUntil: now, "raw.status": "payment_failed" } },
+          );
+
+          // 2. Mettre l'abonnement spécifique en échec
+          await FmMetrixSubscription.updateOne(
+            { _id: sub._id },
+            { $set: { status: "failed", periodEnd: now } },
+          );
+
+          // 3. Envoyer l'email d'interruption
+          await FmMetrixNotifier.notifyCanceled({
+            userId: String(uId),
+            endedAt: now,
+            reason:
+              "Échec du prélèvement automatique sur votre carte bancaire. Veuillez mettre à jour votre moyen de paiement.",
+            dedupeKey: `failed:${raw.id || stripeSubscriptionId}`,
+          });
+
+          console.log(
+            `[FM-METRIX HANDLER] Abonnement Stripe suspendu pour échec de prélèvement (Sub: ${stripeSubscriptionId})`,
+          );
+        }
+      }
+      return; // On arrête ici pour un échec
+    }
+
     if (!userId) {
       console.warn("[FM-METRIX HANDLER] userId manquant");
       return;
     }
 
-    // Le handler vérifie "success" ici (d'où l'importance de la modif dans le provider)
     if (payment?.status !== "success") {
-      console.log("[FM-METRIX HANDLER] payment not success → ignore");
+      console.log(
+        "[FM-METRIX HANDLER] payment status is neither success nor failed → ignore",
+      );
       return;
     }
 
+    // ✅ GESTION DU SUCCÈS (Le code existant ne bouge pas)
     const provider = normalizeProvider(payment);
     const stableRef = extractStableRef(payment);
 
-    // ✅ clé idempotente basée sur provider + ref (si ref manquante, on refuse d'insérer pour éviter les duplications)
     if (!stableRef) {
       console.warn(
         "[FM-METRIX HANDLER] ref stable manquante → skip pour éviter duplications",
@@ -127,7 +162,6 @@ async function handleFmMetrixPaymentEvent(payment) {
 
     const dedupeKey = `${provider}:${stableRef}`;
 
-    // ✅ déjà traité ? => stop
     const already = await FmMetrixSubscription.findOne({
       userId,
       "raw.fm_dedupe_key": dedupeKey,
@@ -144,7 +178,6 @@ async function handleFmMetrixPaymentEvent(payment) {
     const periodEnd = new Date(periodStart);
     periodEnd.setMonth(periodEnd.getMonth() + 1);
 
-    // On enrichit raw pour l’historique + dédoublonnage
     const raw =
       payment?.raw && typeof payment.raw === "object" ? payment.raw : {};
     const rawWithTags = {
@@ -173,7 +206,7 @@ async function handleFmMetrixPaymentEvent(payment) {
       raw: rawWithTags,
     });
 
-    // ✅ commissions (ne pas dupliquer)
+    // ✅ Commissions
     const existingCommission = await AffiliationCommission.findOne({
       userId,
       source: "fm-metrix",

@@ -6,8 +6,6 @@ const {
   CommunityLive,
 } = require("./_shared");
 
-const { createNotif } = require("../../../utils/notifications");
-
 /**
  * POST /api/communaute/lives/:id/end
  * -> termine un live (seul l'owner peut le faire)
@@ -36,17 +34,7 @@ module.exports = (router) => {
       live.endedAt = new Date();
       await live.save();
 
-      // 🔔 notif live terminé
-      await createNotif({
-        userId,
-        kind: "live_ended",
-        communityId: String(live.communityId),
-        payload: {
-          liveId: String(live._id),
-          title: live.title,
-          endedAt: live.endedAt,
-        },
-      });
+      // ❌ Aucune notification déclenchée
 
       return res.json({ ok: true, data: { live: mapLive(live, userId) } });
     } catch (e) {

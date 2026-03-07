@@ -1,6 +1,8 @@
 // backend/src/routes/payments/features/marketplace/endpoints/crypto.checkout.js
 const Product = require("../../../../../models/product.model");
 const Order = require("../../../../../models/order.model");
+const User = require("../../../../../models/user.model"); // ✅ Import ajouté
+const { createNotif } = require("../../../../../utils/notifications"); // ✅ Import ajouté
 
 const { toCents, centsToUnit } = require("../_money");
 const { validatePromoForProduct, applyPromoToUnit } = require("../promo");
@@ -49,10 +51,12 @@ module.exports = async function cryptoMarketplaceCheckout(req, res) {
     // Empêcher l'achat de ses propres produits
     const owned = rows.filter((p) => String(p.user) === String(userId));
     if (owned.length > 0) {
-      return res.status(400).json({
-        ok: false,
-        error: "Vous ne pouvez pas acheter vos propres produits.",
-      });
+      return res
+        .status(400)
+        .json({
+          ok: false,
+          error: "Vous ne pouvez pas acheter vos propres produits.",
+        });
     }
 
     // 2. Calcul des prix et promos
@@ -77,7 +81,6 @@ module.exports = async function cryptoMarketplaceCheckout(req, res) {
           unitAmount: unit,
           promo,
         });
-
         finalUnit = fu;
         promoInfo = {
           code: promo.code,
@@ -113,7 +116,7 @@ module.exports = async function cryptoMarketplaceCheckout(req, res) {
     if (totalCents <= 0)
       return res.status(400).json({ ok: false, error: "Montant invalide" });
 
-    // 4. Génération de la Référence Unique (Pour WhatsApp)
+    // 4. Génération de la Référence Unique
     const reference = `REF-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
     // 5. Création de la Commande
@@ -125,9 +128,7 @@ module.exports = async function cryptoMarketplaceCheckout(req, res) {
       currency: CURRENCY,
       totalAmount: total,
       totalAmountCents: totalCents,
-      status: "requires_payment", // En attente de validation admin
-
-      // ✅ Stockage des infos Crypto Manuelle
+      status: "requires_payment",
       crypto: {
         provider: "manual_crypto",
         reference: reference,
@@ -137,12 +138,44 @@ module.exports = async function cryptoMarketplaceCheckout(req, res) {
       },
     });
 
+    // 🔔 ✅ NOTIFICATION AUX ADMINISTRATEURS
+    try {
+      const requester = await User.findById(userId)
+        .select("name profile email")
+        .lean();
+      const requesterName =
+        requester?.profile?.fullName ||
+        requester?.name ||
+        requester?.email ||
+        "Un utilisateur";
+
+      const admins = await User.find({ roles: "admin" }).select("_id").lean();
+      const adminPromises = admins.map((admin) =>
+        createNotif({
+          userId: String(admin._id),
+          kind: "admin_marketplace_crypto_pending",
+          payload: {
+            userName: requesterName,
+            amount: `${total} ${CURRENCY.toUpperCase()}`,
+            reference: reference,
+            message: `${requesterName} a initié un paiement crypto pour la Marketplace (${total} ${CURRENCY.toUpperCase()}).`,
+          },
+        }),
+      );
+      await Promise.allSettled(adminPromises);
+    } catch (adminNotifError) {
+      console.error(
+        "[CRYPTO][MARKETPLACE] Erreur envoi notif admin:",
+        adminNotifError,
+      );
+    }
+
     // 6. Réponse au frontend
     return res.status(200).json({
       ok: true,
       data: {
         orderId: order._id,
-        reference: reference, // La REF à afficher sur WhatsApp
+        reference: reference,
         manual: true,
         amount: total,
         currency: CURRENCY,

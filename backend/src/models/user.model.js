@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
     coverUrl: { type: String, default: "" },
 
     roles: { type: [String], default: ["user"] },
+
+    // ✅ NOUVEAU : Stockage des permissions granulaires pour l'admin
+    adminPermissions: { type: [String], default: [] },
+
     isActive: { type: Boolean, default: true },
 
     // ⚙️ Contrôle des méthodes d'auth

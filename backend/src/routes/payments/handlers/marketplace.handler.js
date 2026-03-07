@@ -3,6 +3,7 @@ const Order = require("../../../models/order.model");
 const Promo = require("../../../models/promoCode.model");
 const User = require("../../../models/user.model");
 const Mailer = require("../../../utils/mailer");
+const { createNotif } = require("../../../utils/notifications");
 
 const { ensurePayoutsForOrder } = require("../../../services/payouts.service");
 const {
@@ -30,7 +31,6 @@ async function handleMarketplacePaymentEvent(payment) {
       return;
     }
 
-    // 🔒 VERROUILLAGE ATOMIQUE (comme vu précédemment)
     let order = null;
 
     if (payment.status === "success") {
@@ -47,7 +47,9 @@ async function handleMarketplacePaymentEvent(payment) {
       ).populate("user", "name email profile");
 
       if (!order) {
-        console.log(`[Handler] 🛑 Commande ${orderId} déjà traitée.`);
+        console.log(
+          `[Handler] 🛑 Commande ${orderId} déjà traitée (Doublon évité).`,
+        );
         return;
       }
 
@@ -74,7 +76,6 @@ async function handleMarketplacePaymentEvent(payment) {
       }
 
       // --- B. LIVRAISON (LICENCES + COMMISSIONS) ---
-      // ensureLicensesForOrder ne générera une licence QUE si c'est un abonnement
       await ensureLicensesForOrder(order._id);
       await ensurePayoutsForOrder(order);
 
@@ -104,24 +105,49 @@ async function handleMarketplacePaymentEvent(payment) {
 
           for (const sellerUser of sellers) {
             const data = sellerMap.get(String(sellerUser._id));
-            if (data && sellerUser.email) {
-              await Mailer.sendMarketplaceSaleNotificationEmail({
-                to: sellerUser.email,
-                fullName: sellerUser.profile?.fullName || sellerUser.name,
-                customerName: buyerName,
-                items: data.items,
-                totalEarnings: fmtMoney(data.total, order.currency),
-              });
+            if (data) {
+              const formattedTotal = fmtMoney(data.total, order.currency);
+              const productTitle = data.items[0]?.title || "Produit";
+
+              // Envoi Mail Vendeur
+              if (sellerUser.email) {
+                await Mailer.sendMarketplaceSaleNotificationEmail({
+                  to: sellerUser.email,
+                  fullName: sellerUser.profile?.fullName || sellerUser.name,
+                  customerName: buyerName,
+                  items: data.items,
+                  totalEarnings: formattedTotal,
+                });
+                console.log(
+                  `[Handler] ✉️ Mail Vendeur envoyé à ${sellerUser.email}`,
+                );
+              }
+
+              // ✅ Notification In-App Sécurisée
+              try {
+                await createNotif({
+                  userId: String(sellerUser._id),
+                  kind: "marketplace_sale_made",
+                  payload: {
+                    customerName: buyerName,
+                    productTitle: productTitle,
+                    amount: formattedTotal,
+                  },
+                });
+              } catch (notifErr) {
+                console.warn(
+                  "[Handler] Echec création notif in-app vendeur",
+                  notifErr,
+                );
+              }
             }
           }
         }
       } catch (e) {
-        console.error("[Handler] Erreur mail vendeur:", e);
+        console.error("[Handler] Erreur mail/notif vendeur:", e);
       }
 
       // --- D. NOTIFICATION ACHETEUR ---
-      // On envoie TOUJOURS le mail de confirmation de commande.
-      // Si aucune licence n'a été générée (achat unique/téléchargement simple), ce sera le SEUL mail.
       try {
         if (order.user?.email) {
           const userName =
@@ -146,7 +172,7 @@ async function handleMarketplacePaymentEvent(payment) {
             });
           }
           console.log(
-            `[Handler] ✉️ Mail Confirmation envoyé à ${order.user.email}`,
+            `[Handler] ✉️ Mail Acheteur envoyé à ${order.user.email}`,
           );
         }
       } catch (e) {

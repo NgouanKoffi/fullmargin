@@ -6,8 +6,6 @@ const {
   CommunityLive,
 } = require("./_shared");
 
-const { createNotif } = require("../../../utils/notifications");
-
 /**
  * POST /api/communaute/lives/:id/cancel
  * -> annuler un direct programmé
@@ -43,17 +41,7 @@ module.exports = (router) => {
       live.endedAt = new Date();
       await live.save();
 
-      // 🔔 notif live annulé
-      await createNotif({
-        userId,
-        kind: "live_cancelled",
-        communityId: String(live.communityId),
-        payload: {
-          liveId: String(live._id),
-          title: live.title,
-          startsAt: live.startsAt,
-        },
-      });
+      // ❌ Aucune notification déclenchée
 
       return res.json({ ok: true, data: { live: mapLive(live, userId) } });
     } catch (e) {

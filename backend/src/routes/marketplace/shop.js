@@ -3,11 +3,11 @@ const express = require("express");
 const router = express.Router();
 const crypto = require("node:crypto");
 
-// ✅ chemins corrigés
+// chemins corrigés
 const Shop = require("../../models/shop.model");
-const { verifyAuthHeader } = require("../auth/_helpers"); // même helper que notes
+const { verifyAuthHeader } = require("../auth/_helpers");
 
-/* ===== Logger utils (même style que notes) ===== */
+/* ===== Logger utils ===== */
 const MAX_SHOW = 800;
 const safe = (v) => {
   try {
@@ -33,7 +33,7 @@ router.use((req, _res, next) => {
 router.use((_req, res, next) => {
   res.set(
     "Cache-Control",
-    "no-store, no-cache, must-revalidate, proxy-revalidate"
+    "no-store, no-cache, must-revalidate, proxy-revalidate",
   );
   res.set("Pragma", "no-cache");
   res.set("Expires", "0");
@@ -60,7 +60,7 @@ function requireAuth(req, res, next) {
     const a = verifyAuthHeader(req);
     if (!a || !a.userId) {
       console.warn(
-        `[SHOPS ${req._rid}] AUTH FAIL — headers: ${short(req.headers)}`
+        `[SHOPS ${req._rid}] AUTH FAIL — headers: ${short(req.headers)}`,
       );
       return res.status(401).json({ ok: false, error: "Non autorisé" });
     }
@@ -72,8 +72,40 @@ function requireAuth(req, res, next) {
   }
 }
 
-/* ================== LIRE MA BOUTIQUE ==================
-   Renvoie la boutique active (non supprimée) de l'utilisateur courant. */
+/** * ✅ NOUVEAU : CHECK MA BOUTIQUE (POUR LE HEADER)
+ * Cette route répond spécifiquement à l'appel /mine du Header
+ */
+router.get("/mine", requireAuth, async (req, res) => {
+  const rid = req._rid;
+  try {
+    const shop = await Shop.findOne({
+      user: req.auth.userId,
+      deletedAt: null,
+    })
+      .select("_id name slug")
+      .lean();
+
+    if (!shop) {
+      return res.status(200).json({ ok: true, data: { shop: null } });
+    }
+
+    return res.status(200).json({
+      ok: true,
+      data: {
+        shop: {
+          id: String(shop._id),
+          name: shop.name,
+          slug: shop.slug,
+        },
+      },
+    });
+  } catch (e) {
+    console.error(`[SHOPS ${rid}] GET /shops/mine ERROR: ${e?.message}`);
+    return res.status(500).json({ ok: false, error: "Erreur serveur" });
+  }
+});
+
+/* ================== LIRE MA BOUTIQUE ================== */
 router.get("/me", requireAuth, async (req, res) => {
   const rid = req._rid;
   try {
@@ -107,27 +139,18 @@ router.get("/me", requireAuth, async (req, res) => {
     console.error(
       `[SHOPS ${rid}] GET /shops/me ERROR (${Date.now() - req._t0}ms): ${
         e?.stack || e
-      }`
+      }`,
     );
     return res.status(500).json({ ok: false, error: "Chargement impossible" });
   }
 });
 
-/* ================== CRÉER MA BOUTIQUE ==================
-   Contrainte: 1 boutique active par utilisateur.
-   Si une boutique active existe déjà => 409 Conflict. */
+/* ================== CRÉER MA BOUTIQUE ================== */
 router.post("/", requireAuth, async (req, res) => {
   const rid = req._rid;
   try {
-    console.log(
-      `[SHOPS ${rid}] POST /shops — user=${req.auth.userId} body=${short(
-        req.body
-      )}`
-    );
-
     const userId = req.auth.userId;
 
-    // Vérifier qu'il n'existe pas déjà une boutique active
     const existing = await Shop.findOne({
       user: userId,
       deletedAt: null,
@@ -138,12 +161,11 @@ router.post("/", requireAuth, async (req, res) => {
         .json({ ok: false, error: "Une boutique existe déjà." });
     }
 
-    // Champs attendus (mêmes limites que le front actuel)
     const b = req.body || {};
     const name = clampStr(b.name, 30);
     const desc = clampStr(b.desc, 200);
     const signature = clampStr(b.signature, 20);
-    const avatarUrl = clampStr(b.avatarUrl || b.avatarDataUrl || "", 500000); // DataURL tolérée
+    const avatarUrl = clampStr(b.avatarUrl || b.avatarDataUrl || "", 500000);
     const coverUrl = clampStr(b.coverUrl || b.coverDataUrl || "", 500000);
 
     if (!name || !desc || !signature) {
@@ -161,26 +183,15 @@ router.post("/", requireAuth, async (req, res) => {
       coverUrl,
     });
 
-    const out = {
+    return res.status(201).json({
       ok: true,
       data: {
         id: String(shop._id),
         slug: shop.slug || "",
         updatedAt: toISO(shop.updatedAt),
       },
-    };
-    console.log(
-      `[SHOPS ${rid}] POST OK id=${out.data.id} slug=${out.data.slug} (${
-        Date.now() - req._t0
-      }ms)`
-    );
-    return res.status(201).json(out);
+    });
   } catch (e) {
-    console.error(
-      `[SHOPS ${rid}] POST /shops ERROR (${Date.now() - req._t0}ms): ${
-        e?.stack || e
-      }\n` + `  headers=${short(req.headers)}\n  body=${short(req.body)}`
-    );
     if (String(e?.code) === "11000") {
       return res
         .status(409)
@@ -194,12 +205,6 @@ router.post("/", requireAuth, async (req, res) => {
 router.patch("/:id", requireAuth, async (req, res) => {
   const rid = req._rid;
   try {
-    console.log(
-      `[SHOPS ${rid}] PATCH /shops/${req.params.id} — user=${
-        req.auth.userId
-      } body=${short(req.body)}`
-    );
-
     const userId = req.auth.userId;
     const shop = await Shop.findOne({
       _id: req.params.id,
@@ -207,7 +212,6 @@ router.patch("/:id", requireAuth, async (req, res) => {
       deletedAt: null,
     });
     if (!shop) {
-      console.warn(`[SHOPS ${rid}] PATCH — NOT FOUND id=${req.params.id}`);
       return res.status(404).json({ ok: false, error: "Boutique introuvable" });
     }
 
@@ -222,34 +226,18 @@ router.patch("/:id", requireAuth, async (req, res) => {
 
     await shop.save();
 
-    const out = {
+    return res.status(200).json({
       ok: true,
       data: { updatedAt: toISO(shop.updatedAt), slug: shop.slug || "" },
-    };
-    console.log(
-      `[SHOPS ${rid}] PATCH OK id=${shop._id} updatedAt=${
-        out.data.updatedAt
-      } (${Date.now() - req._t0}ms)`
-    );
-    return res.status(200).json(out);
+    });
   } catch (e) {
-    console.error(
-      `[SHOPS ${rid}] PATCH /shops/:id ERROR (${Date.now() - req._t0}ms): ${
-        e?.stack || e
-      }\n` + `  headers=${short(req.headers)}\n  body=${short(req.body)}`
-    );
     return res.status(500).json({ ok: false, error: "Sauvegarde impossible" });
   }
 });
 
-/* ================== SUPPRIMER (soft delete) ================== */
+/* ================== SUPPRIMER ================== */
 router.delete("/:id", requireAuth, async (req, res) => {
-  const rid = req._rid;
   try {
-    console.log(
-      `[SHOPS ${rid}] DELETE /shops/${req.params.id} — user=${req.auth.userId}`
-    );
-
     const userId = req.auth.userId;
     const shop = await Shop.findOne({
       _id: req.params.id,
@@ -257,37 +245,21 @@ router.delete("/:id", requireAuth, async (req, res) => {
       deletedAt: null,
     });
     if (!shop) {
-      console.warn(`[SHOPS ${rid}] DELETE — NOT FOUND id=${req.params.id}`);
       return res.status(404).json({ ok: false, error: "Boutique introuvable" });
     }
 
     shop.deletedAt = new Date();
     await shop.save();
 
-    console.log(
-      `[SHOPS ${rid}] DELETE OK id=${shop._id} (${Date.now() - req._t0}ms)`
-    );
     return res.status(200).json({ ok: true, data: { deleted: true } });
   } catch (e) {
-    console.error(
-      `[SHOPS ${rid}] DELETE /shops/:id ERROR (${Date.now() - req._t0}ms): ${
-        e?.stack || e
-      }`
-    );
     return res.status(500).json({ ok: false, error: "Suppression impossible" });
   }
 });
 
-/* ================== LISTE (optionnel/admin) ================== */
+/* ================== LISTE ================== */
 router.get("/", requireAuth, async (req, res) => {
-  const rid = req._rid;
   try {
-    console.log(
-      `[SHOPS ${rid}] GET /shops — user=${req.auth.userId} query=${short(
-        req.query
-      )}`
-    );
-
     const userId = req.auth.userId;
     const includeDeleted =
       req.query.includeDeleted === "1" || req.query.includeDeleted === "true";
@@ -311,19 +283,8 @@ router.get("/", requireAuth, async (req, res) => {
       updatedAt: toISO(s.updatedAt),
     }));
 
-    const out = { ok: true, data: { items } };
-    console.log(
-      `[SHOPS ${rid}] GET /shops OK count=${items.length} (${
-        Date.now() - req._t0
-      }ms)`
-    );
-    return res.status(200).json(out);
+    return res.status(200).json({ ok: true, data: { items } });
   } catch (e) {
-    console.error(
-      `[SHOPS ${rid}] GET /shops ERROR (${Date.now() - req._t0}ms): ${
-        e?.stack || e
-      }`
-    );
     return res.status(500).json({ ok: false, error: "Chargement impossible" });
   }
 });

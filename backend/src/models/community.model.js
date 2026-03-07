@@ -73,6 +73,21 @@ const communitySchema = new mongoose.Schema(
     // ✅ Compteur global de likes de la communauté (mis à jour sur like/unlike des posts)
     likesCount: { type: Number, default: 0 },
 
+    // Nouveaux champs pour la gestion des suppressions et avertissements
+    status: {
+      type: String,
+      enum: ["active", "deletion_requested", "deleted_by_owner", "deleted_by_admin"],
+      default: "active"
+    },
+    deletionReason: { type: String, default: "", trim: true, maxlength: 1000 },
+    warnings: [
+      {
+        reason: { type: String, required: true },
+        date: { type: Date, default: Date.now }
+      }
+    ],
+    warningCount: { type: Number, default: 0 },
+
     isActive: { type: Boolean, default: true },
     deletedAt: { type: Date, default: null },
   },

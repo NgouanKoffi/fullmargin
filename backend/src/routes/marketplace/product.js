@@ -1,11 +1,11 @@
-// C:\Users\ADMIN\Desktop\fullmargin-site\backend\src\routes\marketplace\product.js
+// backend/src/routes/marketplace/product.js
 const express = require("express");
 const router = express.Router();
 const crypto = require("node:crypto");
 const http = require("node:http");
 const https = require("node:https");
 const { URL } = require("node:url");
-const { Types } = require("mongoose"); // ✅ FIX: Types utilisé plus bas
+const { Types } = require("mongoose");
 
 // sharp (optionnel, mais recommandé pour variantes)
 let sharp = null;
@@ -83,11 +83,13 @@ function requireAuth(req, res, next) {
     return res.status(401).json({ ok: false, error: "Non autorisé" });
   }
 }
+
 function requireAdmin(req, res, next) {
   if (req.auth?.role !== "admin")
     return res.status(403).json({ ok: false, error: "Réservé aux admins" });
   next();
 }
+
 function tryAuth(req) {
   try {
     const a = verifyAuthHeader(req);
@@ -117,13 +119,13 @@ function parseDataUrl(dataUrl = "") {
   if (!m) return null;
   return { mime: m[1], buffer: Buffer.from(m[2], "base64") };
 }
+
 function resourceTypeFromMime(mime = "") {
   if (mime.startsWith("image/")) return "image";
   if (mime.startsWith("audio/") || mime.startsWith("video/")) return "video";
   return "raw";
 }
 
-/** Vérifie si une string est une URL http(s) */
 function isHttpUrl(u = "") {
   return /^https?:\/\//i.test(String(u).trim());
 }
@@ -160,12 +162,12 @@ function safeFileName(name = "", mime = "") {
   const ext = guessExt(mime);
   return ext ? `${base}.${ext}` : base;
 }
+
 function contentDisposition(name, mime) {
   const fn = safeFileName(name, mime);
-  return `attachment; filename="${fn}"; filename*=UTF-8''${encodeURIComponent(
-    fn,
-  )}`;
+  return `attachment; filename="${fn}"; filename*=UTF-8''${encodeURIComponent(fn)}`;
 }
+
 function streamWithRedirects(srcUrl, res, headers, maxRedirects = 5) {
   return new Promise((resolve, reject) => {
     let u = new URL(srcUrl);
@@ -191,6 +193,7 @@ function streamWithRedirects(srcUrl, res, headers, maxRedirects = 5) {
 
       if (up.headers["content-length"])
         res.set("Content-Length", up.headers["content-length"]);
+
       const mime =
         headers.contentType ||
         up.headers["content-type"] ||
@@ -244,9 +247,6 @@ async function userCanDownload(userId, productDoc) {
 
 const MAX_DATAURL_BYTES = 8 * 1024 * 1024; // 8MB
 
-/* ============================
- *  COVER VARIANTS (LCP FIX)
- * ============================ */
 const COVER_VARIANTS = [
   { w: 320, q: 72, key: "320" },
   { w: 640, q: 75, key: "640" },
@@ -255,7 +255,6 @@ const COVER_VARIANTS = [
 ];
 
 async function uploadCoverWithVariants(buffer, { userId }) {
-  // fallback si sharp non dispo => upload original
   if (!sharp) {
     const publicId = `products/${userId}/cover_${Date.now()}_${randId()}_orig`;
     const up = await uploadImageBuffer(buffer, {
@@ -291,11 +290,10 @@ async function uploadCoverWithVariants(buffer, { userId }) {
       folder: "marketplace/products/images",
       publicId: `${baseId}_${v.key}`,
     });
-
     const url = up?.secure_url || up?.url || "";
     if (url) {
       srcset[v.key] = url;
-      if (v.w === 640) src = url; // default “listing”
+      if (v.w === 640) src = url;
     }
   }
 
@@ -310,7 +308,6 @@ async function uploadCoverWithVariants(buffer, { userId }) {
         format: "webp",
       }
     : null;
-
   return { imageUrl: src || "", image };
 }
 
@@ -320,7 +317,6 @@ async function normalizeProductThumbAndMaybeMigrate(
   userId,
   existingImage,
 ) {
-  // si on a déjà un champ image.src, on s’en sert direct
   if (existingImage && typeof existingImage === "object") {
     const s = String(existingImage.src || "").trim();
     if (s) return { imageUrl: s, image: existingImage };
@@ -329,32 +325,23 @@ async function normalizeProductThumbAndMaybeMigrate(
   let url = String(imageUrl || "").trim();
   if (!url) return { imageUrl: "", image: null };
 
-  // URL normale
-  if (isHttpUrl(url) || url.startsWith("/")) {
+  if (isHttpUrl(url) || url.startsWith("/"))
     return { imageUrl: url, image: existingImage || null };
-  }
 
-  // data:image/... => upload + update DB (migrate legacy)
   if (/^data:/i.test(url)) {
     const parsed = parseDataUrl(url);
     if (parsed && parsed.mime?.startsWith("image/")) {
       if (parsed.buffer.length <= MAX_DATAURL_BYTES) {
         try {
           const out = await uploadCoverWithVariants(parsed.buffer, { userId });
-
           if (out?.imageUrl) {
-            // ⚠️ image ne sera persisté que si tu ajoutes le champ dans le schema Product
             await Product.updateOne(
               { _id: productId },
               {
-                $set: {
-                  imageUrl: out.imageUrl,
-                  image: out.image || undefined,
-                },
+                $set: { imageUrl: out.imageUrl, image: out.image || undefined },
                 $currentDate: { updatedAt: true },
               },
             );
-
             return { imageUrl: out.imageUrl, image: out.image || null };
           }
         } catch {
@@ -364,7 +351,6 @@ async function normalizeProductThumbAndMaybeMigrate(
     }
     return { imageUrl: "", image: null };
   }
-
   return { imageUrl: "", image: null };
 }
 
@@ -381,23 +367,19 @@ router.get("/", requireAuth, async (req, res) => {
 
     const items = [];
     for (const p of rows) {
-      // ✅ migration legacy dataURL + préférence image.src
       const norm = await normalizeProductThumbAndMaybeMigrate(
         p._id,
         p.imageUrl,
         req.auth.userId,
         p.image,
       );
-
       const gallery = Array.isArray(p.gallery)
         ? p.gallery.map((u) => String(u || "").trim()).filter(Boolean)
         : [];
-
       const images = [];
       if (norm.imageUrl) images.push(norm.imageUrl);
       for (const u of gallery) {
-        if (!u) continue;
-        if (u === norm.imageUrl) continue;
+        if (!u || u === norm.imageUrl) continue;
         if (isHttpUrl(u) || u.startsWith("/")) images.push(u);
       }
 
@@ -406,13 +388,9 @@ router.get("/", requireAuth, async (req, res) => {
         title: p.title,
         shortDescription: p.shortDescription,
         type: p.type,
-
-        // ✅ cover optimisée
         imageUrl: norm.imageUrl || "",
-        image: norm.image || null, // ✅ srcset ici si schema le permet
-
-        images, // ✅ si ton front préfère images[0]
-
+        image: norm.image || null,
+        images,
         fileName: p.fileName || "",
         pricing: p.pricing,
         status: p.status,
@@ -475,13 +453,10 @@ router.post("/", requireAuth, async (req, res) => {
         .json({ ok: false, error: "Crée une boutique d’abord." });
 
     const title = clampStr(b.title, 120);
-
-    // ✅ on garde le JSON BlockNote tel quel
     const shortDescription =
       typeof b.shortDescription === "string" ? b.shortDescription : "";
     const longDescription =
       typeof b.longDescription === "string" ? b.longDescription : "";
-
     const category = clampStr(b.category, 80);
     const type = String(b.type || "");
 
@@ -494,7 +469,7 @@ router.post("/", requireAuth, async (req, res) => {
     const needs = !!NEEDS_VERIF[type];
     const badgeEligible = false;
 
-    /* ----- IMAGE COVER (avec variantes) ----- */
+    /* ----- IMAGE COVER ----- */
     let imageUrl = "";
     let image = null;
 
@@ -502,15 +477,14 @@ router.post("/", requireAuth, async (req, res) => {
     if (rawImage) {
       if (isHttpUrl(rawImage) || rawImage.startsWith("/")) {
         imageUrl = clampStr(rawImage, 500000);
-        image = null; // pas de srcset si URL externe
+        image = null;
       } else if (/^data:/i.test(rawImage)) {
         const parsedImg = parseDataUrl(rawImage);
         if (parsedImg && parsedImg.mime?.startsWith("image/")) {
           if (parsedImg.buffer.length > MAX_DATAURL_BYTES) {
-            return res.status(400).json({
-              ok: false,
-              error: "Image trop lourde (max 8MB).",
-            });
+            return res
+              .status(400)
+              .json({ ok: false, error: "Image trop lourde (max 8MB)." });
           }
           const out = await uploadCoverWithVariants(parsedImg.buffer, {
             userId: req.auth.userId,
@@ -519,7 +493,6 @@ router.post("/", requireAuth, async (req, res) => {
           image = out.image || null;
         }
       }
-      // on ignore blob: et autres schémas
     }
 
     /* ----- GALERIE D'IMAGES ----- */
@@ -528,15 +501,12 @@ router.post("/", requireAuth, async (req, res) => {
       for (const raw of b.gallery) {
         const v = String(raw || "").trim();
         if (!v) continue;
-
         if (isHttpUrl(v) || v.startsWith("/")) {
           gallery.push(clampStr(v, 500000));
         } else if (/^data:/i.test(v)) {
           const parsed = parseDataUrl(v);
           if (parsed && parsed.mime?.startsWith("image/")) {
-            const publicId = `products/${
-              req.auth.userId
-            }/gallery_${Date.now()}_${randId()}`;
+            const publicId = `products/${req.auth.userId}/gallery_${Date.now()}_${randId()}`;
             const up = await uploadImageBuffer(parsed.buffer, {
               folder: "marketplace/products/gallery",
               publicId,
@@ -555,9 +525,7 @@ router.post("/", requireAuth, async (req, res) => {
     if (!fileUrl && b.fileDataUrl) {
       const parsed = parseDataUrl(b.fileDataUrl);
       if (parsed) {
-        const publicId = `products/${
-          req.auth.userId
-        }/${Date.now()}_${randId()}`;
+        const publicId = `products/${req.auth.userId}/${Date.now()}_${randId()}`;
         const resourceType = resourceTypeFromMime(parsed.mime);
         const ext =
           resourceType === "raw" ? getExtFromName(fileName, parsed.mime) : "";
@@ -571,13 +539,11 @@ router.post("/", requireAuth, async (req, res) => {
         });
 
         fileUrl = up.secure_url;
-        if (!fileName) {
-          const guessedName = safeFileName(
+        if (!fileName)
+          fileName = safeFileName(
             `product_${Date.now()}.${ext || "bin"}`,
             parsed.mime,
           );
-          fileName = guessedName;
-        }
         if (!fileMime) fileMime = parsed.mime || "";
       }
     }
@@ -622,10 +588,8 @@ router.post("/", requireAuth, async (req, res) => {
       longDescription,
       category,
       type,
-
       imageUrl,
-      image, // ✅ variantes (si schema le permet)
-
+      image,
       fileUrl,
       fileName,
       fileMime,
@@ -638,8 +602,8 @@ router.post("/", requireAuth, async (req, res) => {
       videoUrls,
     });
 
-    // 🔔 Notification: produit soumis
-    await createNotif({
+    // 🔔 Notification 1: pour le vendeur
+    createNotif({
       userId: req.auth.userId,
       kind: "marketplace_product_submitted",
       payload: {
@@ -650,7 +614,27 @@ router.post("/", requireAuth, async (req, res) => {
           ? "Votre produit est en attente de validation."
           : "Votre produit a été publié avec succès.",
       },
-    });
+    }).catch((err) => console.warn("Erreur Notif Vendeur:", err));
+
+    // 🔔 Notification 2: pour les Administrateurs
+    if (needs) {
+      User.find({ roles: "admin" })
+        .select("_id")
+        .lean()
+        .then((admins) => {
+          admins.forEach((admin) => {
+            createNotif({
+              userId: String(admin._id),
+              kind: "admin_product_pending",
+              payload: {
+                productId: String(product._id),
+                productName: title,
+              },
+            }).catch(() => {});
+          });
+        })
+        .catch((err) => console.warn("Erreur Notif Admin:", err));
+    }
 
     return res.status(201).json({
       ok: true,
@@ -680,14 +664,10 @@ router.patch("/:id", requireAuth, async (req, res) => {
 
     const b = req.body || {};
     if (b.title !== undefined) p.title = clampStr(b.title, 120) || p.title;
-
-    if (typeof b.shortDescription === "string") {
+    if (typeof b.shortDescription === "string")
       p.shortDescription = b.shortDescription;
-    }
-    if (typeof b.longDescription === "string") {
+    if (typeof b.longDescription === "string")
       p.longDescription = b.longDescription;
-    }
-
     if (b.category !== undefined)
       p.category = clampStr(b.category, 80) || p.category;
 
@@ -718,22 +698,20 @@ router.patch("/:id", requireAuth, async (req, res) => {
       }
     }
 
-    /* ----- IMAGE COVER (édition) ----- */
+    // (Images et Fichiers inchangés...)
     if (b.imageUrl !== undefined || b.imageDataUrl !== undefined) {
       const rawImage = (b.imageUrl || b.imageDataUrl || "").trim();
       if (rawImage) {
         if (isHttpUrl(rawImage) || rawImage.startsWith("/")) {
           p.imageUrl = clampStr(rawImage, 500000);
-          // si URL externe, on ne peut pas garantir srcset => on vide p.image
           p.image = undefined;
         } else if (/^data:/i.test(rawImage)) {
           const parsedImg = parseDataUrl(rawImage);
           if (parsedImg && parsedImg.mime?.startsWith("image/")) {
             if (parsedImg.buffer.length > MAX_DATAURL_BYTES) {
-              return res.status(400).json({
-                ok: false,
-                error: "Image trop lourde (max 8MB).",
-              });
+              return res
+                .status(400)
+                .json({ ok: false, error: "Image trop lourde (max 8MB)." });
             }
             const out = await uploadCoverWithVariants(parsedImg.buffer, {
               userId: req.auth.userId,
@@ -747,19 +725,15 @@ router.patch("/:id", requireAuth, async (req, res) => {
       }
     }
 
-    /* ----- FICHIER PRODUIT (édition) ----- */
     if (b.fileDataUrl) {
       const parsed = parseDataUrl(b.fileDataUrl);
       if (parsed) {
-        const publicId = `products/${
-          req.auth.userId
-        }/${Date.now()}_${randId()}`;
+        const publicId = `products/${req.auth.userId}/${Date.now()}_${randId()}`;
         const resourceType = resourceTypeFromMime(parsed.mime);
         const ext =
           resourceType === "raw"
             ? getExtFromName(b.fileName || p.fileName, parsed.mime)
             : "";
-
         const up = await uploadBuffer(parsed.buffer, {
           folder: "marketplace/products",
           publicId,
@@ -769,13 +743,11 @@ router.patch("/:id", requireAuth, async (req, res) => {
         });
         p.fileUrl = up.secure_url;
         p.fileMime = parsed.mime || p.fileMime;
-        if (!p.fileName) {
-          const guessedName = safeFileName(
+        if (!p.fileName)
+          p.fileName = safeFileName(
             `product_${Date.now()}.${ext || "bin"}`,
             parsed.mime,
           );
-          p.fileName = guessedName;
-        }
       }
     }
 
@@ -783,23 +755,18 @@ router.patch("/:id", requireAuth, async (req, res) => {
     if (b.fileName !== undefined) p.fileName = clampStr(b.fileName, 250);
     if (b.fileMime !== undefined) p.fileMime = clampStr(b.fileMime, 120);
 
-    /* ----- GALERIE (édition) ----- */
     if (b.gallery !== undefined) {
       const src = Array.isArray(b.gallery) ? b.gallery : [];
       const next = [];
-
       for (const raw of src) {
         const v = String(raw || "").trim();
         if (!v) continue;
-
         if (isHttpUrl(v) || v.startsWith("/")) {
           next.push(clampStr(v, 500000));
         } else if (/^data:/i.test(v)) {
           const parsed = parseDataUrl(v);
           if (parsed && parsed.mime?.startsWith("image/")) {
-            const publicId = `products/${
-              req.auth.userId
-            }/gallery_${Date.now()}_${randId()}`;
+            const publicId = `products/${req.auth.userId}/gallery_${Date.now()}_${randId()}`;
             const up = await uploadImageBuffer(parsed.buffer, {
               folder: "marketplace/products/gallery",
               publicId,
@@ -808,16 +775,13 @@ router.patch("/:id", requireAuth, async (req, res) => {
           }
         }
       }
-
       p.gallery = next;
     }
 
-    /* ----- LIENS VIDÉO (édition) ----- */
     if (b.videoUrls !== undefined || b.videoUrl !== undefined) {
       let vids = [];
       if (Array.isArray(b.videoUrls)) vids.push(...b.videoUrls);
       if (typeof b.videoUrl === "string") vids.push(b.videoUrl);
-
       p.videoUrls = vids
         .map((u) => String(u || "").trim())
         .filter((u) => u && isHttpUrl(u))
@@ -849,6 +813,23 @@ router.patch("/:id", requireAuth, async (req, res) => {
     if (p.moderation?.required && p.status === "rejected") p.status = "pending";
 
     await p.save();
+
+    if (p.status === "pending") {
+      User.find({ roles: "admin" })
+        .select("_id")
+        .lean()
+        .then((admins) => {
+          admins.forEach((admin) => {
+            createNotif({
+              userId: String(admin._id),
+              kind: "admin_product_pending",
+              payload: { productId: String(p._id), productName: p.title },
+            }).catch(() => {});
+          });
+        })
+        .catch(() => {});
+    }
+
     return res.status(200).json({
       ok: true,
       data: { updatedAt: toISO(p.updatedAt), status: p.status },
@@ -879,7 +860,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
   }
 });
 
-/* ============ ADMIN: review (existant) ============ */
+/* ============ ADMIN: review (legacy mais sécurisé avec .catch) ============ */
 router.post("/:id/review", requireAuth, requireAdmin, async (req, res) => {
   const rid = req._rid;
   try {
@@ -889,17 +870,18 @@ router.post("/:id/review", requireAuth, requireAdmin, async (req, res) => {
       return res.status(404).json({ ok: false, error: "Produit introuvable" });
 
     if (!p.moderation?.required)
-      return res.status(400).json({
-        ok: false,
-        error: "Ce produit ne requiert pas d’approbation.",
-      });
+      return res
+        .status(400)
+        .json({
+          ok: false,
+          error: "Ce produit ne requiert pas d’approbation.",
+        });
 
     if (action === "approve") {
       p.status = "published";
       p.moderation.reason = "";
 
-      // 🔔 Notification: produit approuvé
-      await createNotif({
+      createNotif({
         userId: String(p.user),
         kind: "marketplace_product_approved",
         payload: {
@@ -907,13 +889,12 @@ router.post("/:id/review", requireAuth, requireAdmin, async (req, res) => {
           productName: p.title,
           message: `Votre produit "${p.title}" a été approuvé et est maintenant publié !`,
         },
-      });
+      }).catch((err) => console.warn("Erreur notif:", err));
     } else if (action === "reject") {
       p.status = "rejected";
       p.moderation.reason = clampStr(reason, 300);
 
-      // 🔔 Notification: produit refusé
-      await createNotif({
+      createNotif({
         userId: String(p.user),
         kind: "marketplace_product_rejected",
         payload: {
@@ -922,10 +903,21 @@ router.post("/:id/review", requireAuth, requireAdmin, async (req, res) => {
           reason: p.moderation.reason,
           message: `Votre produit "${p.title}" a été refusé. Raison: ${p.moderation.reason}`,
         },
-      });
+      }).catch((err) => console.warn("Erreur notif:", err));
     } else if (action === "suspend") {
       p.status = "suspended";
       p.moderation.reason = clampStr(reason, 300);
+
+      createNotif({
+        userId: String(p.user),
+        kind: "marketplace_product_rejected",
+        payload: {
+          productId: String(p._id),
+          productName: p.title,
+          reason: p.moderation.reason,
+          message: `Votre produit "${p.title}" a été suspendu. Raison: ${p.moderation.reason}`,
+        },
+      }).catch((err) => console.warn("Erreur notif:", err));
     } else return res.status(400).json({ ok: false, error: "Action invalide" });
 
     p.moderation.reviewedAt = new Date();
@@ -1032,10 +1024,12 @@ router.post("/:id/reviews", requireAuth, async (req, res) => {
       return res.status(404).json({ ok: false, error: "Produit introuvable" });
 
     if (String(p.user) === userId)
-      return res.status(400).json({
-        ok: false,
-        error: "Vous ne pouvez pas laisser un avis sur votre propre produit.",
-      });
+      return res
+        .status(400)
+        .json({
+          ok: false,
+          error: "Vous ne pouvez pas laisser un avis sur votre propre produit.",
+        });
 
     const now = new Date();
     const idx = (p.reviews || []).findIndex((rv) => String(rv.user) === userId);
@@ -1114,7 +1108,6 @@ router.get("/:id/download", requireAuth, async (req, res) => {
     const p = await Product.findOne({ _id: req.params.id, deletedAt: null })
       .select("_id user fileUrl fileName fileMime")
       .lean();
-
     if (!p)
       return res.status(404).json({ ok: false, error: "Produit introuvable" });
 

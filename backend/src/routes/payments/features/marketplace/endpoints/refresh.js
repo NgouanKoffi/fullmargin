@@ -1,4 +1,4 @@
-// backend/src/routes/payments/features/marketplace/endpoints/refresh.js
+// C:\Users\ADMIN\Desktop\fullmargin-site\backend\src\routes\payments\features\marketplace\endpoints\refresh.js
 const Stripe = require("stripe");
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2024-06-20" })
@@ -37,7 +37,7 @@ module.exports = async function refreshOrder(req, res) {
     // ✅ OPTIMISATION : On regarde l'état AVANT de toucher à quoi que ce soit
     const wasAlreadySucceeded = order.status === "succeeded";
 
-    // Gestion Crypto
+    // Gestion Crypto Manuel (inchangé)
     if (order.crypto?.provider === "manual_crypto") {
       return res.status(200).json({
         ok: true,
@@ -52,34 +52,53 @@ module.exports = async function refreshOrder(req, res) {
       });
     }
 
-    // Gestion Stripe
+    // ✅ GESTION FEEXPAY : Si c'est FeexPay, on ne demande rien à Stripe
+    // Le statut est mis à jour via le Webhook FeexPay
+    if (order.stripe?.paymentMethod?.type === "feexpay") {
+      return res.status(200).json({
+        ok: true,
+        data: {
+          order: {
+            id: String(order._id),
+            status: order.status,
+            paidAt: order.paidAt,
+            stripe: order.stripe,
+          },
+        },
+      });
+    }
+
+    // Gestion Stripe Classique
     if (stripe) {
       // ... (code de récupération session/pi inchangé) ...
       let session = null;
       let pi = null;
-      // Récupération Stripe (simplifiée pour la réponse)
-      if (sessionId || order.stripe?.checkoutSessionId) {
+
+      // On évite d'appeler Stripe si l'ID ressemble à une REF interne (ex: REF-123...)
+      const pid = paymentIntentId || order.stripe?.paymentIntentId;
+      const sid = sessionId || order.stripe?.checkoutSessionId;
+
+      if (sid) {
         try {
-          session = await stripe.checkout.sessions.retrieve(
-            sessionId || order.stripe.checkoutSessionId,
-            { expand: ["payment_intent"] },
-          );
-        } catch (e) {}
-      }
-      if (paymentIntentId || order.stripe?.paymentIntentId) {
-        try {
-          pi = await stripe.paymentIntents.retrieve(
-            paymentIntentId || order.stripe.paymentIntentId,
-          );
+          session = await stripe.checkout.sessions.retrieve(sid, {
+            expand: ["payment_intent"],
+          });
         } catch (e) {}
       }
 
-      await hydrateOrderFromStripe({ order, session, pi, stripe });
-      await order.save();
+      if (pid && !String(pid).startsWith("REF-")) {
+        try {
+          pi = await stripe.paymentIntents.retrieve(pid);
+        } catch (e) {}
+      }
+
+      if (session || pi) {
+        await hydrateOrderFromStripe({ order, session, pi, stripe });
+        await order.save();
+      }
     }
 
     // ✅ SÉCURITÉ DOUBLON : On ne déclenche QUE si ça vient de passer à success
-    // Si c'était DÉJÀ success (par le webhook), on ne fait rien ici.
     if (order.status === "succeeded" && !wasAlreadySucceeded) {
       console.log(
         `[Refresh] Commande ${order._id} vient de passer à SUCCEEDED. Déclenchement Handler.`,

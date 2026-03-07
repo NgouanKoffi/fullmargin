@@ -4,10 +4,14 @@ module.exports = (router) => {
   /* GET /communaute/communities/by-slug/:slug */
   router.get("/by-slug/:slug", async (req, res) => {
     try {
-      const slug = String(req.params.slug || "")
-        .trim()
-        .toLowerCase();
-      const c = await Community.findOne({ slug, deletedAt: null }).lean();
+      const param = String(req.params.slug || "").trim().toLowerCase();
+      // Détection d'un ObjectId MongoDB (24 caractères hexadécimaux)
+      const isObjectId = /^[a-f0-9]{24}$/i.test(param);
+      const query = isObjectId
+        ? { $or: [{ slug: param }, { _id: param }], deletedAt: null }
+        : { slug: param, deletedAt: null };
+
+      const c = await Community.findOne(query).lean();
       if (!c) return res.status(404).json({ ok: false, error: "Introuvable" });
       return res.json({ ok: true, data: { ...c, id: String(c._id) } });
     } catch (e) {

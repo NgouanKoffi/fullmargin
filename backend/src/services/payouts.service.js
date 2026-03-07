@@ -1,50 +1,20 @@
 // backend/src/services/payouts.service.js
+const mongoose = require("mongoose");
 const Product = require("../models/product.model");
 const Category = require("../models/category.model");
 const SellerPayout = require("../models/sellerPayout.model");
 const AdminCommission = require("../models/adminCommission.model");
-const User = require("../models/user.model"); // ✅ Ajout
+const User = require("../models/user.model");
 
 const toCents = (usd) => Math.round(Number(usd || 0) * 100);
 const toUnits = (cents) => Math.round(Number(cents || 0)) / 100;
 
-const DEFAULT_PCT = Number(
-  process.env.MARKETPLACE_COMMISSION_PCT ??
-    process.env.COMMISSION_PCT_DEFAULT ??
-    20,
-);
+// ✅ On fixe la commission par défaut à 0%
+const DEFAULT_PCT = 0;
 
 async function getCommissionPctForProduct({ category }) {
-  try {
-    if (category) {
-      let cat =
-        (await Category.findOne({ key: String(category) })
-          .select("commissionPct parent")
-          .lean()) || null;
-
-      if (!cat) {
-        cat =
-          (await Category.findOne({ _id: String(category) })
-            .select("commissionPct parent")
-            .lean()) || null;
-      }
-
-      if (cat) {
-        if (typeof cat.commissionPct === "number")
-          return Math.max(0, Number(cat.commissionPct));
-        if (cat.parent) {
-          const parent = await Category.findById(cat.parent)
-            .select("commissionPct")
-            .lean();
-          if (parent && typeof parent.commissionPct === "number")
-            return Math.max(0, Number(parent.commissionPct));
-        }
-      }
-    }
-  } catch (e) {
-    console.warn("[commission] lookup error:", e?.message || e);
-  }
-  return Math.max(0, DEFAULT_PCT);
+  // ✅ FIX: On retourne toujours 0%, on ne cherche plus dans les catégories
+  return 0;
 }
 
 async function ensurePayoutsForOrder(orderOrId) {
@@ -58,92 +28,122 @@ async function ensurePayoutsForOrder(orderOrId) {
   if (!order || order.status !== "succeeded") return;
 
   const currency = String(order.currency || "usd").toLowerCase();
-  const buyerId = order.user;
-  const pctCache = new Map();
+
+  // ✅ Extraction de l'ID proprement quoi qu'il arrive
+  let buyerId = null;
+  if (order.user) {
+    if (typeof order.user === "object") {
+      buyerId = order.user._id || order.user.id || null;
+    } else {
+      buyerId = order.user;
+    }
+  }
+  buyerId = buyerId ? String(buyerId) : null;
+
+  const orderIdStr = String(order._id || order.id);
 
   for (const it of order.items || []) {
     try {
-      let sellerId = it.seller || null;
-      let shopId = it.shop || null;
-      let categoryKey = null;
+      const productIdStr = String(it.product);
+      let sellerId = it.seller ? String(it.seller) : null;
+      let shopId = it.shop ? String(it.shop) : null;
 
-      if (!sellerId || categoryKey == null) {
-        const product = await Product.findById(it.product)
-          .select("_id user shop category")
+      if (!sellerId) {
+        const product = await Product.findById(productIdStr)
+          .select("_id user shop")
           .lean();
         if (product) {
-          sellerId = sellerId || product.user;
-          shopId = shopId || product.shop || null;
-          categoryKey = product.category ?? null;
+          sellerId = product.user ? String(product.user) : null;
+          shopId = product.shop ? String(product.shop) : null;
         }
       }
 
-      if (!sellerId) continue; // Sécurité
+      if (!sellerId) {
+        console.warn(
+          `[Payouts] Ligne ignorée: pas de vendeur trouvé pour le produit ${productIdStr}`,
+        );
+        continue;
+      }
 
-      // Vérifie si déjà payé pour éviter double crédit
+      // 🚨 Vérification pour ne pas doubler le solde
       const existingPayout = await SellerPayout.findOne({
-        order: order._id,
-        product: it.product,
+        order: orderIdStr,
+        product: productIdStr,
         seller: sellerId,
       });
-      if (existingPayout) continue; // ✅ Déjà traité, on passe
 
-      let pct =
-        categoryKey != null && pctCache.has(categoryKey)
-          ? pctCache.get(categoryKey)
-          : await getCommissionPctForProduct({ category: categoryKey });
-      if (categoryKey != null) pctCache.set(categoryKey, pct);
+      // ✅ FIX MAJEUR : On force la commission à 0%
+      const pct = 0;
 
       const qty = Math.max(1, Number(it.qty) || 1);
       const unitAmountCents = toCents(it.unitAmount);
       const grossAmountCents = unitAmountCents * qty;
-      const commissionAmountCents = Math.round((grossAmountCents * pct) / 100);
-      const netAmountCents = grossAmountCents - commissionAmountCents;
+      const commissionAmountCents = 0; // 🔥 Commission à 0 !
+      const netAmountCents = grossAmountCents; // 🔥 Le vendeur gagne 100% !
       const netAmountUnit = toUnits(netAmountCents);
 
-      // 1. Création Payout (Historique)
-      await SellerPayout.create({
-        order: order._id,
-        product: it.product,
-        seller: sellerId,
-        shop: shopId || null,
-        buyer: buyerId,
-        qty,
-        currency,
-        commissionRate: pct,
-        unitAmountCents,
-        grossAmountCents,
-        commissionAmountCents,
-        netAmountCents,
-        unitAmount: toUnits(unitAmountCents),
-        grossAmount: toUnits(grossAmountCents),
-        commissionAmount: toUnits(commissionAmountCents),
-        netAmount: netAmountUnit,
-        status: "available",
-      });
+      // 1. 🧾 Création Payout Vendeur
+      await SellerPayout.findOneAndUpdate(
+        { order: orderIdStr, product: productIdStr, seller: sellerId },
+        {
+          $set: {
+            shop: shopId || null,
+            buyer: buyerId,
+            qty,
+            currency,
+            commissionRate: pct,
+            unitAmountCents,
+            grossAmountCents,
+            commissionAmountCents,
+            netAmountCents,
+            unitAmount: toUnits(unitAmountCents),
+            grossAmount: toUnits(grossAmountCents),
+            commissionAmount: toUnits(commissionAmountCents),
+            netAmount: netAmountUnit,
+            status: "available",
+          },
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true },
+      );
 
-      // 2. Création Commission Admin
-      await AdminCommission.create({
-        order: order._id,
-        product: it.product,
-        seller: sellerId,
-        buyer: buyerId,
-        shop: shopId || null,
-        qty,
-        currency,
-        commissionRate: pct,
-        commissionAmountCents,
-        commissionAmount: toUnits(commissionAmountCents),
-      });
+      // 2. 🏛️ Commission Admin (0$ enregistré pour les stats de ventes)
+      await AdminCommission.findOneAndUpdate(
+        { order: orderIdStr, product: productIdStr },
+        {
+          $set: {
+            seller: sellerId,
+            buyer: buyerId,
+            shop: shopId || null,
+            qty,
+            currency,
+            commissionRate: pct,
+            commissionAmountCents,
+            commissionAmount: toUnits(commissionAmountCents),
+          },
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true },
+      );
 
-      // 3. ✅ VERSEMENT : Crédit du solde vendeur
-      await User.findByIdAndUpdate(sellerId, {
-        $inc: { sellerBalance: netAmountUnit },
-      });
-
-      console.log(`[PAYOUT] +${netAmountUnit}$ ajoutés au vendeur ${sellerId}`);
+      // 3. 💰 CREDIT DE LA BALANCE
+      if (!existingPayout) {
+        await User.updateOne(
+          { _id: new mongoose.Types.ObjectId(sellerId) },
+          { $inc: { sellerBalance: netAmountUnit } },
+          { strict: false },
+        );
+        console.log(
+          `[PAYOUT] +${netAmountUnit}$ ajoutés au vendeur ${sellerId} (0% de frais)`,
+        );
+      } else {
+        console.log(
+          `[PAYOUT] Payout déjà existant pour ${sellerId}, solde non doublé.`,
+        );
+      }
     } catch (e) {
-      console.error("[payouts] line error:", e?.stack || e);
+      console.error(
+        `[payouts] Ligne erreur pour la commande ${orderIdStr}:`,
+        e,
+      );
     }
   }
 }

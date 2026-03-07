@@ -2,11 +2,16 @@
 const CourseOrder = require("../models/courseOrder.model");
 const CoursePayout = require("../models/coursePayout.model");
 const AdminCourseCommission = require("../models/adminCourseCommission.model");
-const User = require("../models/user.model"); // ✅ Ajout
+const User = require("../models/user.model");
+
+// ✅ Nouveaux imports pour les notifications
+const { sendCourseSaleNotificationEmail } = require("../utils/mailer");
+const { createNotif } = require("../utils/notifications");
 
 const toUnits = (cents) => Math.round(Number(cents || 0)) / 100;
 
-const COURSE_COMMISSION_PCT = Number(process.env.COURSE_COMMISSION_PCT ?? 5);
+// ✅ Commission fixée à 0%
+const COURSE_COMMISSION_PCT = 0;
 
 async function ensurePayoutsForCourseOrder(orderOrId) {
   const order =
@@ -29,11 +34,12 @@ async function ensurePayoutsForCourseOrder(orderOrId) {
   });
   if (existing) return; // ✅ Déjà traité
 
-  const pct = Math.max(0, Number(COURSE_COMMISSION_PCT));
+  // ✅ Logique sans aucune commission
+  const pct = 0;
   const unitAmountCents = Number(order.unitAmountCents || 0);
   const grossAmountCents = unitAmountCents;
-  const commissionAmountCents = Math.round((grossAmountCents * pct) / 100);
-  const netAmountCents = grossAmountCents - commissionAmountCents;
+  const commissionAmountCents = 0; // La plateforme ne prend plus rien
+  const netAmountCents = grossAmountCents; // Le formateur prend 100%
   const netAmountUnit = toUnits(netAmountCents);
 
   // 1. Historique Payout
@@ -50,12 +56,12 @@ async function ensurePayoutsForCourseOrder(orderOrId) {
     netAmountCents,
     unitAmount: toUnits(unitAmountCents),
     grossAmount: toUnits(grossAmountCents),
-    commissionAmount: toUnits(commissionAmountCents),
+    commissionAmount: 0,
     netAmount: netAmountUnit,
     status: "available",
   });
 
-  // 2. Commission Admin
+  // 2. Commission Admin (Enregistrée à 0$ pour les stats de ventes globales)
   await AdminCourseCommission.create({
     order: order._id,
     course,
@@ -63,18 +69,66 @@ async function ensurePayoutsForCourseOrder(orderOrId) {
     buyer,
     currency,
     commissionRate: pct,
-    commissionAmountCents,
-    commissionAmount: toUnits(commissionAmountCents),
+    commissionAmountCents: 0,
+    commissionAmount: 0,
   });
 
-  // 3. ✅ VERSEMENT : Crédit du solde communauté
+  // 3. ✅ VERSEMENT : Crédit du solde communauté (100% de la vente)
   await User.findByIdAndUpdate(seller, {
     $inc: { communityBalance: netAmountUnit },
   });
 
   console.log(
-    `[COURSE PAYOUT] +${netAmountUnit}$ ajoutés au formateur ${seller}`,
+    `[COURSE PAYOUT] +${netAmountUnit}$ (100% sans commission) ajoutés au formateur ${seller}`,
   );
+
+  // 4. ✅ NOTIFICATIONS AU VENDEUR (Email + In-App)
+  try {
+    const sellerDoc = await User.findById(seller)
+      .select("email profile")
+      .lean();
+    const buyerDoc = await User.findById(buyer)
+      .select("email profile name")
+      .lean();
+
+    const sellerName =
+      sellerDoc?.profile?.fullName || sellerDoc?.profile?.name || "";
+    const buyerName =
+      buyerDoc?.profile?.fullName ||
+      buyerDoc?.profile?.name ||
+      buyerDoc?.name ||
+      buyerDoc?.email ||
+      "Un client";
+    const earningsStr = `${netAmountUnit} ${currency.toUpperCase()}`;
+    const courseTitle = order.courseTitle || "Formation";
+
+    // A. Notification In-App
+    await createNotif({
+      userId: seller,
+      kind: "course_sale_made",
+      payload: {
+        buyerName,
+        courseTitle,
+        amount: earningsStr,
+      },
+    });
+
+    // B. Envoi de l'Email
+    if (sellerDoc?.email) {
+      await sendCourseSaleNotificationEmail({
+        to: sellerDoc.email,
+        fullName: sellerName,
+        buyerName,
+        courseTitle,
+        earnings: earningsStr,
+      });
+    }
+  } catch (err) {
+    console.error(
+      "[COURSE PAYOUT] Erreur lors de l'envoi des notifications au vendeur:",
+      err,
+    );
+  }
 }
 
 module.exports = { ensurePayoutsForCourseOrder };

@@ -143,7 +143,7 @@ module.exports = async function createPost(req, res) {
     // incrément compteur de posts sur la communauté
     await Community.updateOne(
       { _id: communityId },
-      { $inc: { postsCount: 1 } }
+      { $inc: { postsCount: 1 } },
     );
 
     /* ------------ Auteur (pour payload) ------------ */
@@ -159,7 +159,12 @@ module.exports = async function createPost(req, res) {
     };
 
     /* ------------ Notifications ------------ */
-    console.log("[DEBUG] createPost - Start Notifications. isOwner:", isOwner, "doc.isPublished:", doc.isPublished);
+    console.log(
+      "[DEBUG] createPost - Start Notifications. isOwner:",
+      isOwner,
+      "doc.isPublished:",
+      doc.isPublished,
+    );
 
     // 1️⃣ Un abonné poste → notif TOUS les membres + owner
     if (!isOwner) {
@@ -171,7 +176,7 @@ module.exports = async function createPost(req, res) {
       })
         .select({ userId: 1 })
         .lean();
-      
+
       console.log("[DEBUG] Found members count:", allMembers.length);
 
       // On construit une liste de gens à notifier
@@ -196,8 +201,8 @@ module.exports = async function createPost(req, res) {
               postId: String(doc._id),
               communityName: community.name || "",
             },
-          })
-        )
+          }),
+        ),
       );
     }
 
@@ -216,7 +221,7 @@ module.exports = async function createPost(req, res) {
       const toNotify = members
         .map((m) => String(m.userId))
         .filter((uid) => uid !== String(community.ownerId));
-      
+
       console.log("[DEBUG] Owner post - Notifying IDs:", toNotify);
 
       await Promise.all(
@@ -231,8 +236,8 @@ module.exports = async function createPost(req, res) {
               fromUserId: String(community.ownerId),
               fromUserName: me?.fullName || "",
             },
-          })
-        )
+          }),
+        ),
       );
     }
 

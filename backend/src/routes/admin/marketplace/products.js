@@ -6,6 +6,9 @@ const path = require("path");
 const User = require("../../../models/user.model");
 const { verifyAuthHeader } = require("../../auth/_helpers");
 
+// ✅ IMPORT DE LA FONCTION DE NOTIFICATION
+const { createNotif } = require("../../../utils/notifications");
+
 /* ============================================================
    🔐 AUTH MIDDLEWARES
 ============================================================ */
@@ -92,7 +95,7 @@ function getModel(name, candidates, fallbackCollection) {
   }
   const schema = new mongoose.Schema(
     {},
-    { strict: false, timestamps: true, collection: fallbackCollection }
+    { strict: false, timestamps: true, collection: fallbackCollection },
   );
   return mongoose.model(name, schema);
 }
@@ -104,7 +107,7 @@ const Product = getModel(
     "../../../models/marketplaceProduct.model",
     "../../../models/product.model",
   ],
-  "marketplace_products"
+  "marketplace_products",
 );
 
 const Shop = getModel(
@@ -114,7 +117,7 @@ const Shop = getModel(
     "../../../models/marketplaceShop.model",
     "../../../models/shop.model",
   ],
-  "marketplace_shops"
+  "marketplace_shops",
 );
 
 const Category = getModel(
@@ -124,7 +127,7 @@ const Category = getModel(
     "../../../models/marketplaceCategory.model",
     "../../../models/category.model",
   ],
-  "marketplace_categories"
+  "marketplace_categories",
 );
 
 /* ============================================================
@@ -155,7 +158,6 @@ function firstValidObjectId(list) {
 }
 
 function findCreatorIdFromProduct(d) {
-  // ⚠️ robuste: on teste plusieurs champs possibles
   return firstValidObjectId([
     d.createdBy,
     d.createdById,
@@ -225,12 +227,12 @@ function toProductDTO(doc, shopDoc, catDoc, creatorUser) {
         slug: String(shopDoc.slug || ""),
       }
     : doc.shop && typeof doc.shop === "object"
-    ? {
-        id: String(doc.shop.id || doc.shop._id || ""),
-        name: String(doc.shop.name || ""),
-        slug: String(doc.shop.slug || ""),
-      }
-    : null;
+      ? {
+          id: String(doc.shop.id || doc.shop._id || ""),
+          name: String(doc.shop.name || ""),
+          slug: String(doc.shop.slug || ""),
+        }
+      : null;
 
   const category = catDoc
     ? {
@@ -257,7 +259,6 @@ function toProductDTO(doc, shopDoc, catDoc, creatorUser) {
     featured: !!doc.featured,
     deletedAt: doc.deletedAt || null,
 
-    // ✅ NEW: infos créateur
     createdBy: creatorUser || null,
   };
 }
@@ -294,7 +295,7 @@ router.get("/", async (req, res, next) => {
     const page = Math.max(parseInt(req.query.page || "1", 10), 1);
     const pageSize = Math.max(
       1,
-      Math.min(parseInt(req.query.pageSize || "25", 10), 100)
+      Math.min(parseInt(req.query.pageSize || "25", 10), 100),
     );
     const sort = parseSort(req.query.sort || "-updatedAt");
 
@@ -316,7 +317,6 @@ router.get("/", async (req, res, next) => {
       ]);
     }
     if (categoryKey) {
-      // on matche aussi le string "category" (ancien champ)
       find.$or = (find.$or || []).concat([
         { "category.key": categoryKey },
         { "category.slug": categoryKey },
@@ -336,11 +336,10 @@ router.get("/", async (req, res, next) => {
       new Set(
         docs
           .map((d) => String(d.shop?._id || d.shop?.id || d.shop))
-          .filter((x) => mongoose.isValidObjectId(x))
-      )
+          .filter((x) => mongoose.isValidObjectId(x)),
+      ),
     ).map((id) => new mongoose.Types.ObjectId(id));
 
-    // ✅ résout la clé de catégorie à partir de (object|categoryKey|string category)
     const catKeys = Array.from(
       new Set(
         docs
@@ -348,11 +347,11 @@ router.get("/", async (req, res, next) => {
             String(
               (d.category && typeof d.category === "object"
                 ? d.category.key || d.category.slug
-                : d.categoryKey || d.category) || ""
-            )
+                : d.categoryKey || d.category) || "",
+            ),
           )
-          .filter(Boolean)
-      )
+          .filter(Boolean),
+      ),
     );
 
     const [shops, cats] = await Promise.all([
@@ -369,10 +368,9 @@ router.get("/", async (req, res, next) => {
       cats.flatMap((c) => [
         [String(c.key || ""), c],
         [String(c.slug || ""), c],
-      ])
+      ]),
     );
 
-    /* ✅ NEW: build créateurs (1 seule requête User pour toute la page) */
     const creatorIdByProductId = new Map();
     const creatorIds = new Set();
 
@@ -403,7 +401,7 @@ router.get("/", async (req, res, next) => {
       : [];
 
     const byUserId = new Map(
-      users.map((u) => [String(u._id), normalizeUserLite(u)])
+      users.map((u) => [String(u._id), normalizeUserLite(u)]),
     );
 
     const items = docs.map((d) => {
@@ -411,7 +409,7 @@ router.get("/", async (req, res, next) => {
       const ckey = String(
         (d.category && typeof d.category === "object"
           ? d.category.key || d.category.slug
-          : d.categoryKey || d.category) || ""
+          : d.categoryKey || d.category) || "",
       );
       const catDoc = byCatKey.get(ckey);
 
@@ -442,7 +440,6 @@ router.get("/:id", async (req, res, next) => {
     const p = await Product.findById(id).lean();
     if (!p) return res.status(404).json({ ok: false, error: "not_found" });
 
-    // ✅ NEW: hydrate createdBy (produit -> fallback shop)
     const sid = String(p.shop?._id || p.shop?.id || p.shop || "");
     const shopDoc =
       sid && mongoose.isValidObjectId(sid)
@@ -473,7 +470,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 /**
- * ✅ GET /api/admin/marketplace/products/:id/file
+ * GET /api/admin/marketplace/products/:id/file
  */
 router.get("/:id/file", async (req, res, next) => {
   try {
@@ -498,15 +495,15 @@ router.get("/:id/file", async (req, res, next) => {
     res.set(
       "Content-Disposition",
       `${disposition}; filename="${name}"; filename*=UTF-8''${encodeURIComponent(
-        name
-      )}`
+        name,
+      )}`,
     );
 
     const parsed = parseDataUrl(fileUrl);
     if (parsed) {
       res.set(
         "Content-Type",
-        mimeDb || parsed.mime || "application/octet-stream"
+        mimeDb || parsed.mime || "application/octet-stream",
       );
       return res.status(200).end(parsed.buffer);
     }
@@ -534,8 +531,6 @@ router.get("/:id/file", async (req, res, next) => {
 
 /**
  * PATCH /api/admin/marketplace/products/:id
- * → Mise à jour robuste (lecture → mutation → save)
- *   ⚠ category est un STRING dans le modèle.
  */
 router.patch("/:id", async (req, res) => {
   try {
@@ -549,6 +544,9 @@ router.patch("/:id", async (req, res) => {
     const b = req.body || {};
     const setStr = (v, max) => String(v ?? "").slice(0, max);
 
+    // On garde l'ancien statut en mémoire pour savoir s'il a changé
+    const oldStatus = p.status;
+
     // ----- STATUS + modération
     if (typeof b.status === "string") {
       const newStatus = String(b.status);
@@ -558,7 +556,6 @@ router.patch("/:id", async (req, res) => {
       p.moderation.reviewedAt = new Date();
       p.moderation.reviewedBy = req.user?.id || null;
 
-      // statut bloquant → on coupe badge + mise en avant
       if (["rejected", "suspended"].includes(newStatus)) {
         p.badgeEligible = false;
         p.featured = false;
@@ -574,11 +571,11 @@ router.patch("/:id", async (req, res) => {
     if (b.verified !== undefined) p.verified = !!b.verified;
     if (b.featured !== undefined) p.featured = !!b.featured;
 
-    // ----- Catégorie (id ou key) — STOCKÉE EN STRING
+    // ----- Catégorie
     async function applyCategory(cat) {
       const key = String(cat.key || cat.slug || "");
-      p.category = key; // <= string dans le modèle
-      p.categoryKey = key; // meta optionnel
+      p.category = key;
+      p.categoryKey = key;
     }
 
     if (b.categoryId && mongoose.isValidObjectId(b.categoryId)) {
@@ -632,8 +629,8 @@ router.patch("/:id", async (req, res) => {
           pr.interval === "year"
             ? "year"
             : pr.interval === "month"
-            ? "month"
-            : null;
+              ? "month"
+              : null;
         if (!interval)
           return res.status(400).json({ ok: false, error: "invalid_interval" });
         p.pricing = { mode: "subscription", amount: normAmount, interval };
@@ -643,6 +640,53 @@ router.patch("/:id", async (req, res) => {
     }
 
     await p.save();
+
+    // 🔔 ✅ ENVOI DES NOTIFICATIONS AU VENDEUR SI LE STATUT CHANGE
+    if (typeof b.status === "string" && oldStatus !== p.status) {
+      const creatorId = findCreatorIdFromProduct(p);
+      if (creatorId) {
+        try {
+          if (p.status === "published") {
+            await createNotif({
+              userId: String(creatorId),
+              kind: "marketplace_product_approved",
+              payload: {
+                productId: String(p._id),
+                productName: p.title,
+                message: `Votre produit "${p.title}" a été approuvé et est maintenant publié sur la Marketplace !`,
+              },
+            });
+          } else if (p.status === "rejected") {
+            await createNotif({
+              userId: String(creatorId),
+              kind: "marketplace_product_rejected",
+              payload: {
+                productId: String(p._id),
+                productName: p.title,
+                reason: p.moderation?.reason || "",
+                message: `Votre produit "${p.title}" a été refusé. Motif : ${p.moderation?.reason || "Non spécifié"}`,
+              },
+            });
+          } else if (p.status === "suspended") {
+            await createNotif({
+              userId: String(creatorId),
+              kind: "marketplace_product_rejected", // On utilise la même catégorie rouge
+              payload: {
+                productId: String(p._id),
+                productName: p.title,
+                reason: p.moderation?.reason || "",
+                message: `Votre produit "${p.title}" a été suspendu par un administrateur. Motif : ${p.moderation?.reason || "Non spécifié"}`,
+              },
+            });
+          }
+        } catch (notifErr) {
+          console.warn(
+            "[ADMIN PATCH PRODUCT] Impossible d'envoyer la notif au vendeur:",
+            notifErr,
+          );
+        }
+      }
+    }
 
     return res.json({
       ok: true,
@@ -699,8 +743,32 @@ router.patch("/:id/badge", async (req, res, next) => {
 });
 
 /**
+ * ✅ NOUVEAU : PATCH /api/admin/marketplace/products/:id/restore
+ */
+router.patch("/:id/restore", async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    if (!mongoose.isValidObjectId(id))
+      return res.status(400).json({ ok: false, error: "invalid_id" });
+
+    const p = await Product.findById(id);
+    if (!p) return res.status(404).json({ ok: false, error: "not_found" });
+
+    // On retire la date de suppression
+    p.deletedAt = null;
+    await p.save();
+
+    res.json({
+      ok: true,
+      data: { id, deletedAt: null, message: "Produit restauré ✅" },
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+/**
  * DELETE /api/admin/marketplace/products/:id
- * → soft delete + enregistre le motif côté modération
  */
 router.delete("/:id", async (req, res, next) => {
   try {
@@ -711,9 +779,8 @@ router.delete("/:id", async (req, res, next) => {
     const p = await Product.findById(id);
     if (!p) return res.status(404).json({ ok: false, error: "not_found" });
 
-    // Motif possible envoyé depuis le front
     const reason = String(
-      req.body?.reason || req.body?.moderationReason || ""
+      req.body?.reason || req.body?.moderationReason || "",
     ).slice(0, 2000);
     if (reason) {
       p.moderation = p.moderation || {};
@@ -724,6 +791,21 @@ router.delete("/:id", async (req, res, next) => {
 
     if (!p.deletedAt) p.deletedAt = new Date();
     await p.save();
+
+    // 🔔 ✅ NOTIFICATION DE SUPPRESSION
+    const creatorId = findCreatorIdFromProduct(p);
+    if (creatorId) {
+      createNotif({
+        userId: String(creatorId),
+        kind: "marketplace_product_rejected",
+        payload: {
+          productId: String(p._id),
+          productName: p.title,
+          reason: reason,
+          message: `Votre produit "${p.title}" a été supprimé par l'administration. Motif : ${reason || "Non spécifié"}`,
+        },
+      }).catch(() => {});
+    }
 
     res.json({
       ok: true,

@@ -93,4 +93,11 @@ module.exports = function adminSection(router) {
       e?.message || e,
     );
   }
+
+  // admin communities (warnings, deletions, etc)
+  try {
+    router.use("/admin/communities", require("../admin/communities"));
+  } catch (e) {
+    console.error("Failed to mount /admin/communities routes:", e?.message || e);
+  }
 };

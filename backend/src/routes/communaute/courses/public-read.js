@@ -57,6 +57,10 @@ module.exports = (router) => {
           })
           .lean();
 
+        if (!community || community.status === "deleted_by_admin" || community.status === "deleted_by_owner") {
+          return res.status(404).json({ ok: false, error: "Communauté introuvable ou supprimée" });
+        }
+
         if (community) {
           let isOwner = false;
           let isMember = false;

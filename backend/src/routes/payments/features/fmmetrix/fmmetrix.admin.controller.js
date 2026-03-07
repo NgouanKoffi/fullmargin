@@ -7,7 +7,9 @@ const User = require("../../../../models/user.model");
 const FmMetrixSubscription = require("../../../../models/fmmetrixSubscription.model");
 const Service = require("./fmmetrix.service");
 
-// ✅ Import fiable helpers auth
+// ✅ IMPORT DE LA FONCTION DE NOTIFICATION
+const { createNotif } = require("../../../../utils/notifications");
+
 const { verifyAuthHeader, fail, ok } = require(
   path.join(__dirname, "../../../auth/_helpers"),
 );
@@ -77,6 +79,8 @@ exports.listAll = async (req, res) => {
         sub.stripeCustomerId === "MANUAL_CRYPTO"
       ) {
         provider = "manual_crypto";
+      } else if (raw.fm_provider === "feexpay") {
+        provider = "feexpay";
       } else if (sub.stripeSessionId) {
         provider = "stripe";
       } else if (raw.source === "manual_admin") {
@@ -112,7 +116,24 @@ exports.approveCrypto = async (req, res) => {
     const { subscriptionId } = req.body || {};
     if (!subscriptionId) return fail(res, "subscriptionId requis", 400);
 
+    // 1. Récupération pour connaître l'utilisateur avant validation
+    const sub = await FmMetrixSubscription.findById(subscriptionId).lean();
+
+    // 2. Validation
     await Service.approveCryptoPayment(subscriptionId, adminId);
+
+    // 3. 🔔 NOTIFICATION CLIENT (Succès)
+    if (sub && sub.userId) {
+      await createNotif({
+        userId: String(sub.userId),
+        kind: "fmmetrix_subscription_granted",
+        payload: {
+          message:
+            "Votre paiement Crypto a été validé avec succès. Votre compte est désormais Premium !",
+        },
+      }).catch((err) => console.warn("[Notif] Erreur approve crypto:", err));
+    }
+
     return ok(res, { ok: true });
   } catch (e) {
     const status = e.status || 500;
@@ -127,7 +148,23 @@ exports.rejectCrypto = async (req, res) => {
     const { subscriptionId } = req.body || {};
     if (!subscriptionId) return fail(res, "subscriptionId requis", 400);
 
+    // 1. Récupération pour connaître l'utilisateur avant suppression
+    const sub = await FmMetrixSubscription.findById(subscriptionId).lean();
+
+    // 2. Suppression de la demande
     await FmMetrixSubscription.deleteOne({ _id: subscriptionId });
+
+    // 3. 🔔 NOTIFICATION CLIENT (Rejet avec type spécifique)
+    if (sub && sub.userId) {
+      await createNotif({
+        userId: String(sub.userId),
+        kind: "fmmetrix_payment_rejected", // ✅ Type spécifique pour éviter la confusion avec résiliation
+        payload: {
+          message: "Paiement refusé : Nous n'avons pas reçu les fonds.",
+        },
+      }).catch((err) => console.warn("[Notif] Erreur reject crypto:", err));
+    }
+
     return ok(res, { ok: true });
   } catch (e) {
     const status = e.status || 500;
@@ -137,7 +174,10 @@ exports.rejectCrypto = async (req, res) => {
 
 exports.grantManual = async (req, res) => {
   try {
-    const { userId: adminId } = await ensureAdmin(req);
+    const adminData = await ensureAdmin(req);
+    const adminId = adminData.userId;
+    const adminEmail = adminData.email;
+
     const { userId, months, periodStart, periodEnd } = req.body || {};
     if (!userId) return fail(res, "userId requis", 400);
 
@@ -147,6 +187,7 @@ exports.grantManual = async (req, res) => {
       periodStart,
       periodEnd,
       adminId,
+      adminEmail,
     });
     return ok(res, {
       ok: true,
@@ -175,9 +216,6 @@ exports.revoke = async (req, res) => {
   }
 };
 
-// 👇 LA FONCTION QUI MANQUAIT EST ICI 👇
-// DANS : backend/src/routes/payments/features/fmmetrix/fmmetrix.admin.controller.js
-
 exports.listPending = async (req, res) => {
   try {
     await ensureAdmin(req);
@@ -193,8 +231,6 @@ exports.listPending = async (req, res) => {
       const u = sub.userId || {};
       const raw = sub.raw || {};
 
-      // ✅ CORRECTION ICI : On ajoute le fallback sur l'email
-      // Comme ça, si le mec n'a pas mis son nom, on affiche son email en gras au lieu de "Inconnu"
       const name =
         u.profile?.fullName ||
         u.profile?.name ||
@@ -204,7 +240,7 @@ exports.listPending = async (req, res) => {
       return {
         id: String(sub._id),
         userId: u._id ? String(u._id) : "",
-        userName: name, // On utilise la variable corrigée
+        userName: name,
         userEmail: u.email || "Email Inconnu",
         status: sub.status,
         createdAt: sub.createdAt,

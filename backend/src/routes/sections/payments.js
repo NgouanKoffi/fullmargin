@@ -12,6 +12,28 @@ module.exports = function paymentsSection(router) {
     console.error("Failed to mount Stripe webhook route:", e?.message || e);
   }
 
+  /** ============================================================
+   * 🟠 FEEXPAY (Mobile Money)
+   * - POST /api/payments/feexpay/webhook (Webhook Automatique)
+   * - POST /api/payments/feexpay/verify-sdk (Validation SDK Frontend)
+   * ============================================================ */
+  try {
+    const {
+      feexpayWebhookCore,
+      verifyFeexPaySDK,
+    } = require("../payments/feexpay.core");
+
+    // Route webhook classique
+    router.post("/payments/feexpay/webhook", feexpayWebhookCore);
+
+    // ✅ NOUVELLE ROUTE pour que le SDK React valide le paiement instantanément
+    if (verifyFeexPaySDK) {
+      router.post("/payments/feexpay/verify-sdk", verifyFeexPaySDK);
+    }
+  } catch (e) {
+    console.error("Failed to mount FeexPay routes:", e?.message || e);
+  }
+
   // ❌ FEDAPAY SUPPRIMÉ COMME DEMANDÉ
 
   /** ============================================================

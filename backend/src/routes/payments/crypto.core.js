@@ -1,12 +1,14 @@
 // backend/src/routes/payments/crypto.core.js
 const mongoose = require("mongoose");
-// Assure-toi que le chemin vers ton model est correct
 const FmMetrixSubscription = require("../../models/fmmetrixSubscription.model");
+const User = require("../../models/user.model"); // ✅ Import du modèle User
+const { createNotif } = require("../../utils/notifications"); // ✅ Import des notifications
 
 /**
  * SERVICE: Création de l'intention de paiement Crypto (Manuel)
  * - Crée une entrée en BDD avec statut "pending_crypto"
  * - Retourne la référence à afficher sur WhatsApp
+ * - ✅ Envoie une notification aux admins
  */
 async function createManualCryptoIntent(req, res) {
   try {
@@ -31,24 +33,17 @@ async function createManualCryptoIntent(req, res) {
     endDate.setDate(endDate.getDate() + 30);
 
     // 3. Génération d'une référence unique pour le virement
-    // Format: REF-{TIMESTAMP}-{RANDOM}
     const reference = `REF-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-    // 4. Création selon le "feature" (ici focus sur fm-metrix comme demandé)
+    // 4. Création selon le "feature" (ici focus sur fm-metrix)
     if (feature === "fm-metrix") {
-      // On vérifie s'il a déjà un abonnement en attente pour éviter les doublons ?
-      // Optionnel, ici on autorise plusieurs tentatives.
-
       const newSubscription = new FmMetrixSubscription({
         userId: userId,
-        status: "pending_crypto", // ✅ Le statut clé pour ton Dashboard Admin
+        status: "pending_crypto",
         periodStart: startDate,
         periodEnd: endDate,
-
-        // On utilise les champs stripeCustomerId/Id pour stocker nos infos manuelles
         stripeCustomerId: "MANUAL_CRYPTO",
-        stripeSubscriptionId: reference, // On stocke la REF ici pour la retrouver facilement
-
+        stripeSubscriptionId: reference,
         raw: {
           provider: "manual_crypto",
           network: network || "Unknown",
@@ -59,10 +54,41 @@ async function createManualCryptoIntent(req, res) {
       });
 
       await newSubscription.save();
-
       console.log(
         `[CRYPTO] Nouvelle demande créée: ${reference} par user ${userId}`,
       );
+
+      // 🔔 ✅ NOTIFICATION AUX ADMINISTRATEURS
+      try {
+        const requester = await User.findById(userId)
+          .select("name profile email")
+          .lean();
+        const requesterName =
+          requester?.profile?.fullName ||
+          requester?.name ||
+          requester?.email ||
+          "Un utilisateur";
+
+        const admins = await User.find({ roles: "admin" }).select("_id").lean();
+        const adminPromises = admins.map((admin) =>
+          createNotif({
+            userId: String(admin._id),
+            kind: "admin_fmmetrix_crypto_pending",
+            payload: {
+              userName: requesterName,
+              amount: `${amount} USDT`,
+              reference: reference,
+              message: `${requesterName} a demandé un abonnement FM Metrix payé en Crypto (${amount} USDT).`,
+            },
+          }),
+        );
+        await Promise.allSettled(adminPromises);
+      } catch (adminNotifError) {
+        console.error(
+          "[CRYPTO] Erreur envoi notif admin FM Metrix:",
+          adminNotifError,
+        );
+      }
 
       return res.status(201).json({
         ok: true,
@@ -73,7 +99,6 @@ async function createManualCryptoIntent(req, res) {
       });
     }
 
-    // Si on veut gérer d'autres features plus tard (Marketplace, Cours...)
     return res
       .status(400)
       .json({ ok: false, message: "Feature non supportée pour le moment" });

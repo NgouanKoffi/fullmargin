@@ -6,9 +6,6 @@ const { verifyAuthHeader } = require("./auth/_helpers");
 const Notification = require("../models/notification.model");
 const { markNotifsSeen } = require("../utils/notifications");
 
-/**
- * petit middleware d'auth simple (même style que tes autres routes)
- */
 function requireAuth(req, res, next) {
   try {
     const a = verifyAuthHeader(req);
@@ -24,21 +21,18 @@ function requireAuth(req, res, next) {
 
 /**
  * GET /notifications
- * - liste les notifs du user connecté
- * - pagination simple ?page=1&limit=20
  */
 router.get("/", requireAuth, async (req, res) => {
   const page = Math.max(parseInt(req.query.page || "1", 10), 1);
   const limit = Math.min(
     50,
-    Math.max(parseInt(req.query.limit || "20", 10), 1)
+    Math.max(parseInt(req.query.limit || "20", 10), 1),
   );
 
   try {
-    // ❌ Exclure les messages (discussion_*) - ils sont gérés séparément
     const filter = {
       userId: req.auth.userId,
-      kind: { $not: /^discussion_/ }
+      kind: { $not: /^discussion_/ },
     };
 
     const [rows, total] = await Promise.all([
@@ -49,6 +43,15 @@ router.get("/", requireAuth, async (req, res) => {
         .lean(),
       Notification.countDocuments(filter),
     ]);
+
+    // 👇 Log les kinds uniques pour débugger les "Nouvelle notification"
+    const kinds = [...new Set(rows.map((n) => n.kind))];
+    console.log(
+      "[NOTIFICATIONS] kinds présents pour userId",
+      req.auth.userId,
+      ":",
+      kinds,
+    );
 
     return res.json({
       ok: true,
@@ -76,14 +79,13 @@ router.get("/", requireAuth, async (req, res) => {
 
 /**
  * GET /notifications/unseen-count
- * - pour la petite cloche (exclut les messages)
  */
 router.get("/unseen-count", requireAuth, async (req, res) => {
   try {
     const count = await Notification.countDocuments({
       userId: req.auth.userId,
       seen: false,
-      kind: { $not: /^discussion_/ } // ❌ Exclure messages
+      kind: { $not: /^discussion_/ },
     });
     return res.json({ ok: true, data: { count } });
   } catch (e) {
@@ -94,14 +96,14 @@ router.get("/unseen-count", requireAuth, async (req, res) => {
 
 /**
  * GET /notifications/unseen-count-by-category
- * - compte les notifications non lues par catégorie (exclut les messages)
+ * ✅ Corrigé : course_* et group_* comptés dans "community"
  */
 router.get("/unseen-count-by-category", requireAuth, async (req, res) => {
   try {
     const notifications = await Notification.find({
       userId: req.auth.userId,
       seen: false,
-      kind: { $not: /^discussion_/ } // ❌ Exclure messages
+      kind: { $not: /^discussion_/ },
     })
       .select("kind")
       .lean();
@@ -118,8 +120,16 @@ router.get("/unseen-count-by-category", requireAuth, async (req, res) => {
       if (n.kind.startsWith("community_")) counts.community++;
       if (n.kind.startsWith("marketplace_")) counts.marketplace++;
       if (n.kind.startsWith("finance_")) counts.finance++;
-      if (n.kind.startsWith("fmmetrix_")) counts.finance++; // FM Metrix = finance
+      if (n.kind.startsWith("fmmetrix_")) counts.finance++;
       if (n.kind.startsWith("admin_")) counts.admin++;
+      // ✅ Kinds communauté sans préfixe "community_"
+      if (
+        n.kind === "course_manual_enrollment" ||
+        n.kind === "course_manual_unenrollment" ||
+        n.kind === "group_manual_add_member" ||
+        n.kind === "group_manual_remove_member"
+      )
+        counts.community++;
     });
 
     return res.json({ ok: true, data: counts });
@@ -131,9 +141,6 @@ router.get("/unseen-count-by-category", requireAuth, async (req, res) => {
 
 /**
  * POST /notifications/mark-seen
- * body: { ids?: string[] }
- * - si ids est vide → on marque TOUTES ses notifs comme vues
- * - sinon on ne marque que celles passées
  */
 router.post("/mark-seen", requireAuth, async (req, res) => {
   const { ids } = req.body || {};

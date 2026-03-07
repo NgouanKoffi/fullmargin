@@ -1,4 +1,4 @@
-// C:\Users\ADMIN\Desktop\fullmargin-site\backend\src\routes\payments\features\fmmetrix\fmmetrix.service.js
+// backend/src/routes/payments/features/fmmetrix/fmmetrix.service.js
 "use strict";
 
 const FmMetrix = require("../../../../models/fmmetrix.model");
@@ -12,6 +12,7 @@ const {
   convertManualCryptoDocumentToEvent,
 } = require("../../providers/crypto.provider");
 
+const { initiateFeexPayTransaction } = require("../../feexpay.core");
 const { dispatchPayment } = require("../../../payments/payment.dispatcher");
 
 // --- STRIPE INIT ---
@@ -67,11 +68,6 @@ function addMonthsSafe(base, months) {
   return d;
 }
 
-/**
- * Extension de période :
- * - si actif => on prolonge depuis validUntil
- * - sinon => depuis now
- */
 function computeExtendedPeriod(prevValidUntil, monthsToAdd = 1) {
   const now = new Date();
   const prev = toDateSafe(prevValidUntil);
@@ -83,7 +79,6 @@ function computeExtendedPeriod(prevValidUntil, monthsToAdd = 1) {
   return { periodStart, periodEnd };
 }
 
-/** Renewal = il existe déjà un historique */
 async function hasAnyHistory(userId) {
   if (!userId) return false;
   const exists = await FmMetrixSubscription.exists({ userId }).catch(
@@ -92,7 +87,6 @@ async function hasAnyHistory(userId) {
   return !!exists;
 }
 
-/** Crypto approve : exclude doc actuel */
 async function hasHistoryExcluding(userId, excludeId) {
   if (!userId) return false;
   const q = { userId };
@@ -154,7 +148,6 @@ async function maybeCreateAffiliationCommission({
 async function upsertFmMetrixFromStripeSession(session) {
   const userId = session.metadata.userId;
 
-  // 1) Idempotence
   const existing = await FmMetrixSubscription.findOne({
     stripeSessionId: session.id,
   }).lean();
@@ -190,18 +183,14 @@ async function upsertFmMetrixFromStripeSession(session) {
     };
   }
 
-  // 2) Etat précédent
   const prev = await FmMetrix.findOne({ userId })
     .select("validUntil startedAt stripeCustomerId stripeSubscriptionId")
     .lean()
     .catch(() => null);
 
-  // ✅ renewal = historique
   const hadHistory = await hasAnyHistory(userId);
-
   const { periodStart, periodEnd } = computeExtendedPeriod(prev?.validUntil, 1);
 
-  // 3) Save history
   const subDoc = await FmMetrixSubscription.create({
     userId,
     status: "active",
@@ -219,7 +208,6 @@ async function upsertFmMetrixFromStripeSession(session) {
     session,
   });
 
-  // 4) Sync doc courant
   await FmMetrix.findOneAndUpdate(
     { userId },
     {
@@ -234,7 +222,6 @@ async function upsertFmMetrixFromStripeSession(session) {
     { upsert: true },
   );
 
-  // 5) Email + notif
   await FmMetrixNotifier.notifyActivatedOrRenewed({
     userId,
     validUntil: periodEnd,
@@ -245,6 +232,7 @@ async function upsertFmMetrixFromStripeSession(session) {
   return { periodStart, periodEnd, hadHistory };
 }
 
+// ✅ STRIPE CHECKOUT
 async function createCheckoutSession({
   userId,
   amount,
@@ -283,6 +271,32 @@ async function createCheckoutSession({
   });
 }
 
+// ✅ FEEXPAY CHECKOUT
+async function createFeexPaySession({ userId, redirectBase, origin }) {
+  let webBase = resolveWebBase(origin);
+  if (redirectBase && redirectBase.startsWith("https://")) {
+    webBase = redirectBase.replace(/\/+$/, "");
+  }
+
+  const amountXOF = 19500;
+  const callbackUrl = `${webBase}/fm-metrix/dashboard`;
+
+  const result = await initiateFeexPayTransaction({
+    amount: amountXOF,
+    callbackUrl: callbackUrl,
+    customData: {
+      feature: "fm-metrix",
+      userId: String(userId),
+    },
+  });
+
+  if (!result.ok) {
+    throw new Error(result.error || "Erreur init FeexPay");
+  }
+
+  return { url: result.url };
+}
+
 async function confirmSessionAndActivate(sessionId, userId) {
   if (!stripe) throw new Error("Stripe non configuré");
   const session = await stripe.checkout.sessions.retrieve(sessionId);
@@ -306,7 +320,6 @@ async function confirmSessionAndActivate(sessionId, userId) {
 }
 
 async function approveCryptoPayment(subscriptionId, adminId) {
-  // 1. Récupération et vérification
   const sub = await FmMetrixSubscription.findById(subscriptionId);
   if (!sub) throw new Error("Introuvable");
   if (sub.status !== "pending_crypto")
@@ -314,7 +327,6 @@ async function approveCryptoPayment(subscriptionId, adminId) {
       "Cet abonnement n'est pas en attente de validation crypto.",
     );
 
-  // 2. Calcul des dates (avec historique)
   const prev = await FmMetrix.findOne({ userId: sub.userId })
     .select("validUntil startedAt stripeCustomerId stripeSubscriptionId")
     .lean()
@@ -323,14 +335,12 @@ async function approveCryptoPayment(subscriptionId, adminId) {
   const { periodStart, periodEnd } = computeExtendedPeriod(prev?.validUntil, 1);
   const now = new Date();
 
-  // 3. Mise à jour de l'abonnement
   sub.status = "active";
   sub.periodStart = periodStart;
   sub.periodEnd = periodEnd;
   sub.raw = { ...(sub.raw || {}), validatedBy: adminId, validatedAt: now };
   await sub.save();
 
-  // 4. Mise à jour du document global User
   await FmMetrix.findOneAndUpdate(
     { userId: sub.userId },
     {
@@ -342,22 +352,16 @@ async function approveCryptoPayment(subscriptionId, adminId) {
     { upsert: true },
   );
 
-  // ✅ FIX: On force l'envoi de l'email ici car le dispatcher ne le fait pas
-  // On vérifie si c'est un renouvellement pour choisir le bon template de mail
   const isRenewal = await hasAnyHistory(sub.userId);
   await FmMetrixNotifier.notifyActivatedOrRenewed({
     userId: sub.userId,
     validUntil: periodEnd,
-    dedupeKey: `crypto_approved:${sub._id}`, // Clé unique pour éviter les doublons
+    dedupeKey: `crypto_approved:${sub._id}`,
     isRenewal: isRenewal,
   });
 
-  // 5. Envoi vers le Dispatcher Global (on le garde pour les commissions, stats, etc.)
   try {
     const event = await convertManualCryptoDocumentToEvent(sub, "succeeded");
-    console.log(
-      `[Service] Approbation Crypto - Dispatch event pour sub ${sub._id}`,
-    );
     await dispatchPayment(event);
   } catch (err) {
     console.error(
@@ -370,7 +374,7 @@ async function approveCryptoPayment(subscriptionId, adminId) {
 }
 
 /**
- * ✅ Accès manuel : mail dédié (pas activated/renewed)
+ * ✅ Accès manuel / FeexPay Auto
  */
 async function grantManualAccess({
   userId,
@@ -446,21 +450,28 @@ async function grantManualAccess({
     new: true,
   });
 
-  // ✅ Notif + Email MANUAL GRANT
-  await FmMetrixNotifier.notifyManualGrant({
-    userId: String(userId),
-    validUntil: end,
-    months: m || null,
-    adminEmail: adminEmail || "",
-    dedupeKey: `manual_grant:${String(subDoc._id)}`,
-  });
+  // ✅ DISTINCTION EXACTE : FeexPay vs Admin Manuel
+  if (adminId === "FEEXPAY_SDK_AUTO") {
+    const isRenewal = await hasAnyHistory(userId);
+    await FmMetrixNotifier.notifyActivatedOrRenewed({
+      userId: String(userId),
+      validUntil: end,
+      dedupeKey: `feexpay_grant:${String(subDoc._id)}`,
+      isRenewal: isRenewal,
+    });
+  } else {
+    await FmMetrixNotifier.notifyManualGrant({
+      userId: String(userId),
+      validUntil: end,
+      months: m || null,
+      adminEmail: adminEmail || "Administrateur",
+      dedupeKey: `manual_grant:${String(subDoc._id)}`,
+    });
+  }
 
   return { doc, subDoc };
 }
 
-/**
- * ✅ Résiliation / révocation : envoie email + notif
- */
 async function revokeAccess(userId, opts = {}) {
   const now = new Date();
 
@@ -500,11 +511,55 @@ async function revokeAccess(userId, opts = {}) {
   return { ok: true };
 }
 
+/**
+ * ✅ Annuler le renouvellement automatique (Résiliation côté client)
+ * Le client garde son accès jusqu'à la fin de la période `validUntil`.
+ */
+async function cancelAutoRenew(userId) {
+  const doc = await FmMetrix.findOne({ userId });
+  if (!doc) throw new Error("Aucun abonnement actif trouvé.");
+
+  if (doc.stripeSubscriptionId && stripe) {
+    try {
+      await stripe.subscriptions.update(doc.stripeSubscriptionId, {
+        cancel_at_period_end: true,
+      });
+      console.log(
+        `[Stripe] Annulation programmée pour l'abonnement ${doc.stripeSubscriptionId}`,
+      );
+    } catch (err) {
+      console.error(
+        "[Stripe] Erreur lors de l'annulation du renouvellement :",
+        err,
+      );
+    }
+  }
+
+  const raw = doc.raw || {};
+  raw.autoRenew = false;
+  raw.canceledAt = new Date();
+
+  await FmMetrix.updateOne({ userId }, { $set: { raw } });
+
+  // ✅ Envoi de l'email de confirmation de résiliation au client
+  await FmMetrixNotifier.notifyCanceled({
+    userId: String(userId),
+    endedAt: doc.validUntil, // Il reste valide jusqu'à cette date
+    reason:
+      "Vous avez annulé le renouvellement automatique de votre abonnement. Vous garderez l'accès Premium jusqu'à la fin de la période en cours.",
+    dedupeKey: `cancel_renew:${doc._id}:${Date.now()}`,
+  });
+
+  return { ok: true, validUntil: doc.validUntil };
+}
+
 module.exports = {
   createCheckoutSession,
+  createFeexPaySession,
   confirmSessionAndActivate,
   approveCryptoPayment,
   grantManualAccess,
   revokeAccess,
   upsertFmMetrixFromStripeSession,
+  cancelAutoRenew,
 };

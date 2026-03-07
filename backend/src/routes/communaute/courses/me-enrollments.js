@@ -38,9 +38,23 @@ module.exports = (router) => {
         },
         { $addFields: { course: { $first: "$course" } } },
         {
+          $lookup: {
+            from: "communities",
+            localField: "course.communityId",
+            foreignField: "_id",
+            as: "communityDoc"
+          }
+        },
+        { $addFields: { communityDoc: { $first: "$communityDoc" } } },
+        {
           $project: {
             _id: 1,
             createdAt: 1,
+            communityDoc: {
+              _id: 1,
+              deletedAt: 1,
+              status: 1
+            },
             course: {
               _id: 1,
               communityId: 1,
@@ -68,6 +82,7 @@ module.exports = (router) => {
             communityId: r.course.communityId
               ? String(r.course.communityId)
               : null,
+            isCommunityDeleted: r.communityDoc ? (r.communityDoc.deletedAt !== null || r.communityDoc.status === "deleted_by_admin" || r.communityDoc.status === "deleted_by_owner") : false,
             priceType: r.course.priceType || "free",
             currency: r.course.currency || "USD",
             price:

@@ -1,13 +1,27 @@
-// C:\Users\ADMIN\Desktop\fullmargin-site\backend\src\routes\communaute\communauties\list.js
+// backend/src/routes/communaute/communauties/list.js
 const { requireAuth, Community, uploadImageBuffer } = require("./_shared");
+const CommunityMember = require("../../../models/communityMember.model");
 
 module.exports = (router) => {
   /* GET /communaute/communities/my */
   router.get("/my", requireAuth, async (req, res) => {
     try {
+      const memberships = await CommunityMember.find({
+        userId: req.auth.userId,
+        $or: [{ status: "active" }, { status: { $exists: false } }],
+      })
+        .select("communityId")
+        .lean();
+
+      const joinedCommunityIds = memberships.map((m) => m.communityId);
+
       const rows = await Community.find({
-        ownerId: req.auth.userId,
         deletedAt: null,
+        status: { $nin: ["deleted_by_admin", "deleted_by_owner"] },
+        $or: [
+          { ownerId: req.auth.userId },
+          { _id: { $in: joinedCommunityIds } },
+        ],
       })
         .sort({ createdAt: -1 })
         .lean();
@@ -25,6 +39,9 @@ module.exports = (router) => {
         membersCount: Number(c.membersCount || 0),
         postsCount: Number(c.postsCount || 0),
         likesCount: Number(c.likesCount || 0),
+        isOwner: String(c.ownerId) === String(req.auth.userId),
+        status: c.status || "active",
+        deletedAt: c.deletedAt || null,
         createdAt: c.createdAt,
         updatedAt: c.updatedAt,
       }));
@@ -60,8 +77,9 @@ module.exports = (router) => {
 
       let ownersById = new Map();
       if (ownerIds.length) {
+        // ✅ AJOUT : email: 1 ajouté ici pour pouvoir afficher le contact
         const owners = await User.find({ _id: { $in: ownerIds } })
-          .select({ _id: 1, fullName: 1, avatarUrl: 1 })
+          .select({ _id: 1, fullName: 1, avatarUrl: 1, email: 1 })
           .lean();
 
         ownersById = new Map(
@@ -71,8 +89,9 @@ module.exports = (router) => {
               id: String(u._id),
               fullName: u.fullName,
               avatarUrl: u.avatarUrl,
+              email: u.email, // ✅ Transmission de l'email
             },
-          ])
+          ]),
         );
       }
 
@@ -92,6 +111,7 @@ module.exports = (router) => {
           id: String(c.ownerId || ""),
           fullName: "",
           avatarUrl: "",
+          email: "",
         },
         createdAt: c.createdAt,
         updatedAt: c.updatedAt,

@@ -123,6 +123,15 @@ if (NODE_ENV !== "test") {
       e?.message || e,
     );
   }
+
+  // ✅ NOUVEAU JOB : FM Metrix Cron (Avertissement J-3 & Expirations)
+  try {
+    // Plus besoin d'importer checkExpiringSubscriptions, juste le starter
+    const { startFmMetrixCron } = require("./cron/fmmetrix.cron");
+    startFmMetrixCron(); // Le cron est maintenant 100% autonome (tous les jours à 8h)
+  } catch (e) {
+    console.error("[jobs] failed to start fmmetrix.cron:", e?.message || e);
+  }
 }
 
 /* -------------------------------------------------------

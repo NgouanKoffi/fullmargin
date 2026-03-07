@@ -62,11 +62,18 @@ const AffiliationCommissionSchema = new mongoose.Schema(
     raw: {
       type: Object,
     },
+
+    // ✅ NOUVEAU CHAMP INDISPENSABLE : Pour suivre si la commission a été retirée
+    status: {
+      type: String,
+      enum: ["available", "pending_withdrawal", "withdrawn", "cancelled"],
+      default: "available",
+      index: true,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-module.exports = mongoose.model(
-  "AffiliationCommission",
-  AffiliationCommissionSchema
-);
+module.exports =
+  mongoose.models.AffiliationCommission ||
+  mongoose.model("AffiliationCommission", AffiliationCommissionSchema);

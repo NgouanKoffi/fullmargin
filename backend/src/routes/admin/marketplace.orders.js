@@ -9,6 +9,9 @@ const {
   handleMarketplacePaymentEvent,
 } = require("../payments/handlers/marketplace.handler");
 
+// ✅ IMPORT DE LA FONCTION DE NOTIFICATION IN-APP
+const { createNotif } = require("../../utils/notifications");
+
 const router = express.Router();
 
 function requireAuth(req, res, next) {
@@ -62,6 +65,7 @@ router.get("/pending", requireAuth, requireAdminOrAgent, async (req, res) => {
     return res.status(500).json({ ok: false });
   }
 });
+
 router.get("/paid", requireAuth, requireAdminOrAgent, async (req, res) => {
   try {
     const rows = await Order.find(
@@ -75,6 +79,7 @@ router.get("/paid", requireAuth, requireAdminOrAgent, async (req, res) => {
     return res.status(500).json({ ok: false });
   }
 });
+
 router.get("/closed", requireAuth, requireAdminOrAgent, async (req, res) => {
   try {
     const rows = await Order.find(
@@ -89,7 +94,7 @@ router.get("/closed", requireAuth, requireAdminOrAgent, async (req, res) => {
   }
 });
 
-// ✅ VALIDATE : NETTOYÉ (Plus de doublon de mail)
+// ✅ VALIDATE : NETTOYÉ (Plus de doublon de mail) + NOTIFICATION IN-APP
 router.post(
   "/:id/validate",
   requireAuth,
@@ -97,15 +102,28 @@ router.post(
   async (req, res) => {
     try {
       const id = String(req.params.id || "");
-      const exists = await Order.exists({ _id: id });
-      if (!exists)
+      const order = await Order.findById(id); // Récupéré pour avoir le userID pour la notif
+      if (!order)
         return res.status(404).json({ ok: false, error: "Introuvable" });
 
-      // On délègue tout au handler verrouillé
+      // On délègue tout au handler verrouillé (il s'occupe des e-mails, commissions, etc.)
       await handleMarketplacePaymentEvent({
         status: "success",
         meta: { orderId: id },
       });
+
+      // 🔔 NOTIFICATION IN-APP POUR L'ACHETEUR : Validation réussie
+      if (order.user) {
+        await createNotif({
+          userId: String(order.user),
+          kind: "marketplace_purchase_made", // Code existant et reconnu côté front
+          payload: {
+            orderId: id,
+            productTitle: order.items?.[0]?.title || "Commande Marketplace",
+            message: `✅ Votre paiement a été validé ! Vous pouvez maintenant accéder à vos produits.`,
+          },
+        }).catch((err) => console.warn("Erreur notif validate order:", err));
+      }
 
       return res.json({ ok: true });
     } catch (e) {
@@ -115,7 +133,7 @@ router.post(
   },
 );
 
-// ✅ CANCEL : EMAIL ICI
+// ✅ CANCEL : EMAIL ICI + NOTIFICATION IN-APP
 router.post(
   "/:id/cancel",
   requireAuth,
@@ -124,6 +142,7 @@ router.post(
     try {
       const id = String(req.params.id || "");
       const { reason } = req.body;
+      const finalReason = reason || "Annulée par l'admin";
 
       const order = await Order.findOneAndUpdate(
         { _id: id },
@@ -132,7 +151,7 @@ router.post(
             status: "canceled",
             "crypto.status": "rejected",
             "crypto.rejectedAt": new Date(),
-            "crypto.rejectReason": reason || null,
+            "crypto.rejectReason": finalReason,
           },
         },
         { new: true },
@@ -140,13 +159,27 @@ router.post(
 
       if (!order) return res.status(404).json({ ok: false });
 
+      // 📧 ENVOI DE L'EMAIL
       if (order.user?.email) {
         await Mailer.sendMarketplaceCryptoRejectedEmail({
           to: order.user.email,
           fullName: order.user.profile?.fullName || order.user.name || "Client",
           productTitle: order.items?.[0]?.title || "Commande",
-          reason: reason || "Annulée par l'admin",
+          reason: finalReason,
         }).catch(console.error);
+      }
+
+      // 🔔 NOTIFICATION IN-APP POUR L'ACHETEUR : Refus avec motif
+      if (order.user?._id) {
+        await createNotif({
+          userId: String(order.user._id),
+          kind: "marketplace_payment_rejected", // Type générique, le frontend l'affichera directement
+          payload: {
+            orderId: id,
+            productTitle: order.items?.[0]?.title || "Commande",
+            message: `❌ Votre commande a été refusée. Motif : ${finalReason}`,
+          },
+        }).catch((err) => console.warn("Erreur notif cancel order:", err));
       }
 
       return res.json({ ok: true, data: { order } });

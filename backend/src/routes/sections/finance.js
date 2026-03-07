@@ -25,31 +25,40 @@ const money = (val) => Number(Number(val || 0).toFixed(2));
 const generateReference = () =>
   `W-${new Date().toISOString().slice(0, 7).replace("-", "")}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
 
-const MIN_WITHDRAW_AMOUNT = 20;
+// ✅ SEUIL MIS À JOUR (100 USD)
+const MIN_WITHDRAW_AMOUNT = 100;
 const COMMISSION_RATE = 0.09;
 
-/** * 🛠 LOGIQUE DE SYNCHRONISATION "JUSTE-À-TEMPS"
+/**
+ * 🛠 LOGIQUE DE SYNCHRONISATION "JUSTE-À-TEMPS"
  * Calcule le solde réel basé sur l'historique avant de traiter le retrait
  */
 async function syncUserBalanceBeforeWithdraw(userId) {
-  // Convert userId to ObjectId for aggregation
+  const userIdStr = String(userId);
   const userObjectId = new mongoose.Types.ObjectId(userId);
-  
-  // 1. Boutique (SellerPayout)
+  // Match bétonné pour éviter les erreurs de type (String vs ObjectId) en base
+  const userMatch = { $in: [userObjectId, userIdStr] };
+
+  // 1. Boutique
   const mk = await SellerPayout.aggregate([
-    { $match: { seller: userObjectId, status: { $in: ["available", "ready"] } } },
+    { $match: { seller: userMatch, status: { $in: ["available", "ready"] } } },
     { $group: { _id: null, total: { $sum: "$netAmount" } } },
   ]);
 
-  // 2. Cours / Communauté (CoursePayout)
+  // 2. Cours
   const cp = await CoursePayout.aggregate([
-    { $match: { seller: userObjectId, status: { $in: ["available", "ready"] } } },
+    { $match: { seller: userMatch, status: { $in: ["available", "ready"] } } },
     { $group: { _id: null, total: { $sum: "$netAmount" } } },
   ]);
 
-  // 3. Affiliation (Commission - On divise par 100 car souvent stocké en cents)
+  // 3. Affiliation (On prend tout ce qui n'est pas déjà retiré ou annulé)
   const af = await AffiliationCommission.aggregate([
-    { $match: { referrerId: userObjectId, status: { $ne: "cancelled" } } },
+    {
+      $match: {
+        referrerId: userMatch,
+        status: { $nin: ["withdrawn", "cancelled", "pending_withdrawal"] },
+      },
+    },
     { $group: { _id: null, totalCents: { $sum: "$amount" } } },
   ]);
 
@@ -59,73 +68,9 @@ async function syncUserBalanceBeforeWithdraw(userId) {
     affiliationBalance: money((af[0]?.totalCents || 0) / 100),
   };
 
-  // Mise à jour du document User
-  await User.updateOne({ _id: userId }, { $set: balances });
-
+  // Mise à jour de l'affichage sur le profil
+  await User.updateOne({ _id: userObjectId }, { $set: balances });
   return balances;
-}
-
-/* ===== ADMIN GUARD ===== */
-async function requireAdminOrAgent(req, res, next) {
-  try {
-    const userId = req?.auth?.userId;
-    if (!userId)
-      return res.status(401).json({ ok: false, error: "Non autorisé" });
-    const me = await User.findById(userId).select("roles").lean();
-    if (!me?.roles?.includes("admin") && !me?.roles?.includes("agent"))
-      return res.status(403).json({ ok: false, error: "Accès refusé" });
-    next();
-  } catch {
-    return res.status(401).json({ ok: false, error: "Non autorisé" });
-  }
-}
-
-/* ===== RESTORE FUNDS ===== */
-async function restoreFunds(withdrawalId, note, actorId) {
-  const session = await mongoose.startSession();
-  try {
-    session.startTransaction();
-    const w = await Withdrawal.findById(withdrawalId).session(session);
-    if (!w || w.restoredAt) {
-      await session.commitTransaction();
-      return { ok: true };
-    }
-
-    const snap = w.balancesSnapshot || {};
-    await User.updateOne(
-      { _id: w.user },
-      {
-        $inc: {
-          sellerBalance: Number(snap.seller || 0),
-          communityBalance: Number(snap.community || 0),
-          affiliationBalance: Number(snap.affiliation || 0),
-        },
-      },
-      { session },
-    );
-
-    await Withdrawal.updateOne(
-      { _id: w._id },
-      {
-        $set: {
-          restoredAt: new Date(),
-          restoredBy: actorId,
-          adminNote: note,
-          processedAt: new Date(),
-        },
-      },
-      { session },
-    );
-    await session.commitTransaction();
-    return { ok: true };
-  } catch (e) {
-    try {
-      await session.abortTransaction();
-    } catch {}
-    return { ok: false };
-  } finally {
-    session.endSession();
-  }
 }
 
 module.exports = (router) => {
@@ -136,8 +81,6 @@ module.exports = (router) => {
       const userId = req.auth.userId;
       const b = req.body || {};
 
-      // 1. SYNCHRONISATION DE SÉCURITÉ (Ta nouvelle idée)
-      // On répare le compte juste avant de vérifier le solde
       const syncedBalances = await syncUserBalanceBeforeWithdraw(userId);
 
       const method = String(b.method || "")
@@ -146,20 +89,19 @@ module.exports = (router) => {
       if (!["USDT", "BTC", "BANK"].includes(method))
         return res.status(400).json({ ok: false, error: "Méthode invalide" });
 
-      const details = b.paymentDetails || {};
       const paymentDetails = {
-        cryptoAddress: clampStr(details.cryptoAddress, 200),
-        bankName: clampStr(details.bankName, 100),
-        bankIban: clampStr(details.bankIban, 50),
-        bankSwift: clampStr(details.bankSwift, 20),
-        bankCountry: clampStr(details.bankCountry, 50),
+        cryptoAddress: clampStr(b.paymentDetails?.cryptoAddress, 200),
+        bankName: clampStr(b.paymentDetails?.bankName, 100),
+        bankIban: clampStr(b.paymentDetails?.bankIban, 50),
+        bankSwift: clampStr(b.paymentDetails?.bankSwift, 20),
+        bankCountry: clampStr(b.paymentDetails?.bankCountry, 50),
       };
 
-      // Anti-doublon
       const active = await Withdrawal.findOne({
         user: userId,
         status: { $in: ["PENDING", "VALIDATED"] },
       }).lean();
+
       if (active)
         return res
           .status(400)
@@ -172,12 +114,10 @@ module.exports = (router) => {
       );
 
       if (total < MIN_WITHDRAW_AMOUNT) {
-        return res
-          .status(400)
-          .json({
-            ok: false,
-            error: `Solde insuffisant (${total}$, min ${MIN_WITHDRAW_AMOUNT}$)`,
-          });
+        return res.status(400).json({
+          ok: false,
+          error: `Solde insuffisant (${total}$, min ${MIN_WITHDRAW_AMOUNT}$)`,
+        });
       }
 
       const taxable =
@@ -205,14 +145,12 @@ module.exports = (router) => {
                 community: syncedBalances.communityBalance,
                 affiliation: syncedBalances.affiliationBalance,
               },
-              restoredAt: null,
-              processedAt: null,
             },
           ],
           { session },
         );
 
-        // Vider le solde après création du retrait
+        // On remet l'affichage du User à 0
         await User.updateOne(
           { _id: userId },
           {
@@ -225,28 +163,36 @@ module.exports = (router) => {
           { session },
         );
 
-        // ✅ IMPORTANT: Marquer les payouts comme "withdrawn" pour que le frontend ne les compte plus
+        const userIdStr = String(userId);
+        const userObjectId = new mongoose.Types.ObjectId(userId);
+        const userMatch = { $in: [userObjectId, userIdStr] };
+
+        // ✅ ON VERROUILLE L'ARGENT : Les factures passent en "pending_withdrawal"
         await SellerPayout.updateMany(
-          { seller: userId, status: { $in: ["available", "ready"] } },
-          { $set: { status: "withdrawn" } },
-          { session }
+          { seller: userMatch, status: { $in: ["available", "ready"] } },
+          { $set: { status: "pending_withdrawal" } },
+          { session },
         );
 
         await CoursePayout.updateMany(
-          { seller: userId, status: { $in: ["available", "ready"] } },
-          { $set: { status: "withdrawn" } },
-          { session }
+          { seller: userMatch, status: { $in: ["available", "ready"] } },
+          { $set: { status: "pending_withdrawal" } },
+          { session },
         );
 
+        // ✅ L'Affiliation est correctement verrouillée aussi
         await AffiliationCommission.updateMany(
-          { referrerId: userId, status: { $ne: "cancelled" } },
-          { $set: { status: "withdrawn" } },
-          { session }
+          {
+            referrerId: userMatch,
+            status: { $nin: ["withdrawn", "cancelled", "pending_withdrawal"] },
+          },
+          { $set: { status: "pending_withdrawal" } },
+          { session },
         );
 
         await session.commitTransaction();
 
-        // 🔔 Notification: demande de retrait créée
+        // 🔔 Notif User
         await createNotif({
           userId,
           kind: "finance_withdrawal_requested",
@@ -256,7 +202,37 @@ module.exports = (router) => {
             amount: net,
             message: `Votre demande de retrait de ${net}$ a été créée avec succès.`,
           },
-        });
+        }).catch(() => {});
+
+        // 🔔 Notif Admins
+        try {
+          const requester = await User.findById(userId)
+            .select("name profile email")
+            .lean();
+          const requesterName =
+            requester?.profile?.fullName ||
+            requester?.name ||
+            requester?.email ||
+            "Un utilisateur";
+          const admins = await User.find({ roles: "admin" })
+            .select("_id")
+            .lean();
+          const adminPromises = admins.map((admin) =>
+            createNotif({
+              userId: String(admin._id),
+              kind: "admin_withdrawal_pending",
+              payload: {
+                userName: requesterName,
+                amount: `${net} USD`,
+                withdrawalId: String(w[0]._id),
+                message: `${requesterName} demande un retrait de ${net} USD.`,
+              },
+            }),
+          );
+          await Promise.allSettled(adminPromises);
+        } catch (e) {
+          console.error("Notif admin fail:", e);
+        }
 
         return res
           .status(201)
@@ -271,7 +247,6 @@ module.exports = (router) => {
         session.endSession();
       }
     } catch (e) {
-      console.error(`[WITHDRAW ERROR ${rid}]`, e);
       return res
         .status(500)
         .json({ ok: false, error: e.message || "Erreur serveur" });
@@ -297,7 +272,9 @@ module.exports = (router) => {
             w.method === "BANK"
               ? w.paymentDetails?.bankIban
               : w.paymentDetails?.cryptoAddress,
+          paymentDetails: w.paymentDetails || {},
           rejectionReason: w.rejectionReason,
+          failureReason: w.failureReason,
           payoutRef: w.payoutRef,
           proof: w.proof || null,
         })),

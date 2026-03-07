@@ -24,32 +24,47 @@ const {
 async function canAccessCourse(auth, course) {
   if (!course) return false;
 
+  const userId = auth?.userId || null;
+  const isOwner = userId && String(course.ownerId || "") === String(userId || "");
+
+  if (userId) {
+    if (isOwner) return true;
+    
+    let isAdmin = false;
+    try {
+      const me = await User.findById(userId).select({ roles: 1 }).lean();
+      isAdmin = Array.isArray(me?.roles) && me.roles.includes("admin");
+      if (isAdmin) return true;
+    } catch {
+      /* ignore */
+    }
+
+    const enrolled = await isUserEnrolled(userId, course._id);
+    if (enrolled) return true;
+  }
+
+  // If we reach here, user is neither enrolled, owner, nor admin.
+  // Check community status. If deleted, no one else can access.
+  const community = await Community.findOne({ _id: course.communityId })
+    .select({ deletedAt: 1, status: 1, ownerId: 1 })
+    .lean();
+    
+  if (!community || community.deletedAt || community.status === "deleted_by_admin" || community.status === "deleted_by_owner") {
+    return false; // Access denied because community is deleted
+  }
+
   const visibility = course.visibility === "private" ? "private" : "public";
 
-  const userId = auth?.userId || null;
-
-  // 🔐 Si cours privé → contrôle d'appartenance à la communauté
   if (visibility === "private") {
     if (!userId) return false;
 
-    const [community, membership] = await Promise.all([
-      Community.findOne({
-        _id: course.communityId,
-        deletedAt: null,
-      })
-        .select({ ownerId: 1 })
-        .lean(),
-      CommunityMember.findOne({
-        communityId: course.communityId,
-        userId,
-        $or: [{ status: "active" }, { status: { $exists: false } }],
-      })
-        .select({ _id: 1 })
-        .lean(),
-    ]);
+    const membership = await CommunityMember.findOne({
+      communityId: course.communityId,
+      userId,
+      $or: [{ status: "active" }, { status: { $exists: false } }],
+    }).select({ _id: 1 }).lean();
 
-    const isOwnerCommunity =
-      community && String(community.ownerId) === String(userId);
+    const isOwnerCommunity = String(community.ownerId) === String(userId);
     const isMember = !!membership;
 
     if (!isOwnerCommunity && !isMember) {
@@ -57,26 +72,10 @@ async function canAccessCourse(auth, course) {
     }
   }
 
-  // 🔓 À partir d'ici, on applique l'ancienne règle d'accès au cours
-
   // cours gratuit → toujours OK (si le bloc au-dessus n'a pas rejeté pour private)
   if (course.priceType === "free") return true;
 
-  if (!userId) return false;
-
-  const isOwner = String(course.ownerId || "") === String(userId || "");
-
-  let isAdmin = false;
-  try {
-    const me = await User.findById(userId).select({ roles: 1 }).lean();
-    isAdmin = Array.isArray(me?.roles) && me.roles.includes("admin");
-  } catch {
-    /* ignore */
-  }
-
-  const enrolled = await isUserEnrolled(userId, course._id);
-
-  return isOwner || isAdmin || enrolled;
+  return false;
 }
 
 module.exports = (router) => {

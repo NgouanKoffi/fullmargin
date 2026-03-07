@@ -330,14 +330,32 @@ router.post("/:requestId/approve", requireAuth, async (req, res) => {
         { _id: r._id },
         { $set: { status: "approved", reason: "" } }
       );
-      const exists = await CommunityMember.exists({
+
+      // 🔑 On cherche le document membre existant SANS filtrer par status
+      // (l'utilisateur a peut-être déjà quitté la communauté → status: "left")
+      const existingMember = await CommunityMember.findOne({
         communityId: r.communityId,
         userId: r.userId,
       });
-      if (!exists) {
+
+      if (existingMember) {
+        // Si le membre existe mais est "left", on le réactive
+        if (existingMember.status === "left") {
+          existingMember.status = "active";
+          existingMember.leftAt = null;
+          await existingMember.save();
+          await Community.updateOne(
+            { _id: r.communityId },
+            { $inc: { membersCount: 1 } }
+          );
+        }
+        // Si status est déjà "active", rien à faire
+      } else {
+        // Aucun document → on crée un nouveau membre actif
         await CommunityMember.create({
           communityId: r.communityId,
           userId: r.userId,
+          status: "active",
         });
         await Community.updateOne(
           { _id: r.communityId },

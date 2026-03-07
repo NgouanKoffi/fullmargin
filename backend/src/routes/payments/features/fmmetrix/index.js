@@ -11,16 +11,18 @@ router.get("/fm-metrix/confirm", Controller.confirm);
 router.get("/fm-metrix/access", Controller.getAccess);
 router.get("/fm-metrix/history", Controller.getHistory);
 
+// ✅ NOUVELLE ROUTE POUR ANNULER LE RENOUVELLEMENT AUTOMATIQUE
+router.post("/fm-metrix/cancel", Controller.cancelRenew);
+
+// ✅ NOUVELLE ROUTE POUR VALIDER LE SDK FEEXPAY DIRECTEMENT
+router.post("/fm-metrix/verify-feexpay", Controller.verifyFeexPay);
+
 // --- ROUTES ADMIN ---
 router.get("/admin/fm-metrix/list", AdminController.listAll);
-
-// 👇 LA ROUTE QUI MANQUAIT EST ICI 👇
 router.get("/admin/fm-metrix/crypto/pending", AdminController.listPending);
-
 router.post("/admin/fm-metrix/crypto/approve", AdminController.approveCrypto);
 router.post("/admin/fm-metrix/crypto/reject", AdminController.rejectCrypto);
 router.post("/admin/fm-metrix/grant", AdminController.grantManual);
 router.delete("/admin/fm-metrix/access/:userId", AdminController.revoke);
 
-// ✅ IMPORTANT : export direct
 module.exports = router;

@@ -309,7 +309,7 @@ const DEFAULTS = {
   </p>
 
   <p style="margin:0">
-    <a href="https://fullmargin.net/fm-metrix/a-propos"
+    <a href="https://fullmargin.net/fm-metrix/tarifs"
        style="display:inline-block;background:#111;color:#fff;text-decoration:none;padding:11px 16px;border-radius:12px;font-weight:800">
       Renouveler / Gérer mon abonnement
     </a>
@@ -374,7 +374,7 @@ const DEFAULTS = {
   </p>
 
   <p style="margin:0">
-    <a href="https://fullmargin.net/fm-metrix/a-propos"
+    <a href="https://fullmargin.net/fm-metrix/tarifs"
        style="display:inline-block;background:#111;color:#fff;text-decoration:none;padding:11px 16px;border-radius:12px;font-weight:800">
       Renouveler
     </a>
@@ -632,6 +632,80 @@ const DEFAULTS = {
   </p>
 
   <p style="margin-top:10px">— L'équipe {{app.name}}</p>
+</div>`.trim(),
+  },
+
+  /* ✅ NOUVEAU : NOTIFICATION VENDEUR DE COURS (FORMATION) */
+  "course.sale_notification": {
+    subject: "Nouvelle vente de votre formation ! 🎉",
+    html: `
+<div style="font-family:Inter,Arial,sans-serif;font-size:16px;color:#111;line-height:1.55">
+  <p style="font-size:18px;font-weight:800;margin:0 0 14px">
+    Félicitations {{user.firstName}} ! 🚀
+  </p>
+  <p style="margin:0 0 10px">
+    Vous avez une nouvelle inscription payante.
+  </p>
+  <div style="background:#f7f7fb;border:1px solid #e5e7eb;border-radius:14px;padding:16px;margin:12px 0 16px">
+    <div style="margin:0 0 8px"><b>Formation :</b> {{course.title}}</div>
+    <div style="margin:0 0 8px"><b>Montant net gagné :</b> <span style="color:#059669;font-weight:800">{{earnings}}</span></div>
+  </div>
+  <p style="margin:0">
+    <a href="https://fullmargin.net/communaute/mon-espace?tab=ventes"
+       style="display:inline-block;background:#111;color:#fff;text-decoration:none;padding:11px 16px;border-radius:12px;font-weight:800">
+      Voir mes ventes
+    </a>
+  </p>
+  <p style="margin-top:10px;font-size:14px;color:#6b7280">— L’équipe {{app.name}}</p>
+</div>`.trim(),
+  },
+
+  "admin.user_promoted": {
+    subject: "Promotion au rang d'administrateur 🛡️",
+    html: `
+<div style="font-family:Inter,Arial,sans-serif;font-size:16px;color:#111;line-height:1.6">
+  <p style="font-size:18px;">Bonjour <b>{{user.firstName}}</b>,</p>
+  <p>Félicitations ! Un administrateur vient de vous accorder des <b>droits d'administration</b> sur la plateforme <b>{{app.name}}</b>.</p>
+  
+  <div style="background:#f4f4f9; border-radius:14px; padding:20px; margin:20px 0; border:1px solid #e2e8f0;">
+    <p style="margin-top:0; font-weight:700; color:#7c3aed;">Accès accordés :</p>
+    <ul style="margin:0; padding-left:20px; color:#334155;">
+      {{{permissionsString}}}
+    </ul>
+  </div>
+
+  <div style="background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:15px; margin:20px 0; color:#9a3412; font-size:14px;">
+    <b>⚠️ Important :</b> Pour que ces nouveaux accès soient activés, merci de vous <b>déconnecter puis de vous reconnecter</b> à votre compte.
+  </div>
+
+  <p>Vous pouvez désormais accéder à votre espace de gestion personnalisé via le bouton ci-dessous :</p>
+  
+  <p style="margin:24px 0 text-align:center;">
+    <a href="{{redirectUrl}}" style="display:inline-block;background:#7c3aed;color:#fff;text-decoration:none;padding:12px 24px;border-radius:12px;font-weight:700;box-shadow:0 4px 6px rgba(124,58,237,0.2);">
+      Accéder au Panel Admin
+    </a>
+  </p>
+
+  <p style="font-size:14px; color:#64748b;">Note : Si vous ne voyez pas certains menus, c'est que vos accès sont limités aux sections listées ci-dessus.</p>
+  <p>— L'équipe {{app.name}}</p>
+</div>`.trim(),
+  },
+  "admin.user_demoted": {
+    subject: "Mise à jour de vos accès 🔒",
+    html: `
+<div style="font-family:Inter,Arial,sans-serif;font-size:16px;color:#111;line-height:1.6">
+  <p style="font-size:18px;">Bonjour <b>{{user.firstName}}</b>,</p>
+  <p>Nous vous informons que vos privilèges d'administrateur sur <b>{{app.name}}</b> ont été <b>révoqués</b>.</p>
+  
+  <div style="background:#fff1f2; border-radius:14px; padding:20px; margin:20px 0; border:1px solid #fecdd3; color:#9f1239;">
+    <p style="margin:0 0 10px 0; font-weight:600; font-size:16px;">Votre compte a été rétrogradé au rang de Membre Standard.</p>
+    <p style="margin:0; font-size:14px;"><b>⚠️ Important :</b> Merci de vous <b>déconnecter puis de vous reconnecter</b> à votre compte pour mettre à jour votre interface.</p>
+  </div>
+
+  <p>Vous conservez néanmoins l'accès normal à vos services personnels, vos communautés et votre portefeuille.</p>
+  
+  <p style="margin-top:24px; font-size:14px; color:#64748b;">Si vous pensez qu'il s'agit d'une erreur, veuillez contacter la direction.</p>
+  <p>— L'équipe {{app.name}}</p>
 </div>`.trim(),
   },
 };

@@ -1,4 +1,5 @@
 // backend/src/routes/communaute/posts/listPosts.js
+const mongoose = require("mongoose");
 const {
   Community,
   CommunityPost,
@@ -36,13 +37,13 @@ module.exports = async function listPosts(req, res) {
     if (userId && scope) {
       const [members, owned] = await Promise.all([
         CommunityMember.find({
-          userId,
+          userId: new mongoose.Types.ObjectId(userId),
           $or: [{ status: "active" }, { status: { $exists: false } }],
         })
           .select({ communityId: 1 })
           .lean(),
         Community.find({
-          ownerId: userId,
+          ownerId: new mongoose.Types.ObjectId(userId),
           deletedAt: null,
         })
           .select({ _id: 1 })
@@ -52,6 +53,11 @@ module.exports = async function listPosts(req, res) {
       for (const m of members) myCommunityIds.add(String(m.communityId));
       for (const c of owned) myCommunityIds.add(String(c._id));
     }
+
+    // Convertir les IDs string en ObjectId pour éviter le mismatch de type MongoDB
+    const myCommunityObjectIds = Array.from(myCommunityIds)
+      .filter((id) => /^[a-f0-9]{24}$/i.test(id))
+      .map((id) => new mongoose.Types.ObjectId(id));
 
     // ─── Construction de la requête principale ───
     const q = {
@@ -63,19 +69,19 @@ module.exports = async function listPosts(req, res) {
     //    Le communityId seul sert pour la vue d'une communauté précise (pas de scope).
     if (userId && scope === "my-communities") {
       // "Ma communauté" → posts des communautés où je suis membre/owner
-      if (myCommunityIds.size === 0) {
+      if (myCommunityObjectIds.length === 0) {
         // pas d'abonnements → retourner vide directement
         return res.json({
           ok: true,
           data: { items: [], page, limit, hasMore: false, total: 0 },
         });
       }
-      q.communityId = { $in: Array.from(myCommunityIds) };
+      q.communityId = { $in: myCommunityObjectIds };
     } else if (userId && scope === "public-others") {
       // "Autres communautés" → posts publics des communautés où je ne suis PAS membre
       q.visibility = "public";
-      if (myCommunityIds.size > 0) {
-        q.communityId = { $nin: Array.from(myCommunityIds) };
+      if (myCommunityObjectIds.length > 0) {
+        q.communityId = { $nin: myCommunityObjectIds };
       }
     } else if (hasId) {
       // vue d'une communauté précise (pas de scope)
@@ -111,14 +117,14 @@ module.exports = async function listPosts(req, res) {
         const [members, owned] = await Promise.all([
           CommunityMember.find({
             communityId: { $in: communityIds },
-            userId,
+            userId: new mongoose.Types.ObjectId(userId),
             $or: [{ status: "active" }, { status: { $exists: false } }],
           })
             .select({ communityId: 1 })
             .lean(),
           Community.find({
             _id: { $in: communityIds },
-            ownerId: userId,
+            ownerId: new mongoose.Types.ObjectId(userId),
             deletedAt: null,
           })
             .select({ _id: 1 })
@@ -232,8 +238,9 @@ module.exports = async function listPosts(req, res) {
       };
     });
 
-    // hasMore basé sur le total réel
-    const hasMore = page * limit < totalCount;
+    // hasMore basé sur le nombre de résultats visibles (après filtre de visibilité)
+    // On utilise visibleRows.length pour éviter les bugs quand le filtre réduit le résultat
+    const hasMore = visibleRows.length === limit && page * limit < totalCount;
 
     return res.json({
       ok: true,

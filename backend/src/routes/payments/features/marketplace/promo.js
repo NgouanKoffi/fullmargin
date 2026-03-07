@@ -1,3 +1,4 @@
+// C:\Users\ADMIN\Desktop\fullmargin-site\backend\src\routes\payments\features\marketplace\promo.js
 const Promo = require("../../../../models/promoCode.model");
 
 /* -------------------- Validation des promos -------------------- */

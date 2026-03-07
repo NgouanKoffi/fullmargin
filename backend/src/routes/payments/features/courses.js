@@ -1,8 +1,10 @@
+// backend/src/routes/payments/features/courses.js
+
 /**
  * ROUTES HTTP pour les paiements Cours :
  * - création d’une CourseOrder
- * - checkout Stripe ou Crypto (Manuel)
- * - refresh de paiement (Stripe uniquement, Crypto se fait via Admin)
+ * - checkout Stripe / Crypto (Manuel) / FeexPay (Mobile Money)
+ * - refresh de paiement
  * - lecture des paiements utilisateur
  */
 
@@ -301,11 +303,12 @@ async function hydrateCourseOrder({ order, session, pi }) {
 }
 
 // ----------------------------------------------
-// ROUTE : CHECKOUT cours (Stripe / Crypto)
+// ROUTE : CHECKOUT cours (Stripe / Crypto / FeexPay)
 // ----------------------------------------------
 router.post("/:id/checkout", requireAuth, async (req, res) => {
   try {
     const userId = req.auth.userId;
+    // On normalise le provider demandé
     const method = String(req.body?.method || "stripe").toLowerCase();
 
     const base = await createCourseOrderForPayment({
@@ -321,46 +324,73 @@ router.post("/:id/checkout", requireAuth, async (req, res) => {
 
     const { order, course } = base;
 
-    // --------------------------
+    // ======================================
+    // 🟠 FEEXPAY (Mobile Money) - FIX SDK REACT
+    // ======================================
+    if (method === "feexpay") {
+      // ✅ On prépare juste la commande pour le SDK React. Plus de redirection serveur.
+      order.status = "requires_payment";
+      order.stripe = {
+        ...(order.stripe || {}),
+        paymentMethod: {
+          type: "feexpay", // Marqueur important pour le refresh et l'affichage
+          brand: "Mobile Money",
+        },
+      };
+      await order.save();
+
+      console.log(
+        `[FEEXPAY] Course Order ${order._id} initialized for SDK React`,
+      );
+
+      res.set("Cache-Control", "no-store");
+      return res.status(200).json({
+        ok: true,
+        data: {
+          orderId: String(order._id),
+          amount: order.unitAmount,
+          currency: order.currency,
+        },
+      });
+    }
+
+    // ======================================
     // ✅ MANUAL CRYPTO (WhatsApp)
-    // --------------------------
+    // ======================================
     if (method === "crypto") {
       const orderId = String(order._id);
 
       // Génération de la REF pour WhatsApp
       const reference = `REF-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-      // On met à jour l'order avec les infos crypto
-      // On utilise le champ stripe.paymentIntentId pour stocker la REF
-      order.status = "requires_payment"; // Reste en attente
+      order.status = "requires_payment";
       order.stripe = {
         ...(order.stripe || {}),
         paymentIntentId: reference,
         paymentMethod: {
           type: "manual_crypto",
-          brand: req.body?.network || "USDT", // ex: BEP20
+          brand: req.body?.network || "USDT",
         },
         customerEmail: req.body?.customer_email || null,
       };
 
       await order.save();
 
-      // On renvoie juste la REF au front pour qu'il ouvre WhatsApp
       res.set("Cache-Control", "no-store");
       return res.status(200).json({
         ok: true,
         data: {
-          url: null, // Pas de redirect URL pour crypto manuel
+          url: null,
           orderId,
-          reference: reference, // La REF à envoyer sur WhatsApp
-          manual: true, // Flag pour le front
+          reference: reference,
+          manual: true,
         },
       });
     }
 
-    // --------------------------
-    // STRIPE Checkout (défaut)
-    // --------------------------
+    // ======================================
+    // 🔵 STRIPE Checkout (défaut)
+    // ======================================
     const successUrl =
       `${PUBLIC_WEB}/communaute/mon-espace?tab=achats` +
       `&paid=1` +
@@ -407,7 +437,7 @@ router.post("/:id/checkout", requireAuth, async (req, res) => {
 });
 
 // ----------------------------------------------
-// ROUTE : REFRESH paiement (Stripe uniquement)
+// ROUTE : REFRESH paiement
 // ----------------------------------------------
 router.post("/refresh", requireAuth, async (req, res) => {
   try {
@@ -431,21 +461,26 @@ router.post("/refresh", requireAuth, async (req, res) => {
     if (!order)
       return res.status(404).json({ ok: false, error: "Commande introuvable" });
 
-    // Si c'est du crypto manuel, on ne refresh pas via Stripe
-    if (order.stripe?.paymentMethod?.type === "manual_crypto") {
+    // 🛡️ Protection : Si Crypto ou FeexPay, on ne demande rien à Stripe
+    const methodType = order.stripe?.paymentMethod?.type;
+    if (methodType === "manual_crypto" || methodType === "feexpay") {
       return res.json({
         ok: true,
         data: {
           order: {
             id: String(order._id),
             status: order.status,
-            // ... autres champs si besoin
+            // Pour FeexPay/Crypto, le statut est mis à jour par le Webhook (ou admin)
+            paidAt: order.paidAt ? order.paidAt.toISOString() : null,
+            course: String(order.course),
+            stripe: order.stripe, // On renvoie ce qu'on a
           },
           enrolled: order.status === "succeeded",
         },
       });
     }
 
+    // --- LOGIQUE STRIPE CLASSIQUE ---
     let session = null,
       pi = null;
 
@@ -459,7 +494,8 @@ router.post("/refresh", requireAuth, async (req, res) => {
     }
 
     const pid = String(paymentIntentId || order?.stripe?.paymentIntentId || "");
-    if (!pi && pid) {
+    // On évite d'appeler Stripe si le PID ressemble à une REF interne (ex: REF-123...)
+    if (!pi && pid && !pid.startsWith("REF-")) {
       try {
         pi = await stripe.paymentIntents.retrieve(pid, {
           expand: [
@@ -471,8 +507,10 @@ router.post("/refresh", requireAuth, async (req, res) => {
       } catch {}
     }
 
-    await hydrateCourseOrder({ order, session, pi });
-    await order.save();
+    if (session || pi) {
+      await hydrateCourseOrder({ order, session, pi });
+      await order.save();
+    }
 
     if (order.status === "succeeded") {
       await ensurePayoutsForCourseOrder(order);

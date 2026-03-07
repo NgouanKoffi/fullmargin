@@ -9,6 +9,9 @@ const {
   handleMarketplacePaymentEvent,
 } = require("../payments/handlers/marketplace.handler");
 
+// ✅ IMPORT DE LA FONCTION DE NOTIFICATION
+const { createNotif } = require("../../utils/notifications");
+
 // ... (Garde tes fonctions requireAuth, requireAdminOrAgent, buildCryptoFilter inchangées) ...
 function requireAuth(req, res, next) {
   try {
@@ -74,7 +77,7 @@ router.get("/pending", requireAuth, requireAdminOrAgent, async (req, res) => {
 });
 
 /* ============================================================
-   POST /:id/approve - NETTOYÉ : PLUS D'ENVOI DE MAIL ICI
+   POST /:id/approve - Validation Crypto
 ============================================================ */
 router.post(
   "/:id/approve",
@@ -86,9 +89,12 @@ router.post(
       const note = req.body?.note;
       const txHash = req.body?.txHash;
 
-      // On update juste les infos crypto (optionnel mais bien pour la trace)
-      // IMPORTANT : On NE TOUCHE PAS au statut ici si possible, ou on le met, mais le handler a son verrou.
-      // Le mieux est de laisser le handler faire le switch final, mais pour l'UX admin on peut update les métadonnées.
+      // Récupération de l'ordre pour avoir l'utilisateur cible
+      const order = await Order.findById(id);
+      if (!order)
+        return res.status(404).json({ ok: false, error: "Introuvable" });
+
+      // Update des infos crypto
       await Order.updateOne(
         { _id: id },
         {
@@ -102,14 +108,27 @@ router.post(
       );
 
       // ✅ ON DÉCLENCHE LE HANDLER
-      // C'est LUI qui va passer le status à 'succeeded', envoyer les mails et livrer.
-      // Grâce au verrouillage atomique, il ne le fera qu'une seule fois.
       await handleMarketplacePaymentEvent({
         status: "success",
         meta: { orderId: id },
       });
 
-      return res.json({ ok: true });
+      // 🔔 NOTIFICATION ACHETEUR (Succès)
+      if (order.user) {
+        await createNotif({
+          userId: String(order.user),
+          kind: "marketplace_purchase_made", // Code existant côté front
+          payload: {
+            orderId: id,
+            message: `✅ Bonne nouvelle ! Votre paiement crypto de ${order.totalAmount} ${order.currency.toUpperCase()} a été validé. Vos produits sont disponibles.`,
+          },
+        }).catch((err) => console.warn("Erreur notif approval:", err));
+      }
+
+      return res.json({
+        ok: true,
+        data: { order: { ...order.toObject(), status: "succeeded" } },
+      });
     } catch (e) {
       console.error("Approve error:", e);
       return res.status(500).json({ ok: false, error: "Erreur serveur" });
@@ -118,7 +137,7 @@ router.post(
 );
 
 /* ============================================================
-   POST /:id/reject - GARDE L'ENVOI DE MAIL (Car le handler ne gère pas les refus)
+   POST /:id/reject - Rejet Crypto
 ============================================================ */
 router.post(
   "/:id/reject",
@@ -144,17 +163,29 @@ router.post(
 
       if (!order) return res.status(404).json({ ok: false });
 
-      // ✅ MAIL REFUS (Géré ici)
+      // ✅ MAIL REFUS
       if (order.user?.email) {
         await Mailer.sendMarketplaceCryptoRejectedEmail({
           to: order.user.email,
           fullName: order.user.profile?.fullName || order.user.name || "Client",
-          productTitle: order.items?.[0]?.title || "Commande",
+          productTitle: order.items?.[0]?.title || "Commande Marketplace",
           reason,
         }).catch((err) => console.error("Mail error:", err));
       }
 
-      return res.json({ ok: true });
+      // 🔔 NOTIFICATION ACHETEUR (Refus avec motif)
+      if (order.user) {
+        await createNotif({
+          userId: String(order.user._id),
+          kind: "marketplace_payment_rejected", // Type générique, le frontend affichera le message brut (parfait pour les refus libres)
+          payload: {
+            orderId: id,
+            message: `❌ Votre paiement crypto a été refusé. Motif : ${reason}`,
+          },
+        }).catch((err) => console.warn("Erreur notif rejection:", err));
+      }
+
+      return res.json({ ok: true, data: { order } });
     } catch (e) {
       return res.status(500).json({ ok: false });
     }

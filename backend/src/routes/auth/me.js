@@ -33,6 +33,9 @@ router.get("/me", async (req, res) => {
       avatarUrl: user.avatarUrl || "",
       coverUrl: user.coverUrl || "",
       roles,
+      // ✅ LA CORRECTION EST ICI : On renvoie enfin les permissions au frontend !
+      adminPermissions: user.adminPermissions || [],
+
       // infos pratiques directement exploitables au front
       isAdmin,
       isAgent,
@@ -49,8 +52,8 @@ router.get("/me", async (req, res) => {
 /**
  * Utilise les sessions de présence au lieu de LoginHistory.
  * Shape retourné:
- *  - id, at (== startedAt), ua, method="presence-session", success=true
- *  - bonus: startedAt, endedAt, durationMs, endReason
+ * - id, at (== startedAt), ua, method="presence-session", success=true
+ * - bonus: startedAt, endedAt, durationMs, endReason
  */
 router.get("/logins", async (req, res) => {
   try {

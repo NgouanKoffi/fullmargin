@@ -1,4 +1,4 @@
-// C:\Users\ADMIN\Desktop\fullmargin-site\backend\src\services\fmmetrixNotifier.service.js
+// backend/src/services/fmmetrixNotifier.service.js
 "use strict";
 
 const User = require("../models/user.model");
@@ -8,6 +8,8 @@ const {
   sendFmMetrixRenewedEmail,
   sendFmMetrixManualGrantEmail,
   sendFmMetrixCanceledEmail,
+  sendFmMetrixExpiringSoonEmail, // ✅ AJOUTÉ
+  sendFmMetrixExpiredEmail, // ✅ AJOUTÉ
 } = require("../utils/mailer");
 
 function pickFullName(u) {
@@ -203,8 +205,74 @@ async function notifyCanceled({ userId, endedAt, reason, dedupeKey }) {
   });
 }
 
+/**
+ * ✅ Prévention d'expiration à J-3
+ */
+async function notifyExpiringSoon({ userId, validUntil, daysLeft, dedupeKey }) {
+  const contact = await getUserContact(userId);
+  if (!contact) return { ok: false, skipped: true, reason: "no_email" };
+
+  const kind = "fmmetrix.subscription_expiring";
+
+  const payload = {
+    feature: "fm-metrix",
+    title: "Expiration prochaine ⏳",
+    message: `Votre abonnement FM-Metrix Premium expire dans ${daysLeft} jours.`,
+    validUntil,
+    daysLeft,
+    dedupeKey,
+  };
+
+  return notifyOnce({
+    userId,
+    kind,
+    payload,
+    sendEmailFn: async () => {
+      return sendFmMetrixExpiringSoonEmail({
+        to: contact.email,
+        fullName: contact.fullName,
+        validUntil,
+        daysLeft,
+      });
+    },
+  });
+}
+
+/**
+ * ✅ Expiration le Jour J (Abonnement terminé)
+ */
+async function notifyExpired({ userId, validUntil, dedupeKey }) {
+  const contact = await getUserContact(userId);
+  if (!contact) return { ok: false, skipped: true, reason: "no_email" };
+
+  const kind = "fmmetrix.subscription_expired";
+
+  const payload = {
+    feature: "fm-metrix",
+    title: "Abonnement expiré ❌",
+    message: "Votre abonnement FM-Metrix Premium est arrivé à expiration.",
+    validUntil,
+    dedupeKey,
+  };
+
+  return notifyOnce({
+    userId,
+    kind,
+    payload,
+    sendEmailFn: async () => {
+      return sendFmMetrixExpiredEmail({
+        to: contact.email,
+        fullName: contact.fullName,
+        validUntil,
+      });
+    },
+  });
+}
+
 module.exports = {
   notifyActivatedOrRenewed,
   notifyManualGrant,
   notifyCanceled,
+  notifyExpiringSoon, // ✅ AJOUTÉ
+  notifyExpired, // ✅ AJOUTÉ
 };

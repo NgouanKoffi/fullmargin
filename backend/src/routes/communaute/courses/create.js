@@ -210,8 +210,8 @@ module.exports = (router) => {
         const key = e?.keyPattern?.slug
           ? "SLUG_TAKEN"
           : e?.keyPattern?.titleLower
-          ? "TITLE_TAKEN"
-          : "DUP_KEY";
+            ? "TITLE_TAKEN"
+            : "DUP_KEY";
 
         return res.status(409).json({
           ok: false,

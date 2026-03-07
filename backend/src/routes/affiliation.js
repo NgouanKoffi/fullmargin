@@ -6,7 +6,6 @@ const User = require("../models/user.model");
 const AffiliationCommission = require("../models/affiliationCommission.model");
 const { ok, fail, verifyAuthHeader } = require("./auth/_helpers");
 
-// ✅ utilise le helper pour choisir la bonne base (dev/prod)
 const { buildFrontendBase } = require("./auth/_helpers");
 const PUBLIC_WEB_BASE_URL =
   process.env.PUBLIC_WEB_BASE_URL || buildFrontendBase();
@@ -31,7 +30,6 @@ async function buildAffiliationPayload(me) {
     .sort({ createdAt: -1 })
     .lean();
 
-  // 👇 on récupère aussi ce qu'il a gagné comme parrain
   const commissions = await AffiliationCommission.find({
     referrerId: me._id,
   })
@@ -39,10 +37,22 @@ async function buildAffiliationPayload(me) {
     .lean();
 
   const totalByCurrency = {};
+  const lifetimeByCurrency = {}; // Pour garder une trace du total généré à vie
+
   for (const c of commissions) {
     const cur = c.currency || "usd";
-    if (!totalByCurrency[cur]) totalByCurrency[cur] = 0;
-    totalByCurrency[cur] += c.amount || 0;
+
+    // Calcul du total généré à vie (Historique)
+    if (!lifetimeByCurrency[cur]) lifetimeByCurrency[cur] = 0;
+    lifetimeByCurrency[cur] += c.amount || 0;
+
+    // ✅ CORRECTION CRUCIALE : On ne compte que les commissions "disponibles" pour le solde retirable
+    // (On ignore les statuts "withdrawn", "pending_withdrawal" et "cancelled")
+    const status = c.status || "available"; // Rétrocompatibilité si le champ est vide
+    if (status === "available") {
+      if (!totalByCurrency[cur]) totalByCurrency[cur] = 0;
+      totalByCurrency[cur] += c.amount || 0;
+    }
   }
 
   return {
@@ -64,9 +74,11 @@ async function buildAffiliationPayload(me) {
       amount: c.amount,
       currency: c.currency || "usd",
       source: c.source || "fm-metrix",
+      status: c.status || "available", // On expose le statut au frontend
       createdAt: c.createdAt,
     })),
-    totals: totalByCurrency,
+    totals: totalByCurrency, // Solde actuel retirable
+    lifetimeTotals: lifetimeByCurrency, // Total historique généré
   };
 }
 

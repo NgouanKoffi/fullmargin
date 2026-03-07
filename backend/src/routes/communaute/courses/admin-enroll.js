@@ -1,9 +1,11 @@
+// backend/src/routes/communaute/courses/admin-enroll.js
 const {
   getAuth,
   Course,
   CourseEnrollment,
   User,
   assertCommunityOwner,
+  Community, // ✅ Ajouté pour récupérer le nom de la communauté
 } = require("./_shared");
 
 const { createNotif } = require("../../../utils/notifications");
@@ -14,8 +16,8 @@ module.exports = (router) => {
    * body: { userId }
    *
    * ➜ Le propriétaire de la communauté peut inscrire n’importe quel user
-   *    à ce cours, PAYANT ou GRATUIT, sans passer par Stripe ni par les
-   *    contraintes d’abonnement.
+   * à ce cours, PAYANT ou GRATUIT, sans passer par Stripe ni par les
+   * contraintes d’abonnement.
    */
   router.post("/:id/admin-enroll", async (req, res) => {
     try {
@@ -52,14 +54,21 @@ module.exports = (router) => {
       }
 
       // 🔐 Vérifier que l'appelant est bien propriétaire de la communauté
+      let communityName = "";
       if (course.communityId) {
         const checkOwner = await assertCommunityOwner(
           course.communityId,
-          auth.userId
+          auth.userId,
         );
         if (!checkOwner.ok) {
           return res.status(403).json({ ok: false, error: "Interdit" });
         }
+
+        // Récupérer le nom de la communauté pour la notif
+        const comm = await Community.findById(course.communityId)
+          .select("name")
+          .lean();
+        if (comm) communityName = comm.name;
       }
 
       // Vérifier que la cible existe
@@ -77,14 +86,13 @@ module.exports = (router) => {
       await CourseEnrollment.updateOne(
         payload,
         { $setOnInsert: payload },
-        { upsert: true }
+        { upsert: true },
       );
 
       const enrolled = await CourseEnrollment.findOne(payload).lean();
 
       // 🔔 Notifications :
-      //   1) à l’utilisateur : "on t’a inscrit à un cours"
-      //   2) à l’admin : "tu as inscrit X à ce cours"
+      //   1) UNIQUEMENT à l’utilisateur : "on t’a inscrit à un cours"
       try {
         await createNotif({
           userId,
@@ -94,20 +102,8 @@ module.exports = (router) => {
           payload: {
             courseId: String(course._id),
             courseTitle: course.title || "Formation",
+            communityName, // ✅ Ajouté ici
             byUserId: String(auth.userId),
-          },
-        });
-
-        await createNotif({
-          userId: auth.userId,
-          kind: "course_admin_enrolled_user",
-          communityId: course.communityId ? String(course.communityId) : null,
-          courseId: course._id,
-          payload: {
-            courseId: String(course._id),
-            courseTitle: course.title || "Formation",
-            targetUserId: String(userId),
-            targetFullName: targetUser.fullName || "",
           },
         });
       } catch (e) {
@@ -172,20 +168,22 @@ module.exports = (router) => {
       }
 
       // 🔐 Vérifier owner
+      let communityName = "";
       if (course.communityId) {
         const checkOwner = await assertCommunityOwner(
           course.communityId,
-          auth.userId
+          auth.userId,
         );
         if (!checkOwner.ok) {
           return res.status(403).json({ ok: false, error: "Interdit" });
         }
-      }
 
-      // On récupère le user pour la notif admin
-      const targetUser = await User.findOne({ _id: userId })
-        .select({ fullName: 1 })
-        .lean();
+        // Récupérer le nom de la communauté pour la notif
+        const comm = await Community.findById(course.communityId)
+          .select("name")
+          .lean();
+        if (comm) communityName = comm.name;
+      }
 
       // On supprime l’inscription si elle existe
       await CourseEnrollment.deleteOne({
@@ -194,8 +192,7 @@ module.exports = (router) => {
       });
 
       // 🔔 Notifications :
-      //   1) au user : "on t’a retiré de la formation"
-      //   2) à l’admin : "tu as retiré X de cette formation"
+      //   1) UNIQUEMENT au user : "on t’a retiré de la formation"
       try {
         await createNotif({
           userId,
@@ -205,20 +202,8 @@ module.exports = (router) => {
           payload: {
             courseId: String(course._id),
             courseTitle: course.title || "Formation",
+            communityName, // ✅ Ajouté ici
             byUserId: String(auth.userId),
-          },
-        });
-
-        await createNotif({
-          userId: auth.userId,
-          kind: "course_admin_unenrolled_user",
-          communityId: course.communityId ? String(course.communityId) : null,
-          courseId: course._id,
-          payload: {
-            courseId: String(course._id),
-            courseTitle: course.title || "Formation",
-            targetUserId: String(userId),
-            targetFullName: targetUser?.fullName || "",
           },
         });
       } catch (e) {
@@ -246,7 +231,7 @@ module.exports = (router) => {
    * GET /communaute/courses/:id/admin-enrollment?userId=xxx
    *
    * ➜ Permet à l’admin de savoir si un user a déjà accès à ce cours.
-   *    Utilisé par le front pour afficher soit "Inscrire" soit "Retirer l’accès".
+   * Utilisé par le front pour afficher soit "Inscrire" soit "Retirer l’accès".
    */
   router.get("/:id/admin-enrollment", async (req, res) => {
     try {
@@ -278,7 +263,7 @@ module.exports = (router) => {
       if (course.communityId) {
         const checkOwner = await assertCommunityOwner(
           course.communityId,
-          auth.userId
+          auth.userId,
         );
         if (!checkOwner.ok) {
           return res.status(403).json({ ok: false, error: "Interdit" });

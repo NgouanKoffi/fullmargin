@@ -42,7 +42,7 @@ module.exports = (router) => {
       // On ferme proprement les lives encore "live" de cette communauté
       await CommunityLive.updateMany(
         { communityId, status: "live" },
-        { $set: { status: "ended", endedAt: new Date() } }
+        { $set: { status: "ended", endedAt: new Date() } },
       );
 
       const now = new Date();
@@ -52,7 +52,7 @@ module.exports = (router) => {
         plannedEndAt = new Date(endsAt);
       } else if (durationMinutes && Number(durationMinutes) > 0) {
         plannedEndAt = new Date(
-          now.getTime() + Number(durationMinutes) * 60000
+          now.getTime() + Number(durationMinutes) * 60000,
         );
       } else {
         plannedEndAt = new Date(now.getTime() + 90 * 60000);
@@ -66,7 +66,7 @@ module.exports = (router) => {
           {
             hour: "2-digit",
             minute: "2-digit",
-          }
+          },
         )}`;
 
       // ----- Nom de salle Jitsi lisible (ce que voient les membres) -----
@@ -97,7 +97,6 @@ module.exports = (router) => {
         isPublic: !!isPublic,
       });
 
-      // 🔔 notif live démarré
       // 🔔 notif live démarré (aux membres)
       const members = await CommunityMember.find({
         communityId,
@@ -119,14 +118,13 @@ module.exports = (router) => {
             payload: {
               liveId: String(live._id),
               communityName: community?.name || "",
-              fromUserName: "L'admin",
               title: live.title,
               isPublic: !!live.isPublic,
               startsAt: live.startsAt,
               plannedEndAt: live.plannedEndAt,
             },
-          })
-        )
+          }),
+        ),
       );
 
       return res.json({
