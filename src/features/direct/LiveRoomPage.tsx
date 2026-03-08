@@ -382,22 +382,31 @@ export default function LiveRoomPage() {
           configOverwrite: {
             prejoinPageEnabled: true,
             disableDeepLinking: true,
-            // ✅ toolbarButtons allégés pour le contexte VPS (supprime levers de main, invite externes, etc.)
+            // ✅ Options Jitsi restaurées (le serveur est auto-hébergé sur un VPS, l'utilisateur a besoin de toutes les options)
             toolbarButtons: [
               "microphone",
               "camera",
               "desktop",
               "fullscreen",
+              "fodeviceselection",
               "chat",
               "participants-pane",
               "tileview",
               "settings",
+              "raisehand",
+              "security",
+              "invite",
+              "shortcuts",
               "stats",
               "filmstrip",
+              "highlight",
+              "mute-everyone",
+              "mute-video-everyone",
               "select-background",
               "shareaudio",
               "sharedvideo",
-              "toggle-camera"
+              "toggle-camera",
+              "closedcaptions",
             ],
           },
           interfaceConfigOverwrite: {
