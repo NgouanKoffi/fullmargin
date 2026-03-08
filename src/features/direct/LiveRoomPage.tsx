@@ -1,40 +1,8 @@
 // src/pages/direct/LiveRoomPage.tsx
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import { API_BASE } from "@core/api/client";
 import { loadSession } from "@core/auth/lib/storage";
-
-declare global {
-  interface Window {
-    JitsiMeetExternalAPI?: JitsiExternalAPIFactory;
-  }
-}
-
-/* ---- Types Jitsi ---- */
-type JitsiInitOptions = {
-  roomName: string;
-  parentNode: HTMLElement;
-  width?: string | number;
-  height?: string | number;
-  userInfo?: { displayName?: string };
-  configOverwrite?: Record<string, unknown>;
-  interfaceConfigOverwrite?: Record<string, unknown>;
-  jwt?: string;
-};
-
-type JitsiEventHandler = (...args: unknown[]) => void;
-
-type JitsiExternalAPI = {
-  dispose: () => void;
-  executeCommand: (command: string, ...args: unknown[]) => void;
-  addEventListener?: (event: string, handler: JitsiEventHandler) => void;
-  removeEventListener?: (event: string, handler: JitsiEventHandler) => void;
-};
-
-type JitsiExternalAPIFactory = new (
-  domain: string,
-  opts: JitsiInitOptions
-) => JitsiExternalAPI;
 
 /* ---- Types Live ---- */
 type LiveStatus = "scheduled" | "live" | "ended" | "cancelled";
@@ -136,16 +104,6 @@ function getDisplayNameFromSession(): string | null {
 const JITSI_DOMAIN = "live.fullmargin.net";
 
 export default function LiveRoomPage() {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const apiRef = useRef<JitsiExternalAPI | null>(null);
-
-  // anti double-exec
-  const didEndRef = useRef(false);
-  const didLeaveRef = useRef(false);
-
-  // action UI explicite (sinon null)
-  const actionRef = useRef<"leave" | "end" | null>(null);
-
   const [search] = useSearchParams();
   const navigate = useNavigate();
   const { id: liveId } = useParams<{ id: string }>();
@@ -181,62 +139,6 @@ export default function LiveRoomPage() {
       sanitizeDisplayName(fromUrl || fromSession || "") || "Membre FullMargin"
     );
   }, [search]);
-
-  // reset guards si on change de live
-  useEffect(() => {
-    didEndRef.current = false;
-    didLeaveRef.current = false;
-    actionRef.current = null;
-    setJwtToken(null);
-    setError(null);
-  }, [liveId]);
-
-  /* ---- END LIVE (Owner only) ---- */
-  const endLiveOnServer = useCallback(async () => {
-    if (!liveId) return;
-    try {
-      await fetch(`${API_BASE}/communaute/lives/${liveId}/end`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...authHeaders() },
-      });
-    } catch (e) {
-      console.error("Erreur lors de la fin du live :", e);
-    }
-  }, [liveId]);
-
-  const endLiveOnce = useCallback(async () => {
-    if (didEndRef.current) return;
-    didEndRef.current = true;
-    await endLiveOnServer();
-  }, [endLiveOnServer]);
-
-  const leavePageOnce = useCallback(() => {
-    if (didLeaveRef.current) return;
-    didLeaveRef.current = true;
-    navigate(-1);
-  }, [navigate]);
-
-  /* ---- UI actions ---- */
-  const requestLeaveOnly = useCallback(() => {
-    actionRef.current = "leave";
-    try {
-      apiRef.current?.executeCommand("hangup");
-    } catch (e) {
-      void e;
-    }
-    window.setTimeout(() => leavePageOnce(), 800);
-  }, [leavePageOnce]);
-
-  const requestEndForAll = useCallback(() => {
-    actionRef.current = "end";
-    try {
-      apiRef.current?.executeCommand("endConference");
-    } catch (e) {
-      void e;
-    }
-    void endLiveOnce();
-    window.setTimeout(() => leavePageOnce(), 1200);
-  }, [endLiveOnce, leavePageOnce]);
 
   /* ---- Load Live ---- */
   useEffect(() => {
@@ -284,11 +186,6 @@ export default function LiveRoomPage() {
         if (json.ok && json.data?.live) {
           if (json.data.live.status === "ended" || json.data.live.status === "cancelled") {
             setError("Le live a été terminé par l'administrateur.");
-            try {
-              apiRef.current?.dispose();
-            } catch (e) {
-              void e;
-            }
           }
         }
       } catch (e) {
@@ -339,205 +236,65 @@ export default function LiveRoomPage() {
     };
   }, [liveId, live, localDisplayName]);
 
-  /* ---- Init Jitsi ---- */
+  /* ---- Jitsi Redirect / Init ---- */
   useEffect(() => {
-    if (!live || live.status !== "live" || !containerRef.current) return;
+    if (!live || live.status !== "live") return;
     if (!jwtToken) return;
 
-    const loadApi = () =>
-      new Promise<void>((resolve, reject) => {
-        if (window.JitsiMeetExternalAPI) return resolve();
-        const tag = document.createElement("script");
-        tag.src = `https://${JITSI_DOMAIN}/external_api.js`;
-        tag.async = true;
-        tag.onload = () => resolve();
-        tag.onerror = () => reject(new Error("Jitsi load failed"));
-        document.body.appendChild(tag);
-      });
+    // Fermer les sliders et le menu sur mobile (si on y avait accédé)
+    window.dispatchEvent(new CustomEvent("fm:close-mobile-drawer"));
 
-    let cancelled = false;
-    let api: JitsiExternalAPI | null = null;
-
-    const handleVideoConferenceLeft: JitsiEventHandler = () => {
-      if (live.isOwner && actionRef.current === "end") void endLiveOnce();
-      leavePageOnce();
-    };
-
-    const handleReadyToClose: JitsiEventHandler = () => {
-      if (live.isOwner && actionRef.current === "end") void endLiveOnce();
-      leavePageOnce();
-    };
-
-    loadApi()
-      .then(() => {
-        if (cancelled || !window.JitsiMeetExternalAPI) return;
-
-        api = new window.JitsiMeetExternalAPI(JITSI_DOMAIN, {
-          roomName: live.roomName,
-          parentNode: containerRef.current!,
-          width: "100%",
-          height: "100%",
-          userInfo: { displayName: localDisplayName },
-          jwt: jwtToken,
-          configOverwrite: {
-            prejoinPageEnabled: true,
-            disableDeepLinking: true,
-            // ✅ On restaure TOUTES les options prévues par Jitsi sur le VPS (salles, enregistrement...)
-            // ❌ SAUF "hangup" (quitter la réunion), car on utilise notre propre barre UI en haut pour ça !
-            toolbarButtons: [
-              "camera",
-              "chat",
-              "closedcaptions",
-              "desktop",
-              "download",
-              "embedmeeting",
-              "etherpad",
-              "feedback",
-              "filmstrip",
-              "fullscreen",
-              "help",
-              "highlight",
-              "invite",
-              "linktosalesforce",
-              "livestreaming",
-              "microphone",
-              "mute-everyone",
-              "mute-video-everyone",
-              "participants-pane",
-              "profile",
-              "raisehand",
-              "recording",
-              "security",
-              "select-background",
-              "settings",
-              "shareaudio",
-              "sharedvideo",
-              "shortcuts",
-              "stats",
-              "tileview",
-              "toggle-camera",
-              "videoquality",
-            ],
-          },
-          interfaceConfigOverwrite: {
-            SHOW_JITSI_WATERMARK: false,
-            MOBILE_APP_PROMO: false,
-            HIDE_DEEP_LINKING_LOGO: true,
-          },
-        });
-
-        apiRef.current = api;
-
-        // ✅ Afficher le "nom de la réunion" (titre) dans l'UI Jitsi
-        try {
-          api.executeCommand("subject", live.title || "Live FullMargin");
-        } catch (e) {
-          void e;
-        }
-
-        api.addEventListener?.(
-          "videoConferenceLeft",
-          handleVideoConferenceLeft
-        );
-        api.addEventListener?.("readyToClose", handleReadyToClose);
-      })
-      .catch(console.error);
-
-    return () => {
-      cancelled = true;
-
-      if (api) {
-        api.removeEventListener?.(
-          "videoConferenceLeft",
-          handleVideoConferenceLeft
-        );
-        api.removeEventListener?.("readyToClose", handleReadyToClose);
-
-        try {
-          api.dispose();
-        } catch (e) {
-          void e;
-        }
-      } else if (apiRef.current) {
-        try {
-          apiRef.current.dispose();
-        } catch (e) {
-          void e;
-        }
-      }
-
-      apiRef.current = null;
-    };
-  }, [live, jwtToken, localDisplayName, endLiveOnce, leavePageOnce]);
+    // Redirection native vers le VPS de Jitsi au lieu du iFrame !
+    const targetUrl = `https://${JITSI_DOMAIN}/${encodeURIComponent(live.roomName)}?jwt=${encodeURIComponent(jwtToken)}`;
+    
+    // On remplace l'URL pour ne pas empiler l'historique infiniment si l'utilisateur fait "Retour"
+    window.location.replace(targetUrl);
+    
+  }, [live, jwtToken]);
 
   return (
-    // ✅ plein écran + aucun scroll → plus de “coupé”
-    <div className="fixed inset-0 z-50 flex flex-col bg-slate-950 text-slate-50 overflow-hidden">
-      {/* header */}
-      <header className="shrink-0 border-b border-slate-800 px-3 sm:px-4 py-2 sm:py-3">
-        <div className="flex items-start gap-2">
-          <button
-            onClick={requestLeaveOnly}
-            className="mt-0.5 rounded-full w-9 h-9 flex items-center justify-center bg-white/5 hover:bg-white/10 shrink-0"
-            title="Quitter"
-          >
-            ←
-          </button>
+    // ✅ Interface de transition/chargement avant le bond vers live.fullmargin.net
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-slate-50 overflow-hidden">
+        
+       {/* Indication visuelle d'envoi vers la salle */}
+       <div className="flex flex-col items-center gap-4 text-center max-w-sm px-6">
+         
+         <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-pulse">
+            <span className="text-2xl">🎥</span>
+         </div>
 
-          <div className="min-w-0 flex-1">
-            <h1 className="text-sm font-semibold truncate">
-              {live?.title || "Live"}
+         <div>
+            <h1 className="text-lg font-semibold truncate mb-1">
+              {live?.title || "Redirection en cours..."}
             </h1>
-            {loadingToken && (
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                Connexion à la salle…
+            
+            {loadingToken || loading ? (
+              <p className="text-sm text-slate-400">
+                Préparation de votre accès sécurisé...
               </p>
-            )}
-            {error && (
-              <p className="text-[11px] text-red-400 mt-0.5">{error}</p>
-            )}
-          </div>
-        </div>
+            ) : error || !live || live.status !== "live" ? (
+              <p className="text-sm border border-red-500/30 bg-red-500/10 text-red-400 py-2 px-3 rounded-xl mt-4">
+                {error || "Ce live n’est pas ou plus disponible."}
+              </p>
+            ) : jwtToken ? (
+              <p className="text-sm text-blue-400">
+                Connexion vers live.fullmargin.net !
+              </p>
+            ) : null}
+         </div>
 
-        {live?.status === "live" && (
-          <div className="mt-2 flex flex-wrap gap-2 sm:justify-end">
-            <button
-              onClick={requestLeaveOnly}
-              className="text-xs px-3 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10"
-            >
-              Quitter
-            </button>
+         {/* Bouton de secours si on est bloqué sur une erreur */}
+         {(error || (live && live.status !== "live")) && (
+             <button
+               onClick={() => navigate(-1)}
+               className="mt-6 text-sm px-6 py-2.5 rounded-full bg-white text-black font-medium hover:bg-slate-200 transition-colors"
+             >
+               Retour
+             </button>
+         )}
 
-            {live?.isOwner && (
-              <button
-                onClick={requestEndForAll}
-                className="text-xs px-3 py-2 rounded-full bg-red-600 hover:bg-red-700"
-              >
-                Terminer pour tous
-              </button>
-            )}
-          </div>
-        )}
-      </header>
+       </div>
 
-      {/* zone Jitsi */}
-      <main className="relative flex-1 overflow-hidden">
-        {loading ? (
-          <div className="absolute inset-0 flex items-center justify-center text-xs text-slate-400">
-            Chargement de la salle…
-          </div>
-        ) : error || !live || live.status !== "live" ? (
-          <div className="absolute inset-0 flex items-center justify-center text-xs text-red-400 text-center px-4">
-            {error || "Ce live n’est pas disponible."}
-          </div>
-        ) : !jwtToken ? (
-          <div className="absolute inset-0 flex items-center justify-center text-xs text-slate-400 text-center px-4">
-            Récupération du token…
-          </div>
-        ) : (
-          <div ref={containerRef} className="absolute inset-0 bg-black" />
-        )}
-      </main>
     </div>
   );
 }
