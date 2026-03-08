@@ -53,11 +53,7 @@ module.exports = (router) => {
 
       const community = check.community;
       const isCommunityOwner = community && String(community.ownerId) === String(userId);
-      const isLiveCreator = live.createdBy && String(live.createdBy) === String(userId);
       const isOwner = isCommunityOwner || isLiveCreator;
-
-      const now = Math.floor(Date.now() / 1000);
-      const exp = now + 60 * 60; // 1h
 
       const displayName = safeName(req.query.name) || "Membre FullMargin";
 
@@ -69,8 +65,6 @@ module.exports = (router) => {
         iss: APP_ID,
         sub: JITSI_DOMAIN,
         room: cleanRoomName, // token valable seulement pour cette room sanitizée
-        exp,
-        nbf: now - 10,
         moderator: !!isOwner, // important (compat)
         context: {
           user: {
@@ -81,7 +75,10 @@ module.exports = (router) => {
         },
       };
 
-      const token = jwt.sign(payload, APP_SECRET, { algorithm: "HS256" });
+      const token = jwt.sign(payload, APP_SECRET, { 
+        algorithm: "HS256",
+        expiresIn: "1h"
+      });
 
       return res.json({
         ok: true,
