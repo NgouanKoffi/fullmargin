@@ -272,8 +272,33 @@ export default function LiveRoomPage() {
     }
 
     fetchLive();
+    
+    // Polling du status pour s'assurer que si un admin termine le live côté BDD,
+    // on est bien expulsé même si la commande Jitsi `endConference` échoue
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`${API_BASE}/communaute/lives/${liveId}`, {
+          headers: { "Content-Type": "application/json", ...authHeaders() },
+        });
+        const json = await res.json();
+        if (json.ok && json.data?.live) {
+          if (json.data.live.status === "ended" || json.data.live.status === "cancelled") {
+            setError("Le live a été terminé par l'administrateur.");
+            try {
+              apiRef.current?.dispose();
+            } catch (e) {
+              void e;
+            }
+          }
+        }
+      } catch (e) {
+        // silence
+      }
+    }, 10000);
+
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, [liveId]);
 
@@ -357,31 +382,22 @@ export default function LiveRoomPage() {
           configOverwrite: {
             prejoinPageEnabled: true,
             disableDeepLinking: true,
-            // ✅ toolbarButtons remplace TOOLBAR_BUTTONS (interfaceConfigOverwrite est déprécié en Jitsi 8+)
+            // ✅ toolbarButtons allégés pour le contexte VPS (supprime levers de main, invite externes, etc.)
             toolbarButtons: [
               "microphone",
               "camera",
               "desktop",
               "fullscreen",
-              "fodeviceselection",
               "chat",
               "participants-pane",
               "tileview",
               "settings",
-              "raisehand",
-              "security",
-              "invite",
-              "shortcuts",
               "stats",
               "filmstrip",
-              "highlight",
-              "mute-everyone",
-              "mute-video-everyone",
               "select-background",
               "shareaudio",
               "sharedvideo",
-              "toggle-camera",
-              "closedcaptions",
+              "toggle-camera"
             ],
           },
           interfaceConfigOverwrite: {

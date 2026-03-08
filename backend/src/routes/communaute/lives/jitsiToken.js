@@ -51,9 +51,10 @@ module.exports = (router) => {
         return res.status(403).json({ ok: false, error: check.error });
       }
 
-      // Owner = createdBy (ou ownerId si tu l'as)
-      const ownerId = String(live.ownerId || live.createdBy || "");
-      const isOwner = ownerId && String(ownerId) === String(userId);
+      const community = check.community;
+      const isCommunityOwner = community && String(community.ownerId) === String(userId);
+      const isLiveCreator = live.createdBy && String(live.createdBy) === String(userId);
+      const isOwner = isCommunityOwner || isLiveCreator;
 
       const now = Math.floor(Date.now() / 1000);
       const exp = now + 60 * 60; // 1h
