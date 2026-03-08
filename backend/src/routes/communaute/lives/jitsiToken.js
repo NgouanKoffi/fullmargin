@@ -65,18 +65,18 @@ module.exports = (router) => {
 
       // ⚠️ Compat: certaines stacks lisent moderator au root, d'autres via context.user.moderator
       const payload = {
-        aud: APP_ID,
+        aud: "jitsi",
         iss: APP_ID,
         sub: JITSI_DOMAIN,
         room: cleanRoomName, // token valable seulement pour cette room sanitizée
         exp,
         nbf: now - 10,
-        moderator: !!isOwner, // ✅ important (compat)
+        moderator: !!isOwner, // important (compat)
         context: {
           user: {
             id: userId,
             name: displayName,
-            moderator: !!isOwner, // ✅ important (compat)
+            moderator: !!isOwner, // important (compat)
           },
         },
       };
