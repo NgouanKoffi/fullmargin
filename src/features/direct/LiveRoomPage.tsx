@@ -241,19 +241,20 @@ export default function LiveRoomPage() {
     if (!live || live.status !== "live") return;
     if (!jwtToken) return;
 
-    // Fermer les sliders et le menu sur mobile (si on y avait accédé)
-    window.dispatchEvent(new CustomEvent("fm:close-mobile-drawer"));
+    // Nettoyage impératif du nom de salle (Jitsi ne gère pas bien les espaces ou caractères spéciaux dans le nom de salle vs JWT)
+    const cleanRoomName = String(live.roomName).replace(/[^a-zA-Z0-9]/g, "");
 
     // Redirection native vers le VPS de Jitsi au lieu du iFrame !
-    const targetUrl = `https://${JITSI_DOMAIN}/${encodeURIComponent(live.roomName)}?jwt=${encodeURIComponent(jwtToken)}`;
+    const targetUrl = `https://${JITSI_DOMAIN}/${encodeURIComponent(cleanRoomName)}?jwt=${encodeURIComponent(jwtToken)}`;
     
     // On force la redirection (assign ou href passent mieux les bloqueurs de popups)
     window.location.href = targetUrl;
     
   }, [live, jwtToken]);
 
+  const cleanRoomNameUi = live ? String(live.roomName).replace(/[^a-zA-Z0-9]/g, "") : "";
   const jitsiUrl = live && jwtToken 
-    ? `https://${JITSI_DOMAIN}/${encodeURIComponent(live.roomName)}?jwt=${encodeURIComponent(jwtToken)}` 
+    ? `https://${JITSI_DOMAIN}/${encodeURIComponent(cleanRoomNameUi)}?jwt=${encodeURIComponent(jwtToken)}` 
     : null;
 
   return (

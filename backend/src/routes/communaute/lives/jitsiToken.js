@@ -61,12 +61,14 @@ module.exports = (router) => {
 
       const displayName = safeName(req.query.name) || "Membre FullMargin";
 
+      const cleanRoomName = String(live.roomName).replace(/[^a-zA-Z0-9]/g, "");
+
       // ⚠️ Compat: certaines stacks lisent moderator au root, d'autres via context.user.moderator
       const payload = {
         aud: "jitsi",
         iss: APP_ID,
         sub: JITSI_DOMAIN,
-        room: String(live.roomName), // token valable seulement pour cette room
+        room: cleanRoomName, // token valable seulement pour cette room sanitizée
         exp,
         nbf: now - 10,
         moderator: !!isOwner, // ✅ important (compat)
