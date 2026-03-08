@@ -247,10 +247,14 @@ export default function LiveRoomPage() {
     // Redirection native vers le VPS de Jitsi au lieu du iFrame !
     const targetUrl = `https://${JITSI_DOMAIN}/${encodeURIComponent(live.roomName)}?jwt=${encodeURIComponent(jwtToken)}`;
     
-    // On remplace l'URL pour ne pas empiler l'historique infiniment si l'utilisateur fait "Retour"
-    window.location.replace(targetUrl);
+    // On force la redirection (assign ou href passent mieux les bloqueurs de popups)
+    window.location.href = targetUrl;
     
   }, [live, jwtToken]);
+
+  const jitsiUrl = live && jwtToken 
+    ? `https://${JITSI_DOMAIN}/${encodeURIComponent(live.roomName)}?jwt=${encodeURIComponent(jwtToken)}` 
+    : null;
 
   return (
     // ✅ Interface de transition/chargement avant le bond vers live.fullmargin.net
@@ -265,7 +269,7 @@ export default function LiveRoomPage() {
 
          <div>
             <h1 className="text-lg font-semibold truncate mb-1">
-              {live?.title || "Redirection en cours..."}
+              {live?.title || "Redirection vers le live..."}
             </h1>
             
             {loadingToken || loading ? (
@@ -277,9 +281,20 @@ export default function LiveRoomPage() {
                 {error || "Ce live n’est pas ou plus disponible."}
               </p>
             ) : jwtToken ? (
-              <p className="text-sm text-blue-400">
-                Connexion vers live.fullmargin.net !
-              </p>
+              <div className="space-y-4 mt-2">
+                <p className="text-sm text-blue-400">
+                  Connexion prête vers live.fullmargin.net !
+                </p>
+                <p className="text-[11px] text-slate-500">
+                  Si la redirection automatique ne fonctionne pas, cliquez sur le bouton ci-dessous.
+                </p>
+                <a 
+                  href={jitsiUrl as string}
+                  className="inline-block mt-4 text-sm px-6 py-2.5 rounded-full bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-colors"
+                >
+                  Ouvrir la salle Jitsi
+                </a>
+              </div>
             ) : null}
          </div>
 
