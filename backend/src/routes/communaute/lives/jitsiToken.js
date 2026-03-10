@@ -61,23 +61,23 @@ module.exports = (router) => {
 
       const cleanRoomName = String(live.roomName).replace(/[^a-zA-Z0-9]/g, "");
 
-      // Construction du payload Jitsi JWT - VERSION COMPATIBILITÉ PROSODY
+      // Construction du payload Jitsi JWT - VERSION STANDARD PROSODY
       const now = Math.floor(Date.now() / 1000);
       const payload = {
-        aud: JITSI_DOMAIN, 
-        iss: APP_ID,
-        sub: JITSI_DOMAIN,
-        room: cleanRoomName, 
-        iat: now,
-        nbf: now - 300, 
-        exp: now + 3600,
+        aud: "jitsi",          // ← OBLIGATOIRE pour Prosody JWT plugin
+        iss: APP_ID,           // "fullmargin"
+        sub: JITSI_DOMAIN,     // "live.fullmargin.net"
+        room: cleanRoomName,
+        iat: now - 5,
+        nbf: now - 300,
+        exp: now + 7200,       // 2 heures
         moderator: isOwner,
         context: {
           user: {
             id: userId,
             name: displayName,
             email: req.auth.email || "",
-            moderator: isOwner, 
+            moderator: isOwner,
           },
           features: {
             livestreaming: true,
@@ -87,7 +87,10 @@ module.exports = (router) => {
         },
       };
 
-      const token = jwt.sign(payload, APP_SECRET, { algorithm: "HS256" });
+      const token = jwt.sign(payload, APP_SECRET, {
+        algorithm: "HS256",
+        noTimestamp: true,  // on gère iat manuellement
+      });
 
       return res.json({
         ok: true,

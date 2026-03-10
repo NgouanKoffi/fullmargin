@@ -1,5 +1,5 @@
 // src/pages/direct/LiveRoomPage.tsx
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import { API_BASE } from "@core/api/client";
 import { loadSession } from "@core/auth/lib/storage";
@@ -43,8 +43,6 @@ type SessionUser = {
   lastName?: string;
   displayName?: string;
   display_name?: string;
-
-  // évite les (u as any)
   first_name?: string;
   last_name?: string;
 };
@@ -70,7 +68,7 @@ function sanitizeDisplayName(raw: string): string {
   try {
     s = s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   } catch (e) {
-    void e; // eslint(no-empty) safe
+    void e;
   }
   s = s
     .replace(/[^A-Za-z0-9\s]/g, " ")
@@ -100,7 +98,6 @@ function getDisplayNameFromSession(): string | null {
   return null;
 }
 
-/* ---- Domaine Jitsi ---- */
 const JITSI_DOMAIN = "live.fullmargin.net";
 
 export default function LiveRoomPage() {
@@ -110,15 +107,16 @@ export default function LiveRoomPage() {
 
   const [live, setLive] = useState<CommunityLive | null>(null);
   const [jwtToken, setJwtToken] = useState<string | null>(null);
-
   const [loading, setLoading] = useState(true);
   const [loadingToken, setLoadingToken] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isModerator, setIsModerator] = useState(false);
 
-  // ✅ empêche la page d’avoir un scroll qui “coupe” Jitsi
+  const jitsiContainerRef = useRef<HTMLDivElement>(null);
+  const jitsiApiRef = useRef<any>(null);
+
   useEffect(() => {
     if (typeof document === "undefined") return;
-
     const prevHtmlOverflow = document.documentElement.style.overflow;
     const prevBodyOverflow = document.body.style.overflow;
 
@@ -128,6 +126,9 @@ export default function LiveRoomPage() {
     return () => {
       document.documentElement.style.overflow = prevHtmlOverflow;
       document.body.style.overflow = prevBodyOverflow;
+      if (jitsiApiRef.current) {
+        jitsiApiRef.current.dispose();
+      }
     };
   }, []);
 
@@ -149,7 +150,6 @@ export default function LiveRoomPage() {
     }
 
     let cancelled = false;
-
     async function fetchLive() {
       try {
         const res = await fetch(`${API_BASE}/communaute/lives/${liveId}`, {
@@ -161,10 +161,8 @@ export default function LiveRoomPage() {
 
         if (!cancelled) {
           setLive(json.data.live);
-          if (json.data.live.status === "ended")
-            setError("Ce live est terminé.");
-          if (json.data.live.status === "cancelled")
-            setError("Ce live a été annulé.");
+          if (json.data.live.status === "ended") setError("Ce live est terminé.");
+          if (json.data.live.status === "cancelled") setError("Ce live a été annulé.");
         }
       } catch (e) {
         if (!cancelled) setError((e as Error).message);
@@ -175,8 +173,6 @@ export default function LiveRoomPage() {
 
     fetchLive();
     
-    // Polling du status pour s'assurer que si un admin termine le live côté BDD,
-    // on est bien expulsé même si la commande Jitsi `endConference` échoue
     const interval = setInterval(async () => {
       try {
         const res = await fetch(`${API_BASE}/communaute/lives/${liveId}`, {
@@ -186,12 +182,11 @@ export default function LiveRoomPage() {
         if (json.ok && json.data?.live) {
           if (json.data.live.status === "ended" || json.data.live.status === "cancelled") {
             setError("Le live a été terminé par l'administrateur.");
+            if (jitsiApiRef.current) jitsiApiRef.current.dispose();
           }
         }
-      } catch (e) {
-        // silence
-      }
-    }, 10000);
+      } catch (e) {}
+    }, 15000);
 
     return () => {
       cancelled = true;
@@ -199,13 +194,11 @@ export default function LiveRoomPage() {
     };
   }, [liveId]);
 
-  /* ---- Fetch JWT token (obligatoire pour prosody auth=token) ---- */
+  /* ---- Fetch JWT token ---- */
   useEffect(() => {
-    if (!liveId) return;
-    if (!live || live.status !== "live") return;
+    if (!liveId || !live || live.status !== "live") return;
 
     let cancelled = false;
-
     async function fetchToken() {
       setLoadingToken(true);
       try {
@@ -220,7 +213,10 @@ export default function LiveRoomPage() {
         const json = (await res.json()) as JitsiTokenResp;
         if (!json.ok || !json.data?.token) throw new Error(json.error);
 
-        if (!cancelled) setJwtToken(json.data.token);
+        if (!cancelled) {
+          setJwtToken(json.data.token);
+          setIsModerator(!!json.data.isOwner);
+        }
       } catch (e) {
         if (!cancelled) {
           setError((e as Error).message || "Impossible de récupérer le token.");
@@ -236,80 +232,92 @@ export default function LiveRoomPage() {
     };
   }, [liveId, live, localDisplayName]);
 
-  /* ---- Jitsi Redirect / Init ---- */
+  /* ---- Init Jitsi Iframe ---- */
   useEffect(() => {
-    if (!live || live.status !== "live") return;
-    if (!jwtToken) return;
+    if (!live || live.status !== "live" || !jwtToken || !jitsiContainerRef.current) return;
+    if (jitsiApiRef.current) return; // already init
 
-    // Nettoyage impératif du nom de salle (Jitsi ne gère pas bien les espaces ou caractères spéciaux dans le nom de salle vs JWT)
     const cleanRoomName = String(live.roomName).replace(/[^a-zA-Z0-9]/g, "");
 
-    // Redirection native vers le VPS de Jitsi au lieu du iFrame !
-    const targetUrl = `https://${JITSI_DOMAIN}/${encodeURIComponent(cleanRoomName)}?jwt=${encodeURIComponent(jwtToken)}`;
-    
-    // On force la redirection (assign ou href passent mieux les bloqueurs de popups)
-    window.location.href = targetUrl;
-    
-  }, [live, jwtToken]);
+    try {
+      // @ts-ignore
+      const api = new window.JitsiMeetExternalAPI(JITSI_DOMAIN, {
+        roomName: cleanRoomName,
+        parentNode: jitsiContainerRef.current,
+        jwt: jwtToken,
+        width: "100%",
+        height: "100%",
+        interfaceConfigOverwrite: {
+            SHOW_JITSI_WATERMARK: false,
+            SHOW_WATERMARK_FOR_GUESTS: false,
+            DEFAULT_REMOTE_DISPLAY_NAME: "Participant",
+        },
+        configOverwrite: {
+          startWithAudioMuted: !isModerator,
+          disableInviteFunctions: true,
+          toolbarButtons: [
+            "microphone", "camera", "desktop", "chat", "participants-pane",
+            "tileview", "fullscreen", "shareaudio", "sharedvideo", "hangup"
+          ],
+        },
+      });
 
-  const cleanRoomNameUi = live ? String(live.roomName).replace(/[^a-zA-Z0-9]/g, "") : "";
-  const jitsiUrl = live && jwtToken 
-    ? `https://${JITSI_DOMAIN}/${encodeURIComponent(cleanRoomNameUi)}?jwt=${encodeURIComponent(jwtToken)}` 
-    : null;
+      jitsiApiRef.current = api;
+
+      api.on("videoConferenceLeft", () => {
+        navigate(-1);
+      });
+
+    } catch (e) {
+      console.error("Jitsi Init Error:", e);
+      setError("Erreur lors de l'initialisation du module vidéo.");
+    }
+
+  }, [live, jwtToken, isModerator, navigate]);
 
   return (
-    // ✅ Interface de transition/chargement avant le bond vers live.fullmargin.net
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-slate-50 overflow-hidden">
-        
-       {/* Indication visuelle d'envoi vers la salle */}
-       <div className="flex flex-col items-center gap-4 text-center max-w-sm px-6">
-         
-         <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-pulse">
-            <span className="text-2xl">🎥</span>
-         </div>
+    <div className="fixed inset-0 z-50 flex flex-col bg-slate-950 text-slate-50 overflow-hidden">
+      
+      {/* Container Jitsi */}
+      <div 
+        ref={jitsiContainerRef} 
+        className={`flex-1 w-full h-full transition-opacity duration-500 ${!jwtToken || error ? "opacity-0" : "opacity-100"}`}
+      />
 
-         <div>
-            <h1 className="text-lg font-semibold truncate mb-1">
-              {live?.title || "Redirection vers le live..."}
-            </h1>
-            
-            {loadingToken || loading ? (
-              <p className="text-sm text-slate-400">
-                Préparation de votre accès sécurisé...
-              </p>
-            ) : error || !live || live.status !== "live" ? (
-              <p className="text-sm border border-red-500/30 bg-red-500/10 text-red-400 py-2 px-3 rounded-xl mt-4">
-                {error || "Ce live n’est pas ou plus disponible."}
-              </p>
-            ) : jwtToken ? (
-              <div className="space-y-4 mt-2">
-                <p className="text-sm text-blue-400">
-                  Connexion prête vers live.fullmargin.net !
-                </p>
-                <p className="text-[11px] text-slate-500">
-                  Si la redirection automatique ne fonctionne pas, cliquez sur le bouton ci-dessous.
-                </p>
-                <a 
-                  href={jitsiUrl as string}
-                  className="inline-block mt-4 text-sm px-6 py-2.5 rounded-full bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-colors"
-                >
-                  Ouvrir la salle Jitsi
-                </a>
-              </div>
-            ) : null}
-         </div>
+      {/* Overlay de chargement / erreur */}
+      {(!jwtToken || error) && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-slate-950/80 backdrop-blur-sm">
+           <div className="flex flex-col items-center gap-4 text-center max-w-sm">
+             <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-pulse">
+                <span className="text-2xl">🎥</span>
+             </div>
 
-         {/* Bouton de secours si on est bloqué sur une erreur */}
-         {(error || (live && live.status !== "live")) && (
-             <button
-               onClick={() => navigate(-1)}
-               className="mt-6 text-sm px-6 py-2.5 rounded-full bg-white text-black font-medium hover:bg-slate-200 transition-colors"
-             >
-               Retour
-             </button>
-         )}
-
-       </div>
+             <div>
+                <h1 className="text-lg font-semibold truncate mb-1">
+                  {live?.title || "Chargement..."}
+                </h1>
+                
+                {loadingToken || loading ? (
+                  <p className="text-sm text-slate-400">
+                    Préparation de la salle sécurisée...
+                  </p>
+                ) : error ? (
+                  <div className="mt-4">
+                    <p className="text-sm border border-red-500/30 bg-red-500/10 text-red-400 py-2 px-3 rounded-xl mb-4">
+                      {error}
+                    </p>
+                    <button
+                      onClick={() => navigate(-1)}
+                      className="text-sm px-6 py-2.5 rounded-full bg-white text-black font-medium hover:bg-slate-200 transition-colors"
+                    >
+                      Retour
+                    </button>
+                  </div>
+                ) : null}
+             </div>
+           </div>
+        </div>
+      )}
 
     </div>
   );
