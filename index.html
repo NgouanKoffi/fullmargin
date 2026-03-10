@@ -1,0 +1,210 @@
+<!-- C:\Users\ADMIN\Desktop\fullmargin-site\index.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FullMargin - Notre écosystème</title>
+
+    <!-- Google Fonts (ON GARDE ICI) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      document.documentElement.classList.add("fm-first-load");
+    </script>
+
+    <!-- Thème initial sans flash -->
+    <script>
+      (function () {
+        var KEY = "fm-theme";
+        var d = document.documentElement;
+        var stored = null;
+        try {
+          stored = localStorage.getItem(KEY);
+        } catch {}
+        var t =
+          stored === "dark" || stored === "light"
+            ? stored
+            : window.matchMedia &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+
+        d.classList.toggle("dark", t === "dark");
+
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (!meta) {
+          meta = document.createElement("meta");
+          meta.setAttribute("name", "theme-color");
+          document.head.appendChild(meta);
+        }
+        meta.setAttribute("content", t === "dark" ? "#0b0f14" : "#f8fafc");
+      })();
+    </script>
+
+    <!-- On NE CHARGE PLUS GSI ICI (chargé à la demande côté React) -->
+    <meta
+      name="gsi-client-id"
+      content="613675964818-fit9u7nqmgp8pc7fun7p1qm1obnpaenr.apps.googleusercontent.com"
+    />
+    <script>
+      window.__GOOGLE_CLIENT_ID__ =
+        "613675964818-fit9u7nqmgp8pc7fun7p1qm1obnpaenr.apps.googleusercontent.com";
+    </script>
+
+    <!-- Loader -->
+    <style>
+      :root {
+        --fm-ring-size: 88px;
+        --fm-ring-thickness: 5px;
+        --fm-logo-size: 36px;
+        --fm-percent-size: 14px;
+      }
+      .fm-preloader {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        z-index: 9999;
+        transition: opacity 0.18s ease;
+        background: #fff;
+      }
+      html.dark .fm-preloader {
+        background: #0b0f14;
+      }
+      .fm-preloader:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(
+            900px 600px at 15% 0%,
+            rgba(149, 100, 255, 0.18),
+            transparent 60%
+          ),
+          radial-gradient(
+            800px 520px at 90% 10%,
+            rgba(134, 56, 255, 0.12),
+            transparent 60%
+          ),
+          radial-gradient(
+            1200px 800px at 50% 120%,
+            rgba(0, 0, 0, 0.16),
+            transparent 60%
+          );
+      }
+      .fm-stack {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+      .fm-ring {
+        position: relative;
+        width: var(--fm-ring-size);
+        height: var(--fm-ring-size);
+      }
+      .fm-ring .fm-track,
+      .fm-ring .fm-arc {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+      }
+      .fm-ring .fm-track {
+        box-shadow: inset 0 0 0 var(--fm-ring-thickness)
+          rgba(100, 116, 139, 0.25);
+      }
+      html.dark .fm-ring .fm-track {
+        box-shadow: inset 0 0 0 var(--fm-ring-thickness)
+          rgba(255, 255, 255, 0.18);
+      }
+      .fm-ring .fm-arc {
+        -webkit-mask: radial-gradient(
+          farthest-side,
+          transparent calc(100% - var(--fm-ring-thickness)),
+          #000 0
+        );
+        mask: radial-gradient(
+          farthest-side,
+          transparent calc(100% - var(--fm-ring-thickness)),
+          #000 0
+        );
+        background: conic-gradient(#6f3cff 0 110deg, transparent 110deg 360deg);
+        animation: fm-rotate 0.9s linear infinite;
+        filter: drop-shadow(0 0 5px rgba(134, 56, 255, 0.35));
+      }
+      @keyframes fm-rotate {
+        to {
+          transform: rotate(1turn);
+        }
+      }
+      .fm-center {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: var(--fm-logo-size);
+        height: var(--fm-logo-size);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .fm-center img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .fm-percent {
+        font:
+          700 var(--fm-percent-size) / 1 Inter,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          "Helvetica Neue",
+          Arial;
+        letter-spacing: 0.2px;
+        color: #0f172a;
+      }
+      html.dark .fm-percent {
+        color: #e2e8f0;
+      }
+      .fm-preloader--hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .fm-ring .fm-arc {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loader -->
+    <div
+      id="fm-preloader"
+      class="fm-preloader"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <div class="fm-stack" role="status" aria-label="Chargement">
+        <div class="fm-ring">
+          <span class="fm-track" aria-hidden="true"></span>
+          <span class="fm-arc" aria-hidden="true"></span>
+          <span class="fm-center"><img src="/favicon.png" alt="" /></span>
+        </div>
+        <div id="fm-progress" class="fm-percent">Chargement…</div>
+      </div>
+    </div>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

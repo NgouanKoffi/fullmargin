@@ -1,0 +1,197 @@
+// src/components/Home/IntroVideo.tsx
+import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
+
+import introBlack from "@assets/images/black.webp"; // on le met en "par défaut"
+import introWhite from "@assets/images/white.webp"; // on le met en mode dark
+
+const VIDEO_SOURCE = "https://www.youtube.com/watch?v=CmV6nmKix3g";
+
+function toEmbedUrl(url: string) {
+  try {
+    const u = new URL(url);
+    const id =
+      u.searchParams.get("v") ||
+      u.pathname.replace("/watch", "").replace("/", "") ||
+      u.pathname.split("/").pop();
+    const base = `https://www.youtube.com/embed/${id}`;
+    const params = new URLSearchParams({
+      autoplay: "1",
+      rel: "0",
+      modestbranding: "1",
+      playsinline: "1",
+    }).toString();
+    return `${base}?${params}`;
+  } catch {
+    return "https://www.youtube.com/embed/-Xtsst95Rpo?autoplay=1&rel=0&modestbranding=1&playsinline=1";
+  }
+}
+
+function IconPlay({ className = "w-8 h-8" }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path fill="currentColor" d="M8 5v14l11-7z" />
+    </svg>
+  );
+}
+
+function IconX({ className = "w-6 h-6" }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+function VideoModal({
+  open,
+  onClose,
+  embedUrl,
+}: {
+  open: boolean;
+  onClose: () => void;
+  embedUrl: string;
+}) {
+  if (!open) return null;
+
+  const node = (
+    <div
+      className="fixed inset-0 z-[9999] h-[100svh] w-screen"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="absolute inset-0 bg-black/90" onClick={onClose} />
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-[10000] w-10 h-10 rounded-full bg-black/70 text-white grid place-items-center"
+        aria-label="Fermer"
+      >
+        <IconX />
+      </button>
+      <div className="absolute inset-0 z-[9999]">
+        <iframe
+          src={embedUrl}
+          className="w-full h-full"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+          title="Vidéo de présentation FullMargin"
+        />
+      </div>
+    </div>
+  );
+
+  return createPortal(node, document.body);
+}
+
+export default function IntroVideo() {
+  const [open, setOpen] = useState(false);
+  const embedUrl = useMemo(() => toEmbedUrl(VIDEO_SOURCE), []);
+
+  return (
+    <section className="w-full">
+      <div className="mx-auto max-w-[1000px] px-3 sm:px-6 lg:px-10 pt-10 sm:pt-12 lg:pt-14">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.8 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="text-center mb-6 sm:mb-8"
+        >
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-skin-base pb-2">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-skin-base via-skin-muted to-skin-base bg-[length:200%_auto] animate-[fm-text-shimmer_4s_linear_infinite]">
+              Prenez une longueur d’avance.
+            </span>
+          </h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="mt-3 max-w-2xl mx-auto text-skin-muted text-sm sm:text-base leading-relaxed"
+          >
+            En moins de 60 secondes, découvrez comment nous combinons l’analyse,
+            l’exécution et la communauté pour décupler votre efficacité.
+            <br className="hidden sm:block" />
+            Une plateforme — tous vos leviers de progression, sans friction.
+          </motion.p>
+        </motion.div>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+        className="mx-auto max-w-[1000px] px-3 sm:px-6 lg:px-10 pb-10 sm:pb-12 lg:pb-16"
+      >
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="
+            relative w-full
+            rounded-[28px]
+            overflow-hidden
+            bg-skin-surface/70
+            ring-1 ring-skin-border/15
+            shadow-[0_18px_45px_rgba(0,0,0,0.08)]
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-ring
+          "
+          aria-label="Lire la vidéo de présentation"
+        >
+          {/* PAR DÉFAUT (jour chez toi) → black.webp */}
+          <img
+            src={introBlack}
+            alt="Interface FullMargin"
+            className="w-full h-auto object-cover block dark:hidden"
+            loading="lazy"
+          />
+
+          {/* EN MODE DARK → white.webp */}
+          <img
+            src={introWhite}
+            alt="Interface FullMargin (dark)"
+            className="w-full h-auto object-cover hidden dark:block"
+            loading="lazy"
+          />
+
+          <span
+            className="
+              absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+              w-20 h-20 sm:w-24 sm:h-24
+              rounded-full bg-white/95 text-[#5B21FF]
+              grid place-items-center shadow-xl
+            "
+          >
+            <IconPlay className="w-8 h-8 sm:w-9 sm:h-9" />
+          </span>
+
+          <span
+            className="
+              absolute top-4 right-4
+              bg-black/35 text-white text-[11px] sm:text-xs
+              px-3 py-1 rounded-full backdrop-blur-md
+            "
+          >
+            1:00 • Aperçu produit
+          </span>
+        </button>
+      </motion.div>
+
+      <VideoModal
+        open={open}
+        onClose={() => setOpen(false)}
+        embedUrl={embedUrl}
+      />
+    </section>
+  );
+}
