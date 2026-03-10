@@ -1,13 +1,5 @@
 // C:\Users\ADMIN\Desktop\fullmargin-site\src\components\Header\navConfig.ts
-import { createElement, type ReactNode } from "react";
-import {
-  FileText,
-  CheckSquare,
-  Wallet,
-  Activity,
-  LineChart,
-  Mic2,
-} from "lucide-react";
+import { type ReactNode } from "react";
 
 export type AuthStatus = "authenticated" | "anonymous" | "loading";
 
@@ -42,6 +34,8 @@ export type HeaderNavGroup = {
   items?: HeaderNavItem[];
   /** badge sur le GROUPE (ex: “Communautés”) */
   badge?: number;
+  /** 👇 nouveau : item spécial mis en évidence (scintillant) */
+  isSpecial?: boolean;
 };
 
 export function buildHeaderNav({
@@ -65,65 +59,18 @@ export function buildHeaderNav({
     ? `/communaute/${myCommunitySlug}`
     : "/communaute/mon-espace";
 
-  // 👇 petits helpers d’icônes pour “Mes outils”
-  const toolIcons = {
-    notes: createElement(FileText, { className: "w-4 h-4" }),
-    tasks: createElement(CheckSquare, { className: "w-4 h-4" }),
-    finance: createElement(Wallet, { className: "w-4 h-4" }),
-    journal: createElement(Activity, { className: "w-4 h-4" }),
-    fm: createElement(LineChart, { className: "w-4 h-4" }),
-    podcast: createElement(Mic2, { className: "w-4 h-4" }),
-  } as const;
-
   const groups: HeaderNavGroup[] = [
     { key: "accueil", label: "Accueil", href: "/" },
     { key: "apropos", label: "À propos", href: "/a-propos" },
     { key: "tarifs", label: "Tarifs", href: "/tarifs" },
     // { key: "faq", label: "FAQ", href: "/faq" },
 
-    // 🆕 Groupe “Mes outils” (toujours visible, même déconnecté)
+    // 🆕 Lien FullMetrix scintillant mis en évidence
     {
-      key: "mes-outils",
-      label: "Mes outils",
-      // pas de href direct : c’est un pur dropdown
-      items: [
-        {
-          key: "tools-notes",
-          label: "Mes notes",
-          href: "/notes", // ajuste si besoin
-          icon: toolIcons.notes,
-        },
-        {
-          key: "tools-tasks",
-          label: "Mes tâches",
-          href: "/projets", // ajuste si besoin
-          icon: toolIcons.tasks,
-        },
-        {
-          key: "tools-finances",
-          label: "Finances",
-          href: "/finance", // ajuste si besoin
-          icon: toolIcons.finance,
-        },
-        {
-          key: "tools-journal",
-          label: "Journal de trading",
-          href: "/journal", // ajuste si besoin
-          icon: toolIcons.journal,
-        },
-        {
-          key: "tools-fullmetrix",
-          label: "Full Métrix",
-          href: "/fm-metrix/a-propos", // ajuste si besoin
-          icon: toolIcons.fm,
-        },
-        {
-          key: "tools-podcasts",
-          label: "Podcasts",
-          href: "/podcasts", // ajuste si besoin
-          icon: toolIcons.podcast,
-        },
-      ],
+      key: "fullmetrix",
+      label: "FullMetrix",
+      href: "/fm-metrix/a-propos",
+      isSpecial: true,
     },
 
     {

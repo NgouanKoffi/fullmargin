@@ -52,33 +52,49 @@ module.exports = (router) => {
       }
 
       const community = check.community;
-      const isCommunityOwner = community && String(community.ownerId) === String(userId);
-      const isOwner = isCommunityOwner || isLiveCreator;
+      const isCommunityOwner =
+        community && String(community.ownerId) === String(userId);
+      const isLiveCreator = String(live.createdBy) === String(userId);
+      const isOwner = !!(isCommunityOwner || isLiveCreator);
 
       const displayName = safeName(req.query.name) || "Membre FullMargin";
 
       const cleanRoomName = String(live.roomName).replace(/[^a-zA-Z0-9]/g, "");
 
-      // ⚠️ Compat: certaines stacks lisent moderator au root, d'autres via context.user.moderator
+      // Construction du payload Jitsi JWT - VERSION HEX-SECRET
+      const now = Math.floor(Date.now() / 1000);
       const payload = {
-        aud: "jitsi",
+        aud: "jitsi", 
         iss: APP_ID,
         sub: JITSI_DOMAIN,
-        room: cleanRoomName, // token valable seulement pour cette room sanitizée
-        moderator: !!isOwner, // important (compat)
+        room: cleanRoomName, 
+        iat: now,
+        nbf: now - 300, 
+        exp: now + 3600,
+        moderator: isOwner,
         context: {
           user: {
             id: userId,
             name: displayName,
-            moderator: !!isOwner, // important (compat)
+            email: req.auth.email || "",
+            moderator: isOwner, 
           },
+          features: {
+            livestreaming: true,
+            recording: true,
+            transcription: true,
+          }
         },
       };
 
-      const token = jwt.sign(payload, APP_SECRET, { 
-        algorithm: "HS256",
-        expiresIn: "1h"
-      });
+      // ⚠️ IMPORTANT: Jitsi utilise souvent des secrets en HEX. 
+      // Si la chaîne fait 64 caractères, on la traite comme du binaire (Buffer).
+      let secret = APP_SECRET;
+      if (APP_SECRET.length === 64 && /^[0-9a-fA-F]+$/.test(APP_SECRET)) {
+        secret = Buffer.from(APP_SECRET, "hex");
+      }
+
+      const token = jwt.sign(payload, secret, { algorithm: "HS256" });
 
       return res.json({
         ok: true,

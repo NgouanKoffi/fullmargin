@@ -1,5 +1,5 @@
 // C:\Users\ADMIN\Desktop\fullmargin-site\src\components\Header\DesktopNav.tsx
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Sparkles } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@core/auth/AuthContext";
@@ -121,6 +121,26 @@ export default function DesktopNav({ groups }: Props) {
           if (!hasChildren) {
             const to = g.href?.trim().length ? g.href : FALLBACK_HREF;
             const active = isPathActive(pathname, to);
+
+            if (g.isSpecial) {
+              return (
+                <Link
+                  key={g.key}
+                  to={to}
+                  className={`
+                    relative rounded-full px-4 py-2 text-sm whitespace-nowrap flex items-center gap-1.5 font-bold tracking-wide
+                    hover:bg-white/10 dark:hover:bg-white/10 transition-colors group
+                    ${active ? 'bg-white/5 dark:bg-white/10' : ''}
+                  `}
+                >
+                  <Sparkles className="w-4 h-4 text-violet-500 animate-pulse" />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400">
+                    {g.label}
+                  </span>
+                </Link>
+              );
+            }
+
             return (
               <Link
                 key={g.key}

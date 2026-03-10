@@ -10,6 +10,7 @@ import CommunityHub from "./sections/CommunityHub";
 import MarketplaceShowcase from "./sections/MarketplaceShowcase";
 import UserSpace from "./sections/UserSpace";
 import IntroVideo from "./sections/IntroVideo";
+import SEO from "@shared/components/SEO";
 
 export default function Home() {
   const { status } = useAuth();
@@ -37,6 +38,11 @@ export default function Home() {
 
   return (
     <main className="overflow-x-hidden">
+      <SEO 
+        title="L'écosystème ultime du trader moderne"
+        description="Le premier écosystème tout-en-un pour les traders, entrepreneurs et investisseurs. Journaling intelligent, analyse prédictive et communauté exclusive."
+        keywords="trading, journal de trading, crypto, forex, analyse technique, boursière, fullmargin, trader d'élite"
+      />
       {/* ===== HERO ===== */}
       <section className="w-full fm-section" id="hero">
         <div

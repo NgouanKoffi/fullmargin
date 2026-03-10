@@ -1,8 +1,6 @@
 // src/features/fm-metrix/sections/ChatAgentSection.tsx
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import LoopVideo from "../components/LoopVideo";
-import Bullet from "../components/Bullet";
-import { contentCard, primaryBtn } from "../ui/styles";
 import FadeIn from "../components/FadeIn";
 import WindowFrame from "../components/WindowFrame";
 
@@ -15,111 +13,162 @@ type Props = { goToFM: () => void; isLoading: boolean };
 
 export default function ChatAgentSection({ goToFM, isLoading }: Props) {
   return (
-    <section className="py-24 relative overflow-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-500">
-      {/* Decorative Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-violet-500/5 dark:bg-violet-600/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[10%] right-[-5%] w-[600px] h-[600px] bg-emerald-500/5 dark:bg-emerald-600/10 rounded-full blur-[120px]" />
-      </div>
+    <section className="py-16 pb-32 relative overflow-hidden">
+      <div className="mx-auto max-w-[1440px] px-6 lg:px-8 relative z-10">
+        
+        {/* Section Header */}
+        <FadeIn className="text-center mb-16 max-w-3xl mx-auto">
+          <h2 className="text-sm font-bold tracking-widest text-zinc-500 dark:text-zinc-500 uppercase mb-4">
+            Intelligence Artificielle
+          </h2>
+          <h3 className="text-4xl md:text-5xl lg:text-5xl font-bold tracking-tight mb-6 text-zinc-900 dark:text-white">
+            Votre équipe d'experts, <br className="hidden md:block"/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-500 to-zinc-800 dark:from-zinc-400 dark:to-white">
+              disponible 24/7
+            </span>
+          </h3>
+          <p className="text-zinc-500 dark:text-zinc-400 text-lg md:text-xl leading-relaxed font-light">
+            Une IA experte pour vous guider, et un agent 100% autonome pour auditer vos trades et gérer votre compte en toute sécurité.
+          </p>
+        </FadeIn>
 
-      <div className="mx-auto max-w-[1440px] px-6 relative z-10">
-        <div className="grid gap-12 lg:grid-cols-2">
+        <div className="grid gap-16 lg:gap-12 lg:grid-cols-2">
 
           {/* Chat IA */}
-          <FadeIn delay={0} className={`${contentCard} group flex flex-col`}>
-            <div className="mb-8 w-full transform transition-transform duration-500 hover:scale-[1.02]">
-              <WindowFrame className="shadow-violet-500/20">
-                <LoopVideo
-                  webm={ChatIAWebm}
-                  mp4={ChatIAMp4}
-                  label="Chat IA Full Metrix"
-                  className="w-full h-auto object-cover"
-                />
-              </WindowFrame>
-            </div>
-
-            <div className="flex-1">
-              <div className="inline-flex items-center gap-2 rounded-full bg-violet-100 dark:bg-violet-500/20 px-3 py-1 text-xs font-semibold text-violet-700 dark:text-violet-300 mb-4">
-                L'Assistant
+          <FadeIn direction="up" delay={0.1} className="flex flex-col h-full">
+            
+            {/* Top: Video */}
+            <div className="mb-10 w-full relative">
+              <div className="absolute inset-0 bg-violet-500/10 blur-[60px] rounded-full opacity-0 hover:opacity-100 transition-opacity duration-700 -z-10"></div>
+              <div className="transform transition-transform duration-700 hover:-translate-y-2 relative z-10 shadow-xl rounded-2xl ring-1 ring-zinc-200/50 dark:ring-white/10">
+                <WindowFrame className="shadow-none rounded-2xl overflow-hidden bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">
+                  <LoopVideo
+                    webm={ChatIAWebm}
+                    mp4={ChatIAMp4}
+                    label="Chat IA"
+                    className="w-full h-[300px] object-cover"
+                  />
+                </WindowFrame>
               </div>
-              <h3 className="text-3xl font-bold mb-6 text-zinc-900 dark:text-white transition-colors">
-                CHAT{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400">
-                  IA
-                </span>{" "}
-                Intelligent
-              </h3>
-              <ul className="space-y-4 mb-10 text-zinc-700 dark:text-zinc-300">
-                <Bullet>Une IA spécialisée pour les traders</Bullet>
-                <Bullet>Connecté à votre agent</Bullet>
-                <Bullet>Commandes directes vers votre compte MT5</Bullet>
-              </ul>
             </div>
 
-            <button
-              type="button"
-              onClick={goToFM}
-              disabled={isLoading}
-              className={`${primaryBtn} w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500`}
-            >
-              {isLoading ? "Connexion…" : "Parler à l'IA"}
-              {!isLoading ? (
-                <ArrowRight className="h-4 w-4" />
-              ) : (
-                <span className="inline-block h-4 w-4 rounded-full border-2 border-white/60 border-t-transparent animate-spin" />
-              )}
-            </button>
+            {/* Bottom: Text Content */}
+            <div className="flex-1 flex flex-col items-center lg:items-start">
+              
+              <h3 className="text-4xl md:text-5xl font-black mb-8 text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 uppercase tracking-tight text-center lg:text-left">
+                CHAT IA
+              </h3>
+
+              <ul className="space-y-4 mb-10 w-full flex-1">
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-500 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg md:text-xl font-bold text-zinc-800 dark:text-zinc-100 leading-snug">
+                    Une IA spécialisée pour les traders Connecté à votre agent
+                  </span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-500 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg md:text-xl font-bold text-zinc-800 dark:text-zinc-100 leading-snug">
+                    Commandes directes vers votre compte metatrader
+                  </span>
+                </li>
+              </ul>
+
+              <button
+                type="button"
+                onClick={goToFM}
+                disabled={isLoading}
+                className="group inline-flex items-center gap-2 px-8 py-4 rounded-3xl bg-violet-500 hover:bg-violet-600 text-white font-bold text-lg md:text-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:-translate-y-1"
+              >
+                <span>{isLoading ? "Chargement..." : "Découvrir"}</span>
+                {!isLoading && <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />}
+              </button>
+            </div>
           </FadeIn>
 
+
           {/* Agent IA */}
-          <FadeIn
-            delay={0.1}
-            className={`${contentCard} group flex flex-col bg-emerald-50/50 dark:bg-emerald-500/5 hover:border-emerald-500/30`}
-          >
-            <div className="mb-8 w-full transform transition-transform duration-500 hover:scale-[1.02]">
-              <WindowFrame className="shadow-emerald-500/20">
-                <LoopVideo
-                  webm={AgentIAWebm}
-                  mp4={AgentIAMp4}
-                  label="Agent IA"
-                  className="w-full h-auto object-cover"
-                />
-              </WindowFrame>
-            </div>
-
-            <div className="flex-1">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 dark:bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-4">
-                Autonome
+          <FadeIn delay={0.2} direction="up" className="flex flex-col h-full">
+            
+            {/* Top: Video */}
+            <div className="mb-10 w-full relative">
+              <div className="absolute inset-0 bg-violet-500/10 blur-[60px] rounded-full opacity-0 hover:opacity-100 transition-opacity duration-700 -z-10"></div>
+              <div className="transform transition-transform duration-700 hover:-translate-y-2 relative z-10 shadow-xl rounded-2xl ring-1 ring-zinc-200/50 dark:ring-white/10">
+                <WindowFrame className="shadow-none rounded-2xl overflow-hidden bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">
+                  <LoopVideo
+                    webm={AgentIAWebm}
+                    mp4={AgentIAMp4}
+                    label="Agent IA"
+                    className="w-full h-[300px] object-cover"
+                  />
+                </WindowFrame>
               </div>
-              <h3 className="text-3xl font-bold mb-6 text-zinc-900 dark:text-white transition-colors">
-                AGENT{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300">
-                  IA
-                </span>{" "}
-                Autonome
-              </h3>
-              <ul className="space-y-4 mb-10 text-zinc-700 dark:text-zinc-300">
-                <Bullet>Un agent IA connecté à votre compte</Bullet>
-                <Bullet>Journal de trading automatique</Bullet>
-                <Bullet>Gestion multi-positions (SL/TP/BE simultanés)</Bullet>
-                <Bullet>Exportation automatique de vos données</Bullet>
-                <Bullet>Prise de position centralisée depuis FullMetrix</Bullet>
-              </ul>
             </div>
 
-            <button
-              type="button"
-              onClick={goToFM}
-              disabled={isLoading}
-              className={`${primaryBtn} w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 shadow-[0_20px_50px_rgba(16,185,129,0.3)]`}
-            >
-              {isLoading ? "Connexion…" : "Activer l'Agent"}
-              {!isLoading ? (
-                <ArrowRight className="h-4 w-4" />
-              ) : (
-                <span className="inline-block h-4 w-4 rounded-full border-2 border-white/60 border-t-transparent animate-spin" />
-              )}
-            </button>
+            {/* Bottom: Text Content */}
+            <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left">
+              
+              <h3 className="text-4xl md:text-5xl font-black mb-8 text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 uppercase tracking-tight">
+                AGENT IA
+              </h3>
+
+              <ul className="space-y-4 mb-10 w-full flex-1 text-left">
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-500 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg md:text-xl font-bold text-zinc-800 dark:text-zinc-100 leading-snug">
+                    Un agent IA connecté à votre compte
+                  </span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-500 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg md:text-xl font-bold text-zinc-800 dark:text-zinc-100 leading-snug">
+                    Exportation automatique de os données metatrader
+                  </span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-500 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg md:text-xl font-bold text-zinc-800 dark:text-zinc-100 leading-snug">
+                    Journal de trading automatique
+                  </span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-500 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg md:text-xl font-bold text-zinc-800 dark:text-zinc-100 leading-snug">
+                    Outils de prise de postions et de gestion de multiples position (SL/TP/BE sur plusieurs trades en meme temps)
+                  </span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-500 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-lg md:text-xl font-bold text-zinc-800 dark:text-zinc-100 leading-snug">
+                    Prise de position sur votre compte depuis la plateforme Fullmetrix
+                  </span>
+                </li>
+              </ul>
+
+              <button
+                type="button"
+                onClick={goToFM}
+                disabled={isLoading}
+                className="group inline-flex items-center gap-2 px-8 py-4 rounded-3xl bg-violet-500 hover:bg-violet-600 text-white font-bold text-lg md:text-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:-translate-y-1 self-center lg:self-start"
+              >
+                <span>{isLoading ? "Chargement..." : "Découvrir"}</span>
+                {!isLoading && <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />}
+              </button>
+            </div>
           </FadeIn>
 
         </div>

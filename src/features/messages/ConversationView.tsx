@@ -3,6 +3,8 @@ import MessageInputBar from "./MessageInputBar";
 import { MessageBubble } from "./conversation/MessageBubble";
 import { useConversationMessages } from "./hooks/useConversationMessages";
 
+import { AnimatePresence } from "framer-motion";
+
 export default function ConversationView({
   conversation,
   mode,
@@ -26,31 +28,33 @@ export default function ConversationView({
     <div className="h-full flex flex-col rounded-xl border border-black/5 bg-white/95 dark:bg-[#111318]/95 overflow-hidden">
       <div
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-4 no-scrollbar"
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-4 no-scrollbar scroll-smooth"
         onScroll={handleScroll}
       >
-        {timeline.map((item) =>
-          item.kind === "sep" ? (
-            <div key={item.id} className="text-center">
-              <span className="text-[11px] text-slate-400 bg-black/5 px-3 py-0.5 rounded-full">
-                {item.label}
-              </span>
-            </div>
-          ) : (
-            <MessageBubble
-              key={item.message.id}
-              m={item.message}
-              isMine={item.message.mine}
-              isAdminAuthor={
-                showAdminBadge && conversation.adminId === item.message.authorId
-              }
-              canDelete={
-                item.message.mine || (mode === "group" && isGroupAdmin)
-              }
-              onDelete={handleDeleteMessage}
-            />
-          )
-        )}
+        <AnimatePresence initial={false} mode="popLayout">
+          {timeline.map((item) =>
+            item.kind === "sep" ? (
+              <div key={item.id} className="text-center py-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-black/5 dark:border-white/5">
+                  {item.label}
+                </span>
+              </div>
+            ) : (
+              <MessageBubble
+                key={item.message.id}
+                m={item.message}
+                isMine={item.message.mine}
+                isAdminAuthor={
+                  showAdminBadge && conversation.adminId === item.message.authorId
+                }
+                canDelete={
+                  item.message.mine || (mode === "group" && isGroupAdmin)
+                }
+                onDelete={handleDeleteMessage}
+              />
+            )
+          )}
+        </AnimatePresence>
       </div>
       {!chatLockedForMembers ? (
         <MessageInputBar
