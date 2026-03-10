@@ -64,7 +64,7 @@ export default function FeatureShowcase() {
   };
 
   const btnBase =
-    "inline-flex items-center gap-2 mt-4 rounded-xl bg-white/10 dark:bg-white/10 hover:bg-fm-primary hover:text-white text-skin-base px-5 py-2.5 text-sm font-semibold transition-colors duration-300 self-start group/btn border border-white/5";
+    "inline-flex items-center gap-2 mt-4 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-fm-primary hover:text-white text-skin-base px-5 py-2.5 text-sm font-semibold transition-colors duration-300 self-start group/btn border border-black/10 dark:border-white/10";
 
   return (
     <section className="w-full">
@@ -97,7 +97,7 @@ export default function FeatureShowcase() {
                   ? "bg-gradient-to-br from-fm-primary/5 via-white to-fm-accent/5 dark:from-fm-primary/10 dark:via-[#0A0C18] dark:to-fm-accent/5 border-fm-primary/30 shadow-[0_4px_20px_rgba(111,60,255,0.1)] dark:shadow-[0_0_40px_rgba(111,60,255,0.15)] ring-1 ring-fm-primary/20"
                   : "bg-white/5 dark:bg-[#0A0C18] border-skin-border/20 dark:border-white/5 shadow-[0_16px_40px_rgba(0,0,0,0.04)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.12)] border"
                 }
-                backdrop-blur-xl
+                backdrop-blur-none lg:backdrop-blur-md
                 overflow-hidden flex flex-col h-full
                 hover:-translate-y-2 transition-transform duration-500
               `}
@@ -143,8 +143,8 @@ export default function FeatureShowcase() {
 
                 <ul
                   className={`space-y-2 text-[15px] sm:text-base leading-relaxed ${card.key === "metrix"
-                      ? "text-slate-700 dark:text-slate-200/90 font-medium"
-                      : "text-skin-muted dark:text-slate-200/80"
+                    ? "text-slate-700 dark:text-slate-200/90 font-medium"
+                    : "text-skin-muted dark:text-slate-200/80"
                     }`}
                 >
                   {card.bullets.map((b, i) => (
@@ -193,7 +193,7 @@ export default function FeatureShowcase() {
 
               {/* Glow derrière le contenu (abstrait) */}
               <div
-                className={`absolute -bottom-20 -right-20 w-48 h-48 rounded-full blur-[60px] pointer-events-none transition-colors duration-700 ${card.key === "metrix"
+                className={`absolute -bottom-20 -right-20 w-48 h-48 rounded-full blur-[40px] lg:blur-[60px] pointer-events-none transition-colors duration-700 ${card.key === "metrix"
                   ? "bg-fm-primary/30 group-hover:bg-fm-primary/40"
                   : "bg-fm-primary/10 group-hover:bg-fm-primary/20"
                   }`}
