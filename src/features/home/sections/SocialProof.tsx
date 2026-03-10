@@ -48,37 +48,50 @@ export default function SocialProof() {
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.35 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="relative rounded-[18px] bg-white/70 dark:bg-[#070E3A] border border-skin-border/25 shadow-[0_8px_22px_rgba(0,0,0,0.05)] overflow-hidden"
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="
+              relative rounded-[24px] overflow-hidden
+              bg-white/5 dark:bg-[#0A0C18]
+              border border-white/10 dark:border-white/5
+              shadow-[0_8px_32px_rgba(0,0,0,0.12)]
+              backdrop-blur-xl
+              flex flex-col group
+            "
           >
-            <div className="pt-5 px-5">
-              <h2 className="text-lg sm:text-xl font-extrabold text-skin-base mb-2">
-                Trop dispersé !!
+            {/* Subtle top glow */}
+            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-red-500/50 to-transparent group-hover:via-red-500 transition-colors duration-500" />
+
+            <div className="pt-8 px-8 flex-1">
+              <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center mb-6 border border-red-500/20">
+                <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-skin-base mb-3 tracking-tight">
+                Le fardeau de la dispersion
               </h2>
-              <p className="text-sm sm:text-base text-skin-muted leading-relaxed mb-4">
-                Nous sommes tous perdu entre toutes ces différentes{" "}
-                <span className="font-semibold text-skin-base">
-                  plateformes
-                </span>{" "}
-                !
+              <p className="text-base sm:text-lg text-skin-muted leading-relaxed">
+                Jongler entre des dizaines de{" "}
+                <span className="font-semibold text-skin-base">plateformes</span> fragmentées
+                diminue votre concentration et votre rentabilité globale.
               </p>
             </div>
 
-            {/* IMAGE EN GRAND (sans bloc interne) */}
-            <div className="px-4 sm:px-5 pb-5">
+            {/* IMAGE EN GRAND */}
+            <div className="px-6 pb-6 mt-8 flex justify-center">
               {/* Light */}
               <img
                 src={disperseLight}
-                alt="Outils dispersés (light)"
-                className="block dark:hidden w-full h-auto max-h-[320px] sm:max-h-[360px] lg:max-h-[420px] object-contain rounded-[16px] select-none"
+                alt="Outils dispersés"
+                className="block dark:hidden w-[90%] h-auto max-h-[360px] object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-[1.03]"
                 loading="lazy"
                 draggable={false}
               />
               {/* Dark */}
               <img
                 src={disperseDark}
-                alt="Outils dispersés (dark)"
-                className="hidden dark:block w-full h-auto max-h-[320px] sm:max-h-[360px] lg:max-h-[420px] object-contain rounded-[16px] select-none"
+                alt="Outils dispersés"
+                className="hidden dark:block w-[90%] h-auto max-h-[360px] object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-[1.03]"
                 loading="lazy"
                 draggable={false}
               />
@@ -90,42 +103,56 @@ export default function SocialProof() {
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.35 }}
-            transition={{ duration: 0.3, ease: "easeOut", delay: 0.02 }}
-            className="relative rounded-[18px] overflow-hidden bg-gradient-to-br from-[#1F6BFF] via-[#7053D9] to-[#E95FBD] dark:from-[#1F6BFF] dark:via-[#5C47BF] dark:to-[#BF4FA1] border border-white/10 shadow-[0_8px_22px_rgba(3,189,255,0.25)]"
+            transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
+            className="
+              relative rounded-[24px] overflow-hidden
+              bg-white/5 dark:bg-[#0A0C18]
+              border border-white/10 dark:border-white/5
+              shadow-[0_8px_32px_rgba(111,60,255,0.08)]
+              backdrop-blur-xl
+              flex flex-col group
+            "
           >
-            <div className="pt-5 px-5">
-              <h2 className="text-lg sm:text-xl font-extrabold text-white mb-2">
-                Une seule solution
+            {/* Subtle top glow */}
+            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-fm-primary/50 to-transparent group-hover:via-fm-primary transition-colors duration-500" />
+
+            {/* Background glow orb */}
+            <div className="absolute -right-20 -top-20 w-64 h-64 bg-fm-primary/10 rounded-full blur-[80px] group-hover:bg-fm-primary/20 transition-colors duration-700" />
+
+            <div className="pt-8 px-8 flex-1 relative z-10">
+              <div className="w-10 h-10 rounded-full bg-fm-primary/10 flex items-center justify-center mb-6 border border-fm-primary/20">
+                <svg className="w-5 h-5 text-fm-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-skin-base mb-3 tracking-tight">
+                L'écosystème unifié
               </h2>
-              <p className="text-sm sm:text-base text-white/90 leading-relaxed mb-4 max-w-md">
-                Ici tout est <span className="font-semibold">réuni</span>, très{" "}
-                <span className="font-semibold">simple</span> et pensé
-                spécialement pour votre{" "}
-                <span className="font-semibold">rentabilité</span>.
+              <p className="text-base sm:text-lg text-skin-muted leading-relaxed">
+                Centralisez vos outils dans un environnement élégant et <span className="font-semibold text-skin-base">optimisé</span> pour propulser votre{" "}
+                <span className="font-semibold text-skin-base">rentabilité</span>.
               </p>
             </div>
 
-            {/* IMAGE EN GRAND (sans bloc interne) */}
-            <div className="px-4 sm:px-5 pb-5">
+            {/* IMAGE EN GRAND */}
+            <div className="px-6 pb-6 mt-8 flex justify-center relative z-10">
               {/* Light */}
               <img
                 src={solutionLight}
-                alt="Dashboard unifié (light)"
-                className="block dark:hidden w-full h-auto max-h-[320px] sm:max-h-[360px] lg:max-h-[420px] object-contain rounded-[16px] select-none"
+                alt="Dashboard unifié"
+                className="block dark:hidden w-[90%] h-auto max-h-[360px] object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-[1.03]"
                 loading="lazy"
                 draggable={false}
               />
               {/* Dark */}
               <img
                 src={solutionDark}
-                alt="Dashboard unifié (dark)"
-                className="hidden dark:block w-full h-auto max-h-[320px] sm:max-h-[360px] lg:max-h-[420px] object-contain rounded-[16px] select-none"
+                alt="Dashboard unifié"
+                className="hidden dark:block w-[90%] h-auto max-h-[360px] object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-[1.03]"
                 loading="lazy"
                 draggable={false}
               />
             </div>
-
-            <div className="pointer-events-none absolute -right-10 -bottom-10 w-28 h-28 bg-white/10 rounded-full blur-3xl" />
           </motion.div>
         </div>
       </div>

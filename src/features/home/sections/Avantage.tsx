@@ -52,22 +52,24 @@ export default function Avantage({ ctaHref = "#ecosysteme" }: Props) {
 
         {/* 2 COLONNES — gauche un peu plus large */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.25fr_0.75fr] gap-10 lg:gap-14 items-center">
-          {/* IMAGE GAUCHE un peu plus grosse + contour */}
-          <div>
+          {/* IMAGE GAUCHE avec conteneur premium */}
+          <div className="relative group perspective-[1000px]">
+            {/* Glow abstrait */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-fm-primary/20 to-fm-accent/20 rounded-[48px] blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
             <div
               className="
-                relative
-                rounded-[48px]
+                relative z-10
+                rounded-[32px] sm:rounded-[48px]
                 overflow-hidden
-                bg-skin-surface
-                ring-1 ring-skin-border/25
-                shadow-[0_18px_45px_rgba(0,0,0,0.12)]
+                bg-white/5 dark:bg-[#0A0C18]
+                border border-white/10 dark:border-white/5
+                shadow-[0_24px_60px_rgba(0,0,0,0.15)]
               "
             >
               <img
                 src={avantageImage}
                 alt="Aperçu de l'écosystème Full Margin"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               />
             </div>
           </div>
@@ -77,44 +79,41 @@ export default function Avantage({ ctaHref = "#ecosysteme" }: Props) {
             {[
               "Très simple à utiliser",
               "100 % sécurisé et modéré",
-              "Vendez vos créations en toute simplicité",
-              "Découvrez la puissance de l’IA Full-Metrix",
+              "Monétisez vos créations en toute simplicité",
+              "Découvrez la puissance de Full-Metrix",
               "Des outils spécialement pensés pour vous",
               "Rejoignez ou bâtissez des communautés uniques",
             ].map((text, i) => (
               <div
                 key={i}
                 className="
-                  flex items-center gap-3
-                  rounded-full
-                  bg-skin-surface/40
-                  ring-1 ring-skin-border/40
-                  
-                  /* MODIFICATIONS ICI : Ring plus épais, couleur violette et ombre brillante */
-                  dark:bg-white/5 
-                  dark:ring-[3px] 
-                  dark:ring-violet-500 
-                  dark:shadow-[0_0_15px_rgba(139,92,246,0.3)]
-                  
-                  px-4 sm:px-5 py-2.5
+                  flex items-center gap-4
+                  rounded-2xl
+                  bg-white/5 dark:bg-white/5
+                  border border-black/15 dark:border-white/20
+                  hover:bg-white/10 dark:hover:bg-white/10
+                  hover:border-fm-primary/50
+                  transition-all duration-300
+                  backdrop-blur-sm
+                  px-4 sm:px-5 py-3
+                  group
                 "
               >
-                {/* icône : jour = fond sombre + icône blanche / nuit = fond blanc + icône primaire */}
+                {/* icône */}
                 <span
                   className="
                     h-10 w-10 rounded-full
-                    grid place-items-center
-                    bg-[#15192A] text-white
-                    ring-1 ring-white/22
-                    shadow-sm
-                    dark:bg-white dark:text-fm-primary dark:ring-black/10
+                    flex items-center justify-center
+                    bg-fm-primary/10 text-fm-primary
+                    group-hover:bg-fm-primary group-hover:text-white
+                    transition-colors duration-300
                     shrink-0
                   "
                 >
                   {pillIcons[i]}
                 </span>
 
-                <span className="text-sm sm:text-base text-skin-base dark:text-white leading-snug">
+                <span className="text-sm sm:text-base font-medium text-skin-base dark:text-slate-200">
                   {text}
                 </span>
               </div>

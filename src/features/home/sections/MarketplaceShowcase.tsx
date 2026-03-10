@@ -9,7 +9,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import fmLogo from "@assets/images/favicon.webp";
 
 // ✅ on réutilise la card publique + l’API publique
 import { ProductCardPublic } from "@shared/components/cards";
@@ -34,57 +33,51 @@ function MarketplaceLoaderCard({
   onClick: () => void;
 }): ReactElement {
   return (
-    <div className="relative">
+    <div className="relative group perspective-[1000px] h-full w-full">
       {/* glow */}
-      <div
-        className="absolute -inset-4 rounded-[24px] blur-2xl bg-fm-primary/6 dark:bg-fm-primary/4 pointer-events-none"
-        aria-hidden
-      />
+      <div className="absolute -inset-1 rounded-[26px] blur-xl bg-fm-primary/0 group-hover:bg-fm-primary/10 transition-colors duration-700 pointer-events-none" aria-hidden />
+
       {/* bloc cliquable */}
       <div
         onClick={onClick}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onClick()}
-        className="relative block cursor-pointer rounded-2xl ring-1 ring-skin-border/15 bg-skin-surface/40 dark:bg-skin-surface/10 backdrop-blur-sm h-[260px] overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-fm-primary/60"
+        className="relative block cursor-pointer rounded-[24px] border border-white/5 bg-[#070A1A]/80 shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-2xl h-full min-h-[300px] overflow-hidden focus:outline-none focus:ring-2 focus:ring-fm-primary/60 transition-transform duration-500 hover:-translate-y-1 flex flex-col"
       >
-        {/* shimmer */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
-          <div className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[fm-shimmer_1.8s_linear_infinite]" />
+        {/* Shimmer sweep */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden z-20">
+          <div className="absolute inset-y-0 -left-full w-full bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[fm-shimmer_2s_ease-in-out_infinite]" />
         </div>
 
-        {/* haut : image fake */}
-        <div className="h-[110px] bg-skin-inset/50 rounded-t-2xl flex items-center justify-center relative">
-          <div className="h-14 w-14 rounded-full bg-skin-surface/60 dark:bg-black/30 ring-1 ring-white/10 flex items-center justify-center shadow-md">
-            <img
-              src={fmLogo}
-              alt="FullMargin"
-              className="h-9 w-9 object-contain drop-shadow"
-            />
-          </div>
-          <span className="absolute top-3 right-3 px-2 py-1 rounded-full bg-black/50 text-[10px] text-white">
-            Bientôt
-          </span>
+        {/* haut : image fake skeleton */}
+        <div className="h-[140px] bg-white/5 relative border-b border-white/5 overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent animate-pulse" />
+          <div className="h-16 w-16 rounded-3xl bg-white/5 animate-pulse border border-white/10" />
+          <div className="absolute top-4 right-4 h-6 w-16 rounded-full bg-white/5 animate-pulse" />
         </div>
 
-        {/* bas : texte */}
-        <div className="flex-1 px-4 py-4 flex flex-col gap-3 h-[150px]">
-          <div className="space-y-1">
-            <div className="h-3.5 w-40 rounded-full bg-skin-border/20" />
-            <div className="h-2.5 w-28 rounded-full bg-skin-border/10" />
-          </div>
+        {/* bas : texte wireframes */}
+        <div className="flex-1 p-5 flex flex-col gap-4 relative z-10 w-full">
+          {/* Titre & Auteur */}
           <div className="space-y-2">
-            <div className="h-2 w-28 rounded-full bg-skin-border/10" />
-            <div className="h-2 w-32 rounded-full bg-skin-border/10" />
-            <div className="h-2 w-20 rounded-full bg-skin-border/10" />
+            <div className="h-5 w-4/5 rounded-md bg-white/5 animate-pulse" />
+            <div className="h-3 w-1/2 rounded bg-white/5 animate-pulse" />
           </div>
-          <div className="mt-auto flex items-center justify-between">
-            <span className="text-[11px] text-skin-muted">
-              Marketplace en préparation…
-            </span>
-            <span className="inline-flex items-center gap-1 text-[11px] text-fm-primary/90">
-              Voir plus <ArrowRight className="w-3 h-3" />
-            </span>
+
+          {/* Description */}
+          <div className="space-y-2 mt-2">
+            <div className="h-2 w-full rounded bg-white/5 animate-pulse" />
+            <div className="h-2 w-5/6 rounded bg-white/5 animate-pulse" />
+          </div>
+
+          {/* Footer stats */}
+          <div className="mt-auto flex items-center justify-between pt-4 border-t border-white/5">
+            <div className="flex items-center gap-2">
+              <div className="h-6 w-14 rounded-md bg-white/5 animate-pulse" />
+              <div className="h-6 w-14 rounded-md bg-white/5 animate-pulse" />
+            </div>
+            <div className="h-6 w-16 rounded-full bg-white/5 animate-pulse" />
           </div>
         </div>
       </div>
@@ -186,67 +179,61 @@ export default function MarketplaceShowcase(): ReactElement {
               <button
                 type="button"
                 onClick={goToMarketplace}
-                className="mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 bg-fm-primary text-skin-primary-foreground text-sm font-semibold shadow-md hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-fm-primary/70"
+                className="group relative mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 bg-fm-primary text-white text-sm font-semibold shadow-[0_8px_24px_rgba(111,60,255,0.3)] hover:scale-105 hover:shadow-[0_8px_32px_rgba(111,60,255,0.5)] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-fm-primary/70 overflow-hidden"
               >
-                Voir le marketplace
-                <ArrowRight className="w-4 h-4" />
+                <div className="absolute inset-0 bg-gradient-to-r from-fm-accent to-fm-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="relative z-10 flex items-center gap-2">
+                  Voir le marketplace
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </span>
               </button>
             </div>
 
             {/* bloc droite (4 points) */}
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <li className="flex items-start gap-3">
-                <span className="h-9 w-9 rounded-xl bg-fm-primary/15 text-fm-primary grid place-items-center">
-                  <BrainCircuit className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="font-semibold text-skin-base">
-                    Pour améliorer et optimiser ton trading.
-                  </p>
-                  <p className="text-skin-muted text-sm">
-                    Pour améliorer ton trading.
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="h-9 w-9 rounded-xl bg-fm-primary/15 text-fm-primary grid place-items-center">
-                  <Bot className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="font-semibold text-skin-base">
-                    Robots & automatisation
-                  </p>
-                  <p className="text-skin-muted text-sm">
-                    Les meilleurs robots de trading pour MT4/MT5
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="h-9 w-9 rounded-xl bg-fm-primary/15 text-fm-primary grid place-items-center">
-                  <DollarSign className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="font-semibold text-skin-base">
-                    Monétisation créateurs
-                  </p>
-                  <p className="text-skin-muted text-sm">
-                    Ouvrez votre propre boutique et vendez vos propres produits.
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="h-9 w-9 rounded-xl bg-fm-primary/15 text-fm-primary grid place-items-center">
-                  <Server className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="font-semibold text-skin-base">
-                    VPS & ressources
-                  </p>
-                  <p className="text-skin-muted text-sm">
-                    Pour faire tourner vos robots et stratégies 24h/24.
-                  </p>
-                </div>
-              </li>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+              {[
+                {
+                  icon: <BrainCircuit className="w-5 h-5" />,
+                  title: "Améliorer & optimiser",
+                  desc: "Des outils conçus pour affiner votre trading.",
+                },
+                {
+                  icon: <Bot className="w-5 h-5" />,
+                  title: "Robots & automatisation",
+                  desc: "Les meilleurs robots MT4/MT5.",
+                },
+                {
+                  icon: <DollarSign className="w-5 h-5" />,
+                  title: "Monétisation créateurs",
+                  desc: "Ouvrez votre boutique et vendez vos créations.",
+                },
+                {
+                  icon: <Server className="w-5 h-5" />,
+                  title: "VPS & ressources",
+                  desc: "Faites tourner vos stratégies 24h/24 sans coupure.",
+                },
+              ].map((feature, idx) => (
+                <li
+                  key={idx}
+                  className="
+                    flex items-start gap-4 p-5 rounded-[20px]
+                    bg-white/5 dark:bg-[#0A0C18] border border-white/10 dark:border-white/5
+                    shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-transform duration-300
+                  "
+                >
+                  <span className="h-10 w-10 shrink-0 rounded-full bg-fm-primary/10 border border-fm-primary/20 text-fm-primary grid place-items-center">
+                    {feature.icon}
+                  </span>
+                  <div>
+                    <p className="font-bold text-skin-base tracking-tight mb-1">
+                      {feature.title}
+                    </p>
+                    <p className="text-skin-muted text-sm leading-relaxed">
+                      {feature.desc}
+                    </p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
 

@@ -1,6 +1,7 @@
 // src/components/Home/IntroVideo.tsx
 import { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
 
 import introBlack from "@assets/images/black.webp"; // on le met en "par défaut"
 import introWhite from "@assets/images/white.webp"; // on le met en mode dark
@@ -98,21 +99,41 @@ export default function IntroVideo() {
 
   return (
     <section className="w-full">
-      <div className="mx-auto max-w-[1400px] px-3 sm:px-6 lg:px-10 pt-10 sm:pt-12 lg:pt-14">
-        <div className="text-center mb-6 sm:mb-8">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-skin-base">
-            Prenez une longueur d’avance.
+      <div className="mx-auto max-w-[1000px] px-3 sm:px-6 lg:px-10 pt-10 sm:pt-12 lg:pt-14">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.8 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="text-center mb-6 sm:mb-8"
+        >
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-skin-base pb-2">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-skin-base via-skin-muted to-skin-base bg-[length:200%_auto] animate-[fm-text-shimmer_4s_linear_infinite]">
+              Prenez une longueur d’avance.
+            </span>
           </h2>
-          <p className="mt-3 max-w-3xl mx-auto text-skin-muted text-sm sm:text-base leading-relaxed">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="mt-3 max-w-2xl mx-auto text-skin-muted text-sm sm:text-base leading-relaxed"
+          >
             En moins de 60 secondes, découvrez comment nous combinons l’analyse,
             l’exécution et la communauté pour décupler votre efficacité.
             <br className="hidden sm:block" />
             Une plateforme — tous vos leviers de progression, sans friction.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </div>
 
-      <div className="mx-auto max-w-[1400px] px-3 sm:px-6 lg:px-10 pb-10 sm:pb-12 lg:pb-14">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+        className="mx-auto max-w-[1000px] px-3 sm:px-6 lg:px-10 pb-10 sm:pb-12 lg:pb-16"
+      >
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -158,13 +179,13 @@ export default function IntroVideo() {
             className="
               absolute top-4 right-4
               bg-black/35 text-white text-[11px] sm:text-xs
-              px-3 py-1 rounded-full
+              px-3 py-1 rounded-full backdrop-blur-md
             "
           >
             1:00 • Aperçu produit
           </span>
         </button>
-      </div>
+      </motion.div>
 
       <VideoModal
         open={open}

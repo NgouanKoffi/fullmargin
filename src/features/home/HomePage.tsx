@@ -10,7 +10,7 @@ import CommunityHub from "./sections/CommunityHub";
 import MarketplaceShowcase from "./sections/MarketplaceShowcase";
 import UserSpace from "./sections/UserSpace";
 import IntroVideo from "./sections/IntroVideo";
-import SEO from "@shared/components/SEO";
+import FinalCTA from "./sections/FinalCTA";
 
 export default function Home() {
   const { status } = useAuth();
@@ -38,15 +38,16 @@ export default function Home() {
 
   return (
     <main className="overflow-x-hidden">
-      <SEO 
-        title="L'écosystème ultime du trader moderne"
-        description="Le premier écosystème tout-en-un pour les traders, entrepreneurs et investisseurs. Journaling intelligent, analyse prédictive et communauté exclusive."
-        keywords="trading, journal de trading, crypto, forex, analyse technique, boursière, fullmargin, trader d'élite"
-      />
-      {/* ===== HERO ===== */}
-      <section className="w-full fm-section" id="hero">
+      <section className="w-full fm-section relative overflow-hidden" id="hero">
+        {/* Dynamic Backgrounds */}
+        <div className="fm-bg absolute inset-0 pointer-events-none z-0">
+          <div className="fm-orb fm-orb--a" />
+          <div className="fm-orb fm-orb--b" />
+        </div>
+
         <div
           className="
+            relative z-10
             mx-auto
             max-w-[1400px]
             px-3 sm:px-6 lg:px-10
@@ -56,12 +57,12 @@ export default function Home() {
         >
           <div
             className="
-              grid grid-cols-1
-              lg:grid-cols-[1.05fr_0.95fr]
-              items-center
-              gap-6 md:gap-8 lg:gap-10
-              will-change-transform
-            "
+                grid grid-cols-1
+                lg:grid-cols-[0.9fr_1.1fr]
+                items-center
+                gap-10 md:gap-12 lg:gap-16
+                will-change-transform
+              "
             style={{ transform: "translateZ(0)" }}
           >
             {/* Colonne gauche (texte) */}
@@ -74,24 +75,22 @@ export default function Home() {
                 "
               >
                 <div className="space-y-4 sm:space-y-5 md:space-y-6">
-                  <span
-                    data-cue="fade"
-                    className="inline-flex items-center text-[11px] md:text-xs font-medium px-2 py-1 rounded-full ring-1 ring-skin-border/20 bg-skin-surface/70"
-                  >
-                    L’excellence
-                  </span>
 
                   <h1
                     data-cue="slide-up"
                     data-delay="80"
                     className="
-                      text-3xl sm:text-5xl lg:text-6xl
-                      leading-[1.18] sm:leading-[1.12] lg:leading-[1.08]
-                      font-extrabold tracking-[-0.015em] text-skin-base
+                      text-4xl sm:text-5xl lg:text-6xl xl:text-[4.2rem]
+                      leading-[1.12] sm:leading-[1.08] lg:leading-[1.05]
+                      font-extrabold tracking-[-0.02em] max-w-[95%]
                     "
                   >
-                    Full Margin —<br /> L’écosystème du
-                    <br /> trader moderne
+                    <span className="text-skin-base">Full Margin</span>
+                    <br />
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-[#E879F9] to-[#A855F7] bg-[length:200%_auto] animate-[fm-text-shimmer_3s_linear_infinite] drop-shadow-sm font-black">
+                      L’écosystème du
+                      <br /> trader moderne
+                    </span>
                   </h1>
 
                   <p
@@ -99,7 +98,7 @@ export default function Home() {
                     data-delay="160"
                     className="
                       text-base sm:text-lg leading-relaxed text-skin-muted
-                      max-w-[52ch]
+                      max-w-[90%] sm:max-w-[48ch] lg:max-w-[42ch]
                     "
                   >
                     Le premier écosystème tout-en-un des traders, entrepreneurs
@@ -130,14 +129,38 @@ export default function Home() {
                       type="button"
                       onClick={handlePrimary}
                       className="
-                        rounded-full px-5 py-3 text-sm font-semibold
-                        bg-fm-primary text-skin-primary-foreground hover:opacity-90
+                        relative group rounded-full px-7 py-3.5 text-sm font-bold
+                        bg-fm-primary text-white
+                        overflow-hidden transition-all duration-300
+                        hover:scale-105 hover:shadow-[0_0_20px_rgba(111,60,255,0.4)]
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-ring
+                        min-[760px]:max-[1023px]:w-56 text-center
+                      "
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        Commencer maintenant
+                        <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-fm-accent to-fm-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </button>
+                    <a
+                      href="#features"
+                      className="
+                        group relative flex items-center justify-center gap-2
+                        rounded-full px-7 py-3.5 text-sm font-semibold
+                        bg-transparent text-skin-base border border-skin-border/50
+                        hover:bg-skin-surface/80 hover:border-skin-border
+                        transition-all duration-300 backdrop-blur-sm
                         text-center min-[760px]:max-[1023px]:w-56
                       "
                     >
-                      Commencer maintenant
-                    </button>
+                      Découvrir
+                      <svg className="w-4 h-4 transition-transform group-hover:translate-y-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                      </svg>
+                    </a>
                   </div>
                 </div>
 
@@ -208,6 +231,11 @@ export default function Home() {
       {/* ===== MARKETPLACE ===== */}
       <section className="cv-auto fm-section">
         <MarketplaceShowcase />
+      </section>
+
+      {/* ===== FINAL CTA ===== */}
+      <section className="cv-auto fm-section">
+        <FinalCTA />
       </section>
     </main>
   );

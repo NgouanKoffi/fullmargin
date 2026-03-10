@@ -210,6 +210,16 @@ body {
   }
 }
 
+@keyframes fm-text-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: -200% 50%; }
+}
+
+@keyframes fm-levitate {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
 /* ===================================================================
       BACKGROUND FX : orbes, grille, chandelles, gains/pertes
       =================================================================== */

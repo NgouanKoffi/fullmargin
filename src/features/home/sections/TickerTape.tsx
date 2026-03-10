@@ -2,10 +2,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import {
   motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  useScroll,
 } from "framer-motion";
 
 type Props = {
@@ -62,62 +58,21 @@ export default function TickerTape({
     }
   }, []);
 
-  /* ====== Scroll → moduler la durée de l’animation ====== */
-  const { scrollYProgress } = useScroll({
-    target: wrapRef,
-    offset: ["start end", "end start"],
-  });
-
-  useEffect(() => {
-    if (!trackRef.current) return;
-    // map [0→1] vers facteur [1 → 0.75] (un peu plus lent en bas)
-    const unsub = scrollYProgress.on("change", (v) => {
-      const factor = 1 - 0.25 * v; // 1..0.75
-      const dur = Math.max(8, speed * factor); // garde une borne min
-      trackRef.current!.style.setProperty("--fmTickerDur", `${dur}s`);
-    });
-    // init
-    trackRef.current.style.setProperty("--fmTickerDur", `${speed}s`);
-    return () => unsub && unsub();
-  }, [speed, scrollYProgress]);
-
-  /* ====== Parallax 3D au curseur ====== */
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const rx = useSpring(useTransform(my, [-0.5, 0.5], [6, -6]), {
-    stiffness: 120,
-    damping: 18,
-  });
-  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-10, 10]), {
-    stiffness: 120,
-    damping: 18,
-  });
-
-  function onMouseMove(e: React.MouseEvent) {
-    const el = e.currentTarget as HTMLElement;
-    const r = el.getBoundingClientRect();
-    mx.set((e.clientX - r.left) / r.width - 0.5); // [-0.5, 0.5]
-    my.set((e.clientY - r.top) / r.height - 0.5);
-  }
+  // Set static speed initially as a CSS variable or directly in the style block.
+  // Actually, we'll just use the JS interpolated speed inside the <style> tag below.
 
   return (
     <div
       ref={wrapRef}
-      onMouseMove={onMouseMove}
-      onMouseLeave={() => {
-        mx.set(0);
-        my.set(0);
-      }}
       className={`
         fm-ticker-wrap relative overflow-hidden rounded-full
         ring-1 ring-skin-border/20 bg-skin-surface
         -mx-4 sm:-mx-6 md:mx-0
-        [perspective:1200px]
       `}
     >
       <style>
         {`
-        .fm-ticker { width: max-content; will-change: transform; animation: fm-ticker-move var(--fmTickerDur, ${speed}s) linear infinite; }
+        .fm-ticker { width: max-content; will-change: transform; animation: fm-ticker-move ${speed}s linear infinite; }
         @keyframes fm-ticker-move { to { transform: translateX(-50%); } }
         @media (prefers-reduced-motion: reduce) { .fm-ticker { animation: none !important; } }
 
@@ -137,7 +92,6 @@ export default function TickerTape({
 
       {/* Glow d’ambiance derrière le ruban */}
       <motion.div
-        style={{ rotateX: rx, rotateY: ry }}
         className="pointer-events-none absolute inset-0 -z-10 will-change-transform"
         aria-hidden
       >
@@ -164,10 +118,9 @@ export default function TickerTape({
         </style>
       </div>
 
-      {/* Track 3D : tilt global */}
+      {/* Track */}
       <motion.div
         ref={trackRef}
-        style={{ rotateX: rx, rotateY: ry }}
         className="fm-ticker flex items-center will-change-transform"
       >
         {/* Séquence A */}
@@ -192,9 +145,8 @@ export default function TickerTape({
                   {it.p}
                 </span>
                 <span
-                  className={`text-[11px] sm:text-xs font-semibold ${
-                    up ? "text-emerald-500" : "text-rose-500"
-                  }`}
+                  className={`text-[11px] sm:text-xs font-semibold ${up ? "text-emerald-500" : "text-rose-500"
+                    }`}
                 >
                   {up ? "▲" : "▼"} {Math.abs(it.d).toFixed(2)}%
                 </span>
@@ -228,9 +180,8 @@ export default function TickerTape({
                   {it.p}
                 </span>
                 <span
-                  className={`text-[11px] sm:text-xs font-semibold ${
-                    up ? "text-emerald-500" : "text-rose-500"
-                  }`}
+                  className={`text-[11px] sm:text-xs font-semibold ${up ? "text-emerald-500" : "text-rose-500"
+                    }`}
                 >
                   {up ? "▲" : "▼"} {Math.abs(it.d).toFixed(2)}%
                 </span>

@@ -47,44 +47,48 @@ export default function Pricing() {
         : "Choisir Pro";
 
   return (
-    <div className="min-h-screen bg-skin-surface text-skin-base dark:bg-[#0f1115] dark:text-gray-100 relative">
-      {/* TOAST */}
-      <PricingToast toast={toast} clearToast={clearToast} />
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-[#06080A] dark:to-black transition-colors duration-500 text-slate-900 dark:text-white relative overflow-hidden">
+      {/* Subtle Grid Background replacing orbs for tech feel */}
+      <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-[size:32px] opacity-10 dark:opacity-10 pointer-events-none" />
 
-      {/* HERO */}
-      <PricingHero />
+      <div className="relative z-10 w-full h-full pt-10">
+        {/* TOAST */}
+        <PricingToast toast={toast} clearToast={clearToast} />
 
-      {/* PLANS */}
-      <section className="px-6 pb-20 grid md:grid-cols-2 gap-8 max-w-5xl mx-auto md:items-start">
-        {/* STARTER */}
-        <PricingPlanStarter
-          starterLabel={starterLabel}
-          checkingAccess={checkingAccess}
-          isProActive={isProActive}
+        {/* HERO */}
+        <PricingHero />
+
+        {/* PLANS */}
+        <section className="px-6 pb-20 grid md:grid-cols-2 gap-8 max-w-5xl mx-auto md:items-start">
+          {/* STARTER */}
+          <PricingPlanStarter
+            starterLabel={starterLabel}
+            checkingAccess={checkingAccess}
+            isProActive={isProActive}
+          />
+
+          {/* PRO */}
+          <PricingPlanPro
+            proLabel={proLabel}
+            proDisabled={proDisabled}
+            checkingAccess={checkingAccess}
+            isProActive={isProActive}
+            openPaymentModal={openPaymentModal}
+          />
+        </section>
+
+        <PaymentMethodModal
+          open={showPaymentModal}
+          onClose={closePaymentModal}
+          loadingMethod={safeLoadingMethod}
+          disabled={checkingAccess || alreadySubscribed}
+          onCard={() => void handleProStripe()}
+          onFeexPay={submitFeexPay}
+          // ✅ ICI ! On passe la fonction de redirection au composant enfant !
+          onFeexPaySuccess={handleFeexPaySuccess}
+          onSubmitCrypto={(network: any) => void submitCryptoPayment(network)}
         />
-
-        {/* PRO */}
-        <PricingPlanPro
-          proLabel={proLabel}
-          proDisabled={proDisabled}
-          checkingAccess={checkingAccess}
-          isProActive={isProActive}
-          openPaymentModal={openPaymentModal}
-        />
-      </section>
-
-      {/* MODAL DE CHOIX DU MOYEN DE PAIEMENT */}
-      <PaymentMethodModal
-        open={showPaymentModal}
-        onClose={closePaymentModal}
-        loadingMethod={safeLoadingMethod}
-        disabled={checkingAccess || alreadySubscribed}
-        onCard={() => void handleProStripe()}
-        onFeexPay={submitFeexPay}
-        // ✅ ICI ! On passe la fonction de redirection au composant enfant !
-        onFeexPaySuccess={handleFeexPaySuccess}
-        onSubmitCrypto={(network: any) => void submitCryptoPayment(network)}
-      />
+      </div>
     </div>
   );
 }

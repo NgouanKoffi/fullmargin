@@ -141,7 +141,7 @@ export default function FullMetrix() {
       <div className="mx-auto max-w-[1400px] px-3 sm:px-6 lg:px-10 pt-10 sm:pt-12 lg:pt-14">
         <div className="text-center mb-6 sm:mb-8">
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-skin-base">
-            Découvrez <span className="text-indigo-500">FullMetrix</span>
+            Découvrez <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] via-[#3B82F6] to-[#8B5CF6] bg-[length:200%_auto] animate-[fm-text-shimmer_3s_linear_infinite]">FullMetrix</span>
           </h2>
 
           {/* ✅ Bouton détails */}
@@ -150,11 +150,13 @@ export default function FullMetrix() {
               type="button"
               onClick={goDetails}
               className="
-                inline-flex items-center justify-center
-                px-5 py-2.5 rounded-full
-                bg-indigo-600 text-white text-sm font-semibold
-                shadow-sm hover:bg-indigo-700 active:scale-[0.98]
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/70
+                group relative inline-flex items-center justify-center
+                px-7 py-3 rounded-full
+                bg-white/5 dark:bg-[#0A0C18] border border-white/10
+                text-fm-primary text-sm font-semibold
+                hover:bg-fm-primary hover:border-fm-primary hover:text-white
+                shadow-[0_8px_32px_rgba(0,0,0,0.15)] transition-all duration-300 backdrop-blur-md
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-fm-primary/70
               "
               aria-label="Voir les détails de FullMetrix"
               title="Voir les détails"
@@ -165,25 +167,25 @@ export default function FullMetrix() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1400px] px-3 sm:px-6 lg:px-10 pb-10 sm:pb-12 lg:pb-14">
+      <div className="mx-auto max-w-[1000px] px-3 sm:px-6 lg:px-10 pb-10 sm:pb-12 lg:pb-16">
         <button
           type="button"
           onClick={() => setOpen(true)}
           className="
-            relative w-full
-            rounded-[28px]
+            relative w-full group perspective-[1000px]
+            rounded-[32px] sm:rounded-[48px]
             overflow-hidden
-            bg-skin-surface/70
-            ring-1 ring-skin-border/15
-            shadow-[0_18px_45px_rgba(0,0,0,0.08)]
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-ring
+            bg-white/5 dark:bg-[#0A0C18]
+            border border-white/10 dark:border-white/5
+            shadow-[0_24px_60px_rgba(0,0,0,0.15)]
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-fm-primary/50
           "
           aria-label="Lire la vidéo de présentation"
         >
           <img
             src={introBlack}
             alt="Interface FullMetrix"
-            className="w-full h-auto object-cover block"
+            className="w-full h-auto aspect-video object-cover block transition-transform duration-700 group-hover:scale-[1.02]"
             loading="lazy"
           />
 
@@ -191,11 +193,13 @@ export default function FullMetrix() {
             className="
               absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
               w-20 h-20 sm:w-24 sm:h-24
-              rounded-full bg-white/95 text-[#5B21FF]
-              grid place-items-center shadow-xl
+              rounded-full bg-white/10 dark:bg-black/40 backdrop-blur-xl
+              border border-white/20 text-white
+              grid place-items-center shadow-[0_8px_32px_rgba(0,0,0,0.3)]
+              group-hover:scale-110 group-hover:bg-fm-primary group-hover:border-fm-primary transition-all duration-300
             "
           >
-            <IconPlay className="w-8 h-8 sm:w-9 sm:h-9" />
+            <IconPlay className="w-8 h-8 sm:w-10 sm:h-10 ml-1" />
           </span>
 
           <span

@@ -2,7 +2,6 @@
 import { useMemo } from "react";
 import type { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
-import fmLogo from "@assets/images/favicon.webp";
 
 // ✅ on réutilise ta card + le hook existant (déjà utilisé dans Communautes.tsx)
 import CommunityCard, {
@@ -24,12 +23,9 @@ function CommunityLoaderCard({
   onClick: () => void;
 }): ReactElement {
   return (
-    <div className="relative">
-      {/* glow autour */}
-      <div
-        className="absolute -inset-5 rounded-[26px] blur-2xl bg-fm-primary/8 dark:bg-fm-primary/6 pointer-events-none"
-        aria-hidden
-      />
+    <div className="relative group perspective-[1000px] h-full w-full">
+      {/* Edge glow on hover */}
+      <div className="absolute -inset-1 rounded-[26px] blur-xl bg-fm-primary/0 group-hover:bg-fm-primary/10 transition-colors duration-700 pointer-events-none" aria-hidden />
 
       {/* bloc cliquable */}
       <div
@@ -37,33 +33,36 @@ function CommunityLoaderCard({
         role="button"
         tabIndex={0}
         onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onClick()}
-        className="relative overflow-hidden rounded-3xl bg-skin-surface/40 dark:bg-skin-surface/20 ring-1 ring-skin-border/10 shadow-[0_14px_35px_rgba(0,0,0,0.12)] backdrop-blur-sm h-[220px] flex flex-col items-center justify-center gap-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-fm-primary/60"
+        className="relative overflow-hidden rounded-[24px] bg-[#070A1A]/80 border border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-2xl h-full min-h-[220px] flex flex-col p-6 cursor-pointer focus:outline-none focus:ring-2 focus:ring-fm-primary/60 transition-transform duration-500 hover:-translate-y-1"
       >
-        {/* shimmer */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
-          <div className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/4 to-transparent animate-[fm-shimmer_1.8s_linear_infinite]" />
+        {/* Shimmer sweep */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute inset-y-0 -left-full w-full bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[fm-shimmer_2s_ease-in-out_infinite]" />
         </div>
 
-        {/* logo */}
-        <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-skin-surface/80 dark:bg-black/30 ring-1 ring-white/10 shadow-md">
-          <img
-            src={fmLogo}
-            alt="FullMargin"
-            className="h-9 w-9 object-contain drop-shadow-md"
-          />
+        {/* Top: Logo & Stats Wireframe */}
+        <div className="flex items-start justify-between relative z-10 w-full mb-6">
+          <div className="h-14 w-14 rounded-2xl bg-white/5 animate-pulse border border-white/5 shadow-inner" />
+          <div className="h-6 w-20 rounded-full bg-white/5 animate-pulse border border-white/5" />
         </div>
 
-        {/* texte */}
-        <div className="relative text-center">
-          <p className="text-sm text-skin-muted/85">Communautés en cours…</p>
-          <p className="mt-1 text-[11px] text-skin-muted/60">
-            Cliquer pour voir l’espace
-          </p>
+        {/* Middle: Text Wireframes */}
+        <div className="relative z-10 w-full flex-1 mb-4">
+          <div className="h-5 w-3/4 rounded-md bg-white/5 animate-pulse mb-3" />
+          <div className="space-y-2">
+            <div className="h-3 w-full rounded bg-white/5 animate-pulse" />
+            <div className="h-3 w-5/6 rounded bg-white/5 animate-pulse" />
+          </div>
         </div>
 
-        {/* petit footer skeleton */}
-        <div className="relative w-28 h-2 rounded-full bg-skin-border/10 overflow-hidden">
-          <div className="h-full w-1/2 bg-fm-primary/60 animate-pulse rounded-full" />
+        {/* Bottom: Members & Action Wireframe */}
+        <div className="mt-auto flex items-center justify-between relative z-10 w-full pt-4 border-t border-white/5">
+          <div className="flex -space-x-2">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className={`w-6 h-6 rounded-full bg-white/5 animate-pulse border-2 border-[#070A1A]`} style={{ animationDelay: `${i * 150}ms` }} />
+            ))}
+          </div>
+          <div className="h-2 w-16 rounded-full bg-white/5 animate-pulse" />
         </div>
       </div>
     </div>

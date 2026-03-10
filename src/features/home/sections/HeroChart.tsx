@@ -18,18 +18,27 @@ export default function HeroChart() {
           xl:w-[1000px]
         "
       >
-        <img
-          src={heroImage}
-          alt="FullMargin Hero"
-          className="
-            w-full h-auto
-            scale-[1.08]                      /* 👉 petit zoom mobile */
-            sm:scale-100
-            lg:scale-[1.08] xl:scale-[1.12]
-            origin-center
-            select-none
-          "
-        />
+        <div className="relative group perspective-[1000px]">
+          {/* Subtle glow behind the image */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-fm-primary/30 to-fm-accent/30 rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+          <img
+            src={heroImage}
+            alt="FullMargin Hero"
+            className="
+              relative z-10
+              w-full h-auto
+              scale-[1.08]                      /* 👉 petit zoom mobile */
+              sm:scale-100
+              lg:scale-[1.08] xl:scale-[1.12]
+              origin-center
+              select-none
+              transition-all duration-700 ease-out
+              group-hover:-translate-y-4 group-hover:scale-[1.1] xl:group-hover:scale-[1.15]
+              group-hover:drop-shadow-[0_20px_40px_rgba(111,60,255,0.25)]
+            "
+          />
+        </div>
       </div>
     </div>
   );
