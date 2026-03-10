@@ -61,10 +61,10 @@ module.exports = (router) => {
 
       const cleanRoomName = String(live.roomName).replace(/[^a-zA-Z0-9]/g, "");
 
-      // Construction du payload Jitsi JWT - VERSION HEX-SECRET
+      // Construction du payload Jitsi JWT - VERSION COMPATIBILITÉ PROSODY
       const now = Math.floor(Date.now() / 1000);
       const payload = {
-        aud: "jitsi", 
+        aud: JITSI_DOMAIN, 
         iss: APP_ID,
         sub: JITSI_DOMAIN,
         room: cleanRoomName, 
@@ -87,14 +87,7 @@ module.exports = (router) => {
         },
       };
 
-      // ⚠️ IMPORTANT: Jitsi utilise souvent des secrets en HEX. 
-      // Si la chaîne fait 64 caractères, on la traite comme du binaire (Buffer).
-      let secret = APP_SECRET;
-      if (APP_SECRET.length === 64 && /^[0-9a-fA-F]+$/.test(APP_SECRET)) {
-        secret = Buffer.from(APP_SECRET, "hex");
-      }
-
-      const token = jwt.sign(payload, secret, { algorithm: "HS256" });
+      const token = jwt.sign(payload, APP_SECRET, { algorithm: "HS256" });
 
       return res.json({
         ok: true,
