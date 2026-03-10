@@ -11,7 +11,11 @@ function requireAuth(req, res, next) {
     if (!a || !a.userId) {
       return res.status(401).json({ ok: false, error: "Non autorisé" });
     }
-    req.auth = { userId: a.userId, role: a.role || "user" };
+    req.auth = {
+      userId: a.userId,
+      role: a.role || "user",
+      email: a.email || "",
+    };
     next();
   } catch {
     return res.status(401).json({ ok: false, error: "Non autorisé" });

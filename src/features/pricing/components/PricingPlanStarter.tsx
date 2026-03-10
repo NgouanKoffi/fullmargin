@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Feature } from "./PricingFeatures";
 
 type Props = {

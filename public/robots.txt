@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://fullmargin.net/sitemap.xml

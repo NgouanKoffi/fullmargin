@@ -18,6 +18,7 @@ import {
   Heart,
   MessageSquareText,
   Settings2,
+  Sparkles,
 } from "lucide-react";
 
 // 🔹 imports ajoutés pour la Balance
@@ -304,6 +305,29 @@ export default function MobileDrawer({ open, groups, onClose }: Props) {
             const to =
               g.href && g.href.trim().length > 0 ? g.href : FALLBACK_HREF;
             const isActive = isPathActive(pathname, to);
+
+            if (g.isSpecial) {
+              return (
+                <Link
+                  key={g.key}
+                  to={to}
+                  onClick={() => onClose()}
+                  className={`block rounded-2xl px-4 py-3 text-sm font-bold group mb-2 ${
+                    isActive ? "bg-violet-50 dark:bg-violet-900/20" : tile
+                  }`}
+                >
+                  <div className="relative z-10 flex items-center gap-3">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-violet-100 dark:bg-violet-900/30 shrink-0">
+                      <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400 animate-pulse" />
+                    </span>
+                    <span className="truncate flex items-center gap-1 text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400">
+                      {g.label}
+                    </span>
+                  </div>
+                </Link>
+              );
+            }
+
             return (
               <Link
                 key={g.key}

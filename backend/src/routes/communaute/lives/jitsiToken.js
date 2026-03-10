@@ -52,36 +52,45 @@ module.exports = (router) => {
       }
 
       const community = check.community;
-      const isCommunityOwner = community && String(community.ownerId) === String(userId);
-      const isLiveCreator = live.createdBy && String(live.createdBy) === String(userId);
-      const isOwner = isCommunityOwner || isLiveCreator;
-
-      const now = Math.floor(Date.now() / 1000);
-      const exp = now + 60 * 60; // 1h
+      const isCommunityOwner =
+        community && String(community.ownerId) === String(userId);
+      const isLiveCreator = String(live.createdBy) === String(userId);
+      const isOwner = !!(isCommunityOwner || isLiveCreator);
 
       const displayName = safeName(req.query.name) || "Membre FullMargin";
 
       const cleanRoomName = String(live.roomName).replace(/[^a-zA-Z0-9]/g, "");
 
-      // ⚠️ Compat: certaines stacks lisent moderator au root, d'autres via context.user.moderator
+      // Construction du payload Jitsi JWT - VERSION STANDARD PROSODY
+      const now = Math.floor(Date.now() / 1000);
       const payload = {
-        aud: "jitsi",
-        iss: APP_ID,
-        sub: JITSI_DOMAIN,
-        room: cleanRoomName, // token valable seulement pour cette room sanitizée
-        exp,
-        nbf: now - 10,
-        moderator: !!isOwner, // ✅ important (compat)
+        aud: "jitsi",          // ← OBLIGATOIRE pour Prosody JWT plugin
+        iss: APP_ID,           // "fullmargin"
+        sub: JITSI_DOMAIN,     // "live.fullmargin.net"
+        room: cleanRoomName,
+        iat: now - 5,
+        nbf: now - 300,
+        exp: now + 7200,       // 2 heures
+        moderator: isOwner,
         context: {
           user: {
             id: userId,
             name: displayName,
-            moderator: !!isOwner, // ✅ important (compat)
+            email: req.auth.email || "",
+            moderator: isOwner,
           },
+          features: {
+            livestreaming: true,
+            recording: true,
+            transcription: true,
+          }
         },
       };
 
-      const token = jwt.sign(payload, APP_SECRET, { algorithm: "HS256" });
+      const token = jwt.sign(payload, APP_SECRET, {
+        algorithm: "HS256",
+        noTimestamp: true,  // on gère iat manuellement
+      });
 
       return res.json({
         ok: true,
