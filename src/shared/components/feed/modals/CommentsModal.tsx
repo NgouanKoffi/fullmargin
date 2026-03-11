@@ -343,12 +343,12 @@ export default function CommentsModal({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-[99999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-0 sm:p-4"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="pointer-events-auto fixed inset-0 m-0 grid grid-rows-[auto,1fr,auto] overflow-hidden bg-white dark:bg-[#0b0b0f]"
+        className="pointer-events-auto w-full h-full sm:h-[90vh] sm:max-w-5xl sm:rounded-2xl grid grid-rows-[auto,1fr,auto] overflow-hidden bg-white dark:bg-[#0b0b0f] shadow-2xl ring-1 ring-black/10 dark:ring-white/10"
       >
         {/* Header du modal (barre du haut) */}
         <header className="flex items-center gap-3 px-4 sm:px-6 h-14 bg-white/90 dark:bg-[#0b0b0f]/90 border-b border-black/10 dark:border-white/10">

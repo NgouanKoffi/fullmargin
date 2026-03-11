@@ -182,7 +182,9 @@ function authedItems(
   items.push({
     label: "Lancer Live",
     icon: <Radio className="w-5 h-5" />,
-    href: "/communaute/mon-espace?tab=direct",
+    onClick: () => {
+      window.dispatchEvent(new CustomEvent("fm:launch-instant-live"));
+    },
   });
   items.push({
     label: "FM Metrix",

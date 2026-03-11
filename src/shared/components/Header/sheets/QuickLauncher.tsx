@@ -345,6 +345,29 @@ export default function QuickLauncher({
                   ? "rounded-2xl px-4 py-3 text-sm ring-1 ring-red-500/25 bg-red-500/10 hover:bg-red-500/15 text-red-600 dark:text-red-300"
                   : "rounded-2xl px-4 py-3 text-sm bg-[rgb(var(--tile))] hover:bg-[rgb(var(--tile-strong))]";
 
+              const isAction = !!i.onClick;
+
+              if (isAction) {
+                return (
+                  <button
+                    key={`act-${i.label}`}
+                    type="button"
+                    onClick={() => {
+                      if (i.onClick) i.onClick();
+                      onClose();
+                    }}
+                    className={base}
+                  >
+                    <div className="flex items-center gap-2">
+                      {i.icon}
+                      <span className="whitespace-nowrap truncate flex-1 text-left">
+                        {i.label}
+                      </span>
+                    </div>
+                  </button>
+                );
+              }
+
               return (
                 <NavLink
                   key={`in-${hrefSafe}`}

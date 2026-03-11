@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { useAuth } from "@core/auth/AuthContext";
 
 import plateformeImg from "@assets/4 Plateforme.webp";
 import communauteImg from "@assets/5 Communauté.webp";
@@ -43,8 +44,16 @@ const cards = [
 
 export default function FeatureShowcase() {
   const navigate = useNavigate();
+  const { status } = useAuth();
+  const isGuest = status !== "authenticated";
 
   const handlePersonalClick = () => {
+    if (isGuest) {
+      window.dispatchEvent(
+        new CustomEvent("fm:open-account", { detail: { mode: "signin" } }),
+      );
+      return;
+    }
     const w = typeof window !== "undefined" ? window.innerWidth : 0;
     if (w < 1170) {
       window.dispatchEvent(new Event("fm:open-launcher"));
@@ -64,7 +73,7 @@ export default function FeatureShowcase() {
   };
 
   const btnBase =
-    "inline-flex items-center gap-2 mt-4 rounded-xl bg-white/10 dark:bg-white/10 hover:bg-fm-primary hover:text-white text-skin-base px-5 py-2.5 text-sm font-semibold transition-colors duration-300 self-start group/btn border border-white/5";
+    "inline-flex items-center gap-2 rounded-xl bg-fm-primary text-white border border-transparent hover:shadow-[0_8px_20px_rgba(111,60,255,0.4)] px-5 py-2.5 text-sm font-bold transition-all duration-300 self-start group/btn hover:-translate-y-0.5";
 
   return (
     <section className="w-full">
@@ -133,10 +142,7 @@ export default function FeatureShowcase() {
               {/* contenu */}
               <div className="px-5 sm:px-6 pt-6 pb-6 flex flex-col flex-1 gap-4 relative z-10">
                 <h3
-                  className={`text-xl sm:text-[22px] font-extrabold ${card.key === "metrix"
-                    ? "text-fm-primary dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-white dark:via-[#E879F9] dark:to-[#A855F7]"
-                    : "text-skin-base dark:text-white"
-                    }`}
+                  className="text-xl sm:text-[22px] font-extrabold text-fm-primary dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-white dark:via-[#E879F9] dark:to-[#A855F7]"
                 >
                   {card.title}
                 </h3>
@@ -155,7 +161,7 @@ export default function FeatureShowcase() {
                   ))}
                 </ul>
 
-                <div className="pt-3">
+                <div className="pt-3 mt-auto">
                   {card.key === "personal" && (
                     <button
                       type="button"
@@ -182,7 +188,7 @@ export default function FeatureShowcase() {
                     <button
                       type="button"
                       onClick={handleMetrixClick}
-                      className="inline-flex items-center gap-2 mt-4 rounded-xl bg-fm-primary text-white border border-transparent hover:shadow-[0_8px_20px_rgba(111,60,255,0.4)] px-5 py-2.5 text-sm font-bold transition-all duration-300 self-start group/btn hover:-translate-y-0.5"
+                      className={btnBase}
                     >
                       Découvrir FM Metrix
                       <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />

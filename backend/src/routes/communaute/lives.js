@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 require("./lives/startNow")(router);
+require("./lives/startFast")(router);
 require("./lives/schedule")(router);
 require("./lives/update")(router);
 require("./lives/cancel")(router);

@@ -3,6 +3,7 @@ const { verifyAuthHeader } = require("../../auth/_helpers");
 const Community = require("../../../models/community.model");
 const CommunityMember = require("../../../models/communityMember.model");
 const CommunityLive = require("../../../models/communityLive.model");
+const User = require("../../../models/user.model");
 
 /* ---------- Auth helper ---------- */
 function requireAuth(req, res, next) {
@@ -160,4 +161,5 @@ module.exports = {
   Community,
   CommunityLive,
   CommunityMember,
+  User,
 };
