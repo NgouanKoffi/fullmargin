@@ -20,6 +20,7 @@ const TAB_LABELS: Record<TabKey, string> = {
   communities: "Communautés",
   courses: "Formations",
   requests: "Demandes de suppression",
+  posts: "Publications",
 };
 
 export function Toolbar({
@@ -44,7 +45,13 @@ export function Toolbar({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-skin-muted" />
           <input
             type="text"
-            placeholder={isCommunitiesLike ? "Rechercher une communauté..." : "Rechercher une formation..."}
+            placeholder={
+              tab === "posts" 
+                ? "Chercher un contenu ou auteur..." 
+                : isCommunitiesLike 
+                  ? "Rechercher une communauté..." 
+                  : "Rechercher une formation..."
+            }
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-3 py-2.5 text-sm rounded-xl border border-skin-border/30 bg-skin-surface focus:outline-none focus:ring-2 focus:ring-violet-500/50 shadow-sm transition-all"
@@ -65,7 +72,13 @@ export function Toolbar({
             <input
               type="number"
               min="0"
-              placeholder={isCommunitiesLike ? "Min. abonnés" : "Min. inscrits"}
+              placeholder={
+                tab === "posts" 
+                  ? "Min. likes" 
+                  : isCommunitiesLike 
+                    ? "Min. abonnés" 
+                    : "Min. inscrits"
+              }
               value={minCount}
               onChange={(e) => setMinCount(e.target.value ? Number(e.target.value) : "")}
               className="bg-transparent text-skin-base text-xs focus:outline-none w-24 placeholder:text-skin-muted"
