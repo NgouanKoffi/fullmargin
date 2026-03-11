@@ -192,7 +192,7 @@ body {
   transform: translate3d(-18px, 0, 0);
 }
 [data-cue="zoom"] {
-  transform: scale(0.965);
+  transform: scale(0.965) translateZ(0);
 }
 .fm-pulse {
   box-shadow: 0 0 0 0 rgba(111, 60, 255, 0.35);
@@ -464,7 +464,7 @@ html:not(.dark) .fm-grid {
 }
 .fm-gain {
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, 0);
   padding: 0.14rem 0.34rem;
   border-radius: 9999px;
   font:
@@ -493,7 +493,7 @@ html:not(.dark) .fm-grid {
 @keyframes fm-gain-float {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) translateY(10px);
+    transform: translate3d(-50%, calc(-50% + 10px), 0);
   }
   14% {
     opacity: 0.42;
@@ -503,7 +503,7 @@ html:not(.dark) .fm-grid {
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) translateY(-22px);
+    transform: translate3d(-50%, calc(-50% - 22px), 0);
   }
 }
 
@@ -622,8 +622,10 @@ html:not(.dark) .fm-grid {
       =================================================================== */
 @media (max-width: 640px) {
   .fm-orb {
-    filter: blur(40px);
-    opacity: 0.42;
+    filter: blur(35px);
+    opacity: 0.3;
+    mix-blend-mode: normal; /* Disable heavy blend mode on mobile for performance */
+    backface-visibility: hidden;
   }
   .fm-grid {
     animation-duration: 80s;

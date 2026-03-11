@@ -73,7 +73,7 @@ export default function TickerTape({
       <style>
         {`
         .fm-ticker { width: max-content; will-change: transform; animation: fm-ticker-move ${speed}s linear infinite; }
-        @keyframes fm-ticker-move { to { transform: translateX(-50%); } }
+        @keyframes fm-ticker-move { to { transform: translate3d(-50%, 0, 0); } }
         @media (prefers-reduced-motion: reduce) { .fm-ticker { animation: none !important; } }
 
         /* Masque latéral: plus serré en mobile, plus large ensuite */
