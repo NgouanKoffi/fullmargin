@@ -33,7 +33,7 @@ module.exports = (router) => {
   const jsonParser = express.json();
 
   // 0️⃣ LISTER TOUS LES POSTS
-  router.get("/moderate/posts", requireAdmin, async (req, res) => {
+  router.get("/admin/moderate/posts", requireAdmin, async (req, res) => {
     try {
       const { communityId, page = 1, limit = 50 } = req.query;
       const query = { deletedAt: null };
@@ -56,7 +56,7 @@ module.exports = (router) => {
   });
 
   // 1️⃣ SUSPENDRE / SUPPRIMER UN POST
-  router.post("/moderate/post", requireAdmin, jsonParser, async (req, res) => {
+  router.post("/admin/moderate/post", requireAdmin, jsonParser, async (req, res) => {
     try {
       const { id, reason } = req.body;
       if (!id || !reason)
@@ -112,7 +112,7 @@ module.exports = (router) => {
 
   // 2️⃣ SUSPENDRE / SUPPRIMER UNE FORMATION
   router.post(
-    "/moderate/course",
+    "/admin/moderate/course",
     requireAdmin,
     jsonParser,
     async (req, res) => {
@@ -158,7 +158,7 @@ module.exports = (router) => {
 
   // 3️⃣ SUSPENDRE / SUPPRIMER UNE COMMUNAUTÉ
   router.post(
-    "/moderate/community",
+    "/admin/moderate/community",
     requireAdmin,
     jsonParser,
     async (req, res) => {

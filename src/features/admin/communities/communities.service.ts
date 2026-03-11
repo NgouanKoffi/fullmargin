@@ -1,7 +1,7 @@
 // src/features/admin/communities/communities.service.ts
 import { API_BASE } from "@core/api/client";
 import { loadSession } from "@core/auth/lib/storage";
-import type { CommunityItem, CourseItem } from "./types";
+import type { CommunityItem, CourseItem, PostItem } from "./types";
 
 function authHeader(): Record<string, string> {
   const token = loadSession()?.token;
@@ -32,6 +32,15 @@ export async function fetchCourses(): Promise<CourseItem[]> {
   return data.ok ? data.data?.items ?? [] : [];
 }
 
+export async function fetchPosts(communityId?: string): Promise<PostItem[]> {
+  const url = communityId 
+    ? `${API_BASE}/admin/moderate/posts?communityId=${communityId}`
+    : `${API_BASE}/admin/moderate/posts`;
+  const res = await fetch(url, { headers: authHeader() });
+  const data = await res.json();
+  return data.ok ? data.posts ?? [] : [];
+}
+
 export async function approveDeletion(id: string): Promise<{ ok: boolean; message?: string; error?: string }> {
   const res = await fetch(`${API_BASE}/admin/communities/${id}/approve-deletion`, {
     method: "POST",
@@ -50,10 +59,13 @@ export async function approveRestoration(id: string): Promise<{ ok: boolean; mes
 
 export async function suspendItem(
   id: string,
-  type: "community" | "course",
+  type: "community" | "course" | "post",
   reason: string
 ): Promise<{ ok: boolean; error?: string }> {
-  const endpoint = type === "community" ? "/admin/moderate/community" : "/admin/moderate/course";
+  let endpoint = "/admin/moderate/community";
+  if (type === "course") endpoint = "/admin/moderate/course";
+  if (type === "post")   endpoint = "/admin/moderate/post";
+  
   const res = await fetch(`${API_BASE}${endpoint}`, {
     method: "POST",
     headers: jsonHeaders(),

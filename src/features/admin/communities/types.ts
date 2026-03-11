@@ -1,6 +1,18 @@
 // src/features/admin/communities/types.ts
 
-export type TabKey = "communities" | "courses" | "requests";
+export type TabKey = "communities" | "courses" | "requests" | "posts";
+
+export type PostItem = {
+  id: string;
+  _id?: string;
+  content: string;
+  media?: { kind: string; url: string; thumbnail?: string }[];
+  authorId: { id: string; fullName: string; email: string; avatarUrl?: string };
+  communityId: { id: string; name: string; slug: string; logoUrl?: string };
+  likesCount: number;
+  commentsCount: number;
+  createdAt: string;
+};
 
 export type CommunityItem = {
   id: string;

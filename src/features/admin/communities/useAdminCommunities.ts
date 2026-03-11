@@ -1,6 +1,5 @@
 // src/features/admin/communities/useAdminCommunities.ts
 import { useState, useEffect, useCallback } from "react";
-import type { TabKey, CommunityItem, CourseItem, Toast, ToastType } from "./types";
 import {
   fetchCommunities,
   fetchDeletionRequests,
@@ -9,7 +8,9 @@ import {
   approveRestoration,
   suspendItem,
   sendWarning,
+  fetchPosts,
 } from "./communities.service";
+import type { TabKey, CommunityItem, CourseItem, PostItem, Toast, ToastType } from "./types";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -23,7 +24,13 @@ export function useAdminCommunities() {
   const [tab, setTab] = useState<TabKey>("communities");
   const [communities, setCommunities] = useState<CommunityItem[]>([]);
   const [courses, setCourses] = useState<CourseItem[]>([]);
+  const [posts, setPosts] = useState<PostItem[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // ── View Post Modal (pour CommentsModal)
+  const [viewPostModal, setViewPostModal] = useState<{ open: boolean; post: PostItem | null }>({ open: false, post: null });
+  const openViewModal = useCallback((post: PostItem) => setViewPostModal({ open: true, post }), []);
+  const closeViewModal = useCallback(() => setViewPostModal({ open: false, post: null }), []);
 
   // ── Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,12 +56,12 @@ export function useAdminCommunities() {
   const [suspendModal, setSuspendModal] = useState<{
     open: boolean;
     id: string;
-    type: "Communauté" | "Formation";
+    type: "Communauté" | "Formation" | "Publication";
     title: string;
     loading: boolean;
   }>({ open: false, id: "", type: "Communauté", title: "", loading: false });
 
-  const openSuspendModal = useCallback((id: string, type: "Communauté" | "Formation", title: string) => {
+  const openSuspendModal = useCallback((id: string, type: "Communauté" | "Formation" | "Publication", title: string) => {
     setSuspendModal({ open: true, id, type, title, loading: false });
   }, []);
 
@@ -65,7 +72,10 @@ export function useAdminCommunities() {
   const handleSuspendConfirm = useCallback(async (reason: string) => {
     setSuspendModal((prev) => ({ ...prev, loading: true }));
     try {
-      const serviceType = suspendModal.type === "Communauté" ? "community" : "course";
+      let serviceType: "community" | "course" | "post" = "community";
+      if (suspendModal.type === "Formation") serviceType = "course";
+      if (suspendModal.type === "Publication") serviceType = "post";
+
       const data = await suspendItem(suspendModal.id, serviceType, reason);
       if (data.ok) {
         setSuspendModal({ open: false, id: "", type: "Communauté", title: "", loading: false });
@@ -189,6 +199,8 @@ export function useAdminCommunities() {
         setCommunities(await fetchDeletionRequests());
       } else if (tab === "courses") {
         setCourses(await fetchCourses());
+      } else if (tab === "posts") {
+        setPosts(await fetchPosts());
       }
     } catch {
       addToast("error", "Erreur lors du chargement.");
@@ -215,6 +227,9 @@ export function useAdminCommunities() {
   const filteredCourses = courses.filter((c) =>
     filterItem(c.createdAt, c.title, c.enrollmentCount || 0)
   );
+  const filteredPosts = posts.filter((p) =>
+    filterItem(p.createdAt, p.content || p.authorId.fullName, p.likesCount || 0)
+  );
 
   return {
     // Tab
@@ -222,7 +237,7 @@ export function useAdminCommunities() {
     // Loading
     loading,
     // Lists
-    filteredCommunities, filteredCourses,
+    filteredCommunities, filteredCourses, filteredPosts,
     // Filters
     searchQuery, setSearchQuery,
     dateFrom, setDateFrom,
@@ -240,5 +255,7 @@ export function useAdminCommunities() {
     approveDeletionModal, setApproveDeletionModal, handleApproveDeletion,
     // Approve restoration modal
     approveRestorationModal, setApproveRestorationModal, handleApproveRestoration,
+    // View post modal
+    viewPostModal, openViewModal, closeViewModal,
   };
 }

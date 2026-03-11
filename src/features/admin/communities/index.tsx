@@ -5,10 +5,12 @@ import { TabButton } from "./components/TabButton";
 import { Toolbar } from "./components/Toolbar";
 import { EmptyState } from "./components/EmptyState";
 import { CommunityListItem } from "./components/CommunityListItem";
+import { PostListItem } from "./components/PostListItem";
 import { ToastBanner } from "./components/ToastBanner";
 import { SuspendModal } from "./components/SuspendModal";
 import { WarningModal } from "./components/WarningModal";
 import { ConfirmModal } from "./components/ConfirmModal";
+import CommentsModal from "@shared/components/feed/modals/CommentsModal";
 
 export default function AdminCommunautePage() {
   const ctx = useAdminCommunities();
@@ -31,6 +33,7 @@ export default function AdminCommunautePage() {
       <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-skin-border/30 no-scrollbar">
         <TabButton active={ctx.tab === "communities"} onClick={() => ctx.setTab("communities")} icon={Users} label="Communautés" />
         <TabButton active={ctx.tab === "courses"}     onClick={() => ctx.setTab("courses")}     icon={GraduationCap} label="Formations" />
+        <TabButton active={ctx.tab === "posts"}       onClick={() => ctx.setTab("posts")}       icon={MessageSquareText} label="Publications" />
         <TabButton active={ctx.tab === "requests"}    onClick={() => ctx.setTab("requests")}    icon={AlertTriangle} label="Demandes de suppression" />
       </div>
 
@@ -83,7 +86,7 @@ export default function AdminCommunautePage() {
               )}
             </div>
 
-          ) : (
+          ) : ctx.tab === "courses" ? (
             <div className="space-y-3">
               {ctx.filteredCourses.length === 0 ? (
                 <EmptyState label="Aucune formation ne correspond à vos critères." icon={GraduationCap} />
@@ -100,6 +103,21 @@ export default function AdminCommunautePage() {
                     viewUrl={c.communitySlug ? `/communaute/formation/${c.id}` : "#"}
                     stats={[{ label: "Inscrits", value: c.enrollmentCount || 0, icon: Users }]}
                     onDelete={() => ctx.openSuspendModal(c.id, "Formation", c.title)}
+                  />
+                ))
+              )}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {ctx.filteredPosts.length === 0 ? (
+                <EmptyState label="Aucune publication trouvée." icon={MessageSquareText} />
+              ) : (
+                ctx.filteredPosts.map((p) => (
+                  <PostListItem
+                    key={p.id || String(p._id)}
+                    post={p}
+                    onView={() => ctx.openViewModal(p)}
+                    onDelete={() => ctx.openSuspendModal(p.id || String(p._id), "Publication", `Post de ${p.authorId?.fullName || "auteur inconnu"}`)}
                   />
                 ))
               )}
@@ -152,6 +170,39 @@ export default function AdminCommunautePage() {
 
       {/* ── TOASTS ── */}
       <ToastBanner toasts={ctx.toasts} onRemove={ctx.removeToast} />
+
+      {/* ── COMMENTS MODAL (vue post admin) ── */}
+      {ctx.viewPostModal.open && ctx.viewPostModal.post && (() => {
+        const p = ctx.viewPostModal.post;
+        const postLite = {
+          id: p.id,
+          author: {
+            id: p.authorId?.id || "",
+            name: p.authorId?.fullName || "Auteur inconnu",
+            avatar: p.authorId?.avatarUrl,
+          },
+          createdAt: p.createdAt,
+          content: p.content || "",
+          likes: p.likesCount || 0,
+          comments: p.commentsCount || 0,
+          media: (p.media || []).map((m) => ({
+            type: (m.kind === "video" ? "video" : "image") as "image" | "video",
+            url: m.url,
+            thumbnail: m.thumbnail,
+          })),
+        };
+        return (
+          <CommentsModal
+            open
+            onClose={ctx.closeViewModal}
+            post={postLite}
+            communityId={p.communityId?.id}
+            communityName={p.communityId?.name}
+            communitySlug={p.communityId?.slug}
+            moderation={{ canModerate: true }}
+          />
+        );
+      })()}
     </div>
   );
 }

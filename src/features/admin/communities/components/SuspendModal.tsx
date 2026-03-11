@@ -4,7 +4,7 @@ import { Trash2, X, Loader2 } from "lucide-react";
 
 type Props = {
   open: boolean;
-  type: "Communauté" | "Formation";
+  type: "Communauté" | "Formation" | "Publication";
   title: string;
   loading: boolean;
   onConfirm: (reason: string) => void;
