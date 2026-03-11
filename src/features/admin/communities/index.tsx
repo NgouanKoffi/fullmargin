@@ -109,17 +109,50 @@ export default function AdminCommunautePage() {
             </div>
           ) : (
             <div className="space-y-4">
+              {/* ── Sous-onglets de statuts des Posts (Vus / Non vus) ── */}
+              <div className="flex items-center gap-2 mb-4 border-b border-skin-border/20 pb-2">
+                <button
+                  onClick={() => ctx.setPostStatusFilter("unseen")}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                    ctx.postStatusFilter === "unseen" 
+                      ? "bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300" 
+                      : "text-skin-muted hover:bg-skin-inset"
+                  }`}
+                >
+                  À modérer (Non vues)
+                </button>
+                <button
+                  onClick={() => ctx.setPostStatusFilter("seen")}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                    ctx.postStatusFilter === "seen" 
+                      ? "bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300" 
+                      : "text-skin-muted hover:bg-skin-inset"
+                  }`}
+                >
+                  Déjà vues
+                </button>
+              </div>
+
               {ctx.filteredPosts.length === 0 ? (
                 <EmptyState label="Aucune publication trouvée." icon={MessageSquareText} />
               ) : (
-                ctx.filteredPosts.map((p) => (
-                  <PostListItem
-                    key={p.id || String(p._id)}
-                    post={p}
-                    onView={() => ctx.openViewModal(p)}
-                    onDelete={() => ctx.openSuspendModal(p.id || String(p._id), "Publication", `Post de ${p.authorId?.fullName || "auteur inconnu"}`)}
-                  />
-                ))
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
+                  {ctx.filteredPosts.map((p) => {
+                    const id = p.id || String(p._id);
+                    return (
+                      <PostListItem
+                        key={id}
+                        post={p}
+                        isNew={!ctx.seenPosts.has(id)}
+                        onView={() => {
+                          ctx.markPostSeen(id);
+                          ctx.openViewModal(p);
+                        }}
+                        onDelete={() => ctx.openSuspendModal(id, "Publication", `Post de ${p.authorId?.fullName || "auteur inconnu"}`)}
+                      />
+                    );
+                  })}
+                </div>
               )}
             </div>
           )}

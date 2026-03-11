@@ -12,6 +12,16 @@ import {
 } from "./communities.service";
 import type { TabKey, CommunityItem, CourseItem, PostItem, Toast, ToastType } from "./types";
 
+const SEEN_KEY = "admin:seen_posts";
+
+export function getSeenSet(): Set<string> {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(SEEN_KEY) || "[]"));
+  } catch {
+    return new Set();
+  }
+}
+
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
 function resolveId(c: CommunityItem): string {
@@ -37,7 +47,20 @@ export function useAdminCommunities() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [minCount, setMinCount] = useState<number | "">("");
+  const [postStatusFilter, setPostStatusFilter] = useState<"unseen" | "seen">("unseen");
   const hasFilters = !!dateFrom || !!dateTo || minCount !== "";
+
+  // ── Seen State
+  const [seenPosts, setSeenPosts] = useState<Set<string>>(getSeenSet());
+
+  const markPostSeen = useCallback((id: string) => {
+    setSeenPosts((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      localStorage.setItem(SEEN_KEY, JSON.stringify([...next]));
+      return next;
+    });
+  }, []);
 
   // ── Toasts
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -227,9 +250,13 @@ export function useAdminCommunities() {
   const filteredCourses = courses.filter((c) =>
     filterItem(c.createdAt, c.title, c.enrollmentCount || 0)
   );
-  const filteredPosts = posts.filter((p) =>
-    filterItem(p.createdAt, p.content || p.authorId.fullName, p.likesCount || 0)
-  );
+  const filteredPosts = posts.filter((p) => {
+    if (!filterItem(p.createdAt, p.content || p.authorId.fullName, p.likesCount || 0)) return false;
+    const isSeen = seenPosts.has(p.id || String(p._id));
+    if (postStatusFilter === "unseen" && isSeen) return false;
+    if (postStatusFilter === "seen" && !isSeen) return false;
+    return true;
+  });
 
   return {
     // Tab
@@ -243,8 +270,11 @@ export function useAdminCommunities() {
     dateFrom, setDateFrom,
     dateTo, setDateTo,
     minCount, setMinCount,
+    postStatusFilter, setPostStatusFilter,
     hasFilters,
     clearFilters: () => { setDateFrom(""); setDateTo(""); setMinCount(""); setSearchQuery(""); },
+    // Posts seen state
+    seenPosts, markPostSeen,
     // Toasts
     toasts, addToast, removeToast,
     // Suspend modal

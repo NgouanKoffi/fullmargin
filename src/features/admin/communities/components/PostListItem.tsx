@@ -1,42 +1,15 @@
 // src/features/admin/communities/components/PostListItem.tsx
-import { useEffect, useState } from "react";
 import { Trash2, MessageSquare, Heart, User, MapPin, Eye, Sparkles } from "lucide-react";
 import type { PostItem } from "../types";
 
-const SEEN_KEY = "admin:seen_posts";
-
-function getSeenSet(): Set<string> {
-  try {
-    return new Set(JSON.parse(localStorage.getItem(SEEN_KEY) || "[]"));
-  } catch {
-    return new Set();
-  }
-}
-function markSeen(id: string) {
-  const s = getSeenSet();
-  s.add(id);
-  localStorage.setItem(SEEN_KEY, JSON.stringify([...s]));
-}
-
 type Props = {
   post: PostItem;
+  isNew?: boolean;
   onDelete: () => void;
   onView: () => void;
 };
 
-export function PostListItem({ post, onDelete, onView }: Props) {
-  const [isNew, setIsNew] = useState(false);
-
-  useEffect(() => {
-    const seen = getSeenSet();
-    if (!seen.has(post.id)) setIsNew(true);
-  }, [post.id]);
-
-  const handleView = () => {
-    markSeen(post.id);
-    setIsNew(false);
-    onView();
-  };
+export function PostListItem({ post, isNew, onDelete, onView }: Props) {
 
   const formattedDate = new Date(post.createdAt).toLocaleDateString("fr-FR", {
     day: "numeric",
@@ -50,7 +23,7 @@ export function PostListItem({ post, onDelete, onView }: Props) {
   const firstMedia = hasMedia ? post.media![0] : null;
 
   return (
-    <div className={`group relative flex flex-col md:flex-row gap-4 p-4 rounded-2xl bg-skin-surface border shadow-sm hover:shadow-md transition ${isNew ? "border-violet-400/60 ring-1 ring-violet-400/30" : "border-skin-border/30 hover:border-violet-500/30"}`}>
+    <div className={`group relative flex flex-col h-full gap-4 p-4 rounded-2xl bg-skin-surface border shadow-sm hover:shadow-md transition ${isNew ? "border-violet-400/60 ring-1 ring-violet-400/30" : "border-skin-border/30 hover:border-violet-500/30"}`}>
 
       {/* 🆕 Badge Nouveau */}
       {isNew && (
@@ -61,7 +34,7 @@ export function PostListItem({ post, onDelete, onView }: Props) {
 
       {/* 🖼️ Media Preview */}
       {hasMedia && (
-        <div className="relative w-full md:w-28 h-28 shrink-0 rounded-xl overflow-hidden bg-skin-inset ring-1 ring-skin-border/20">
+        <div className="relative w-full h-40 shrink-0 rounded-xl overflow-hidden bg-skin-inset ring-1 ring-skin-border/20 -mt-1">
           <img
             src={firstMedia?.thumbnail || firstMedia?.url}
             alt="Post media"
@@ -126,7 +99,7 @@ export function PostListItem({ post, onDelete, onView }: Props) {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={handleView}
+              onClick={onView}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-skin-base bg-skin-surface border border-skin-border/40 rounded-xl hover:bg-skin-inset transition shadow-sm"
             >
               <Eye className="w-3.5 h-3.5" /> Voir
