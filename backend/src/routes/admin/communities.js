@@ -3,6 +3,11 @@ const router = express.Router();
 const Community = require("../../models/community.model");
 const User = require("../../models/user.model");
 const { createNotif } = require("../../utils/notifications");
+const {
+  sendCommunityDeletionApprovedEmail,
+  sendCommunityWarningEmail,
+  sendCommunityDeletedDueToWarningsEmail,
+} = require("../../utils/mailer");
 
 router.get("/", async (req, res) => {
   try {
@@ -37,6 +42,20 @@ router.post("/:id/approve-deletion", async (req, res) => {
       communityId: c._id,
       payload: { name: c.name }
     });
+
+    // 📧 Email au propriétaire
+    try {
+      const owner = await User.findById(c.ownerId).lean();
+      if (owner?.email) {
+        await sendCommunityDeletionApprovedEmail({
+          to: owner.email,
+          fullName: owner.fullName,
+          communityName: c.name,
+        });
+      }
+    } catch (err) {
+      console.error("[ADMIN COMMUNITIES] Email approve-deletion error:", err);
+    }
 
     res.json({ ok: true, message: "Suppression approuvée." });
   } catch (e) {
@@ -76,16 +95,39 @@ router.post("/:id/warnings", async (req, res) => {
     c.warnings.push({ reason, date: new Date() });
     c.warningCount = c.warnings.length;
 
+    // 📧 Chercher le propriétaire pour l'email
+    let owner = null;
+    try {
+      owner = await User.findById(c.ownerId).lean();
+    } catch (err) {
+      console.error("[ADMIN COMMUNITIES] User fetch error:", err);
+    }
+
     if (c.warningCount >= 3) {
       c.status = "deleted_by_admin";
       c.deletedAt = new Date();
       c.deletionReason = "Fermeture automatique suite à 3 avertissements.";
+
       await createNotif({
         userId: c.ownerId,
         kind: "community_deleted_due_to_warnings",
         communityId: c._id,
         payload: { reason }
       });
+
+      // 📧 Email suppression suite avertissements
+      if (owner?.email) {
+        try {
+          await sendCommunityDeletedDueToWarningsEmail({
+            to: owner.email,
+            fullName: owner.fullName,
+            communityName: c.name,
+            reason,
+          });
+        } catch (err) {
+          console.error("[ADMIN COMMUNITIES] Email deleted-due-to-warnings error:", err);
+        }
+      }
     } else {
       await createNotif({
         userId: c.ownerId,
@@ -93,6 +135,21 @@ router.post("/:id/warnings", async (req, res) => {
         communityId: c._id,
         payload: { reason, warningCount: c.warningCount }
       });
+
+      // 📧 Email avertissement
+      if (owner?.email) {
+        try {
+          await sendCommunityWarningEmail({
+            to: owner.email,
+            fullName: owner.fullName,
+            communityName: c.name,
+            reason,
+            warningCount: c.warningCount,
+          });
+        } catch (err) {
+          console.error("[ADMIN COMMUNITIES] Email warning error:", err);
+        }
+      }
     }
 
     await c.save();

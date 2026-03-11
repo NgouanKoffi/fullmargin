@@ -410,6 +410,105 @@ async function sendAdminDemotionEmail(to, fullName = "") {
   });
 }
 
+async function sendCommunityPostDeletedEmail({
+  to,
+  fullName = "",
+  communityName = "",
+  reason = "",
+}) {
+  const firstName = String(fullName || "").split(" ")[0] || "Bonjour";
+  return renderAndSend("community.post_deleted_by_admin", {
+    to,
+    context: {
+      user: { firstName, fullName },
+      community: { name: communityName },
+      reason: reason || "Non respect du règlement",
+    },
+  });
+}
+
+// 📧 Email : demande de suppression de communauté approuvée par admin
+async function sendCommunityDeletionApprovedEmail({
+  to,
+  fullName = "",
+  communityName = "",
+}) {
+  const firstName = String(fullName || "").split(" ")[0] || "Bonjour";
+  return renderAndSend("community.deletion_approved", {
+    to,
+    subjectFallback: `Votre communauté "${communityName}" a été supprimée`,
+    htmlFallback: `<p>Bonjour ${firstName},</p><p>Votre demande de suppression de la communauté <strong>${communityName}</strong> a été approuvée par nos administrateurs. La communauté a été définitivement fermée.</p><p>L'équipe FullMargin</p>`,
+    context: {
+      user: { firstName, fullName },
+      community: { name: communityName },
+    },
+  });
+}
+
+// 📧 Email : avertissement envoyé par admin (1er ou 2ème)
+async function sendCommunityWarningEmail({
+  to,
+  fullName = "",
+  communityName = "",
+  reason = "",
+  warningCount = 1,
+}) {
+  const firstName = String(fullName || "").split(" ")[0] || "Bonjour";
+  const remaining = 3 - warningCount;
+  return renderAndSend("community.warning_issued", {
+    to,
+    subjectFallback: `⚠️ Avertissement (${warningCount}/3) – Communauté "${communityName}"`,
+    htmlFallback: `<p>Bonjour ${firstName},</p><p>Votre communauté <strong>${communityName}</strong> a reçu un avertissement (${warningCount}/3) de la part de l'équipe FullMargin.</p><p><strong>Motif :</strong> ${reason || "Non-respect des règles"}</p><p>Il vous reste <strong>${remaining} avertissement(s)</strong> avant la fermeture automatique de votre communauté. Veuillez respecter les règles de la plateforme.</p><p>L'équipe FullMargin</p>`,
+    context: {
+      user: { firstName, fullName },
+      community: { name: communityName },
+      reason: reason || "Non-respect des règles",
+      warningCount: String(warningCount),
+      remaining: String(remaining),
+    },
+  });
+}
+
+// 📧 Email : communauté fermée suite à 3 avertissements
+async function sendCommunityDeletedDueToWarningsEmail({
+  to,
+  fullName = "",
+  communityName = "",
+  reason = "",
+}) {
+  const firstName = String(fullName || "").split(" ")[0] || "Bonjour";
+  return renderAndSend("community.deleted_due_to_warnings", {
+    to,
+    subjectFallback: `🚨 Votre communauté "${communityName}" a été fermée`,
+    htmlFallback: `<p>Bonjour ${firstName},</p><p>Suite à l'accumulation de 3 avertissements, votre communauté <strong>${communityName}</strong> a été définitivement fermée par l'équipe FullMargin.</p><p><strong>Dernier motif :</strong> ${reason || "Non-respect répété des règles"}</p><p>L'équipe FullMargin</p>`,
+    context: {
+      user: { firstName, fullName },
+      community: { name: communityName },
+      reason: reason || "Non-respect répété des règles",
+    },
+  });
+}
+
+// 📧 Email : communauté supprimée directement par admin (sans demande)
+async function sendCommunityDeletedByAdminEmail({
+  to,
+  fullName = "",
+  communityName = "",
+  reason = "",
+}) {
+  const firstName = String(fullName || "").split(" ")[0] || "Bonjour";
+  return renderAndSend("community.deleted_by_admin", {
+    to,
+    subjectFallback: `🚨 Votre communauté "${communityName}" a été suspendue`,
+    htmlFallback: `<p>Bonjour ${firstName},</p><p>Votre communauté <strong>${communityName}</strong> a été suspendue par un administrateur FullMargin.</p><p><strong>Motif :</strong> ${reason || "Non-respect des règles de la plateforme"}</p><p>Si vous pensez que c'est une erreur, vous pouvez contacter notre équipe.</p><p>L'équipe FullMargin</p>`,
+    context: {
+      user: { firstName, fullName },
+      community: { name: communityName },
+      reason: reason || "Non-respect des règles de la plateforme",
+    },
+  });
+}
+
 module.exports = {
   sendEmail,
   sendLoginCode,
@@ -423,7 +522,7 @@ module.exports = {
   sendMarketplaceCryptoApprovedEmail,
   sendMarketplaceCryptoRejectedEmail,
   sendMarketplaceSaleNotificationEmail,
-  sendCourseSaleNotificationEmail, // ✅ Exporté
+  sendCourseSaleNotificationEmail,
   sendAdminPromotionEmail,
   sendAdminDemotionEmail,
   sendWithdrawalApprovedEmail,
@@ -434,5 +533,10 @@ module.exports = {
   sendFmMetrixExpiredEmail,
   sendFmMetrixManualGrantEmail,
   sendFmMetrixCanceledEmail,
+  sendCommunityPostDeletedEmail,
+  sendCommunityDeletionApprovedEmail,
+  sendCommunityWarningEmail,
+  sendCommunityDeletedDueToWarningsEmail,
+  sendCommunityDeletedByAdminEmail,
   __MAIL_DEFAULTS: DEFAULTS,
 };
