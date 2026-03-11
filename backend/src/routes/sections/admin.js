@@ -100,4 +100,11 @@ module.exports = function adminSection(router) {
   } catch (e) {
     console.error("Failed to mount /admin/communities routes:", e?.message || e);
   }
+
+  // admin moderation (posts, courses, communities - moderate panel)
+  try {
+    require("../admin/moderation")(router);
+  } catch (e) {
+    console.error("Failed to mount /admin/moderate routes:", e?.message || e);
+  }
 };
