@@ -69,9 +69,7 @@ export default function Home() {
             <div className="min-w-0 lg:order-none">
               <div
                 className="
-                  min-[760px]:max-[1023px]:grid
-                  min-[760px]:max-[1023px]:grid-cols-[1fr_auto]
-                  min-[760px]:max-[1023px]:gap-8
+                  flex flex-col gap-8 md:grid md:grid-cols-[1fr_auto] md:gap-8 lg:flex lg:flex-col lg:gap-0
                 "
               >
                 <div className="space-y-4 sm:space-y-5 md:space-y-6">
@@ -87,7 +85,7 @@ export default function Home() {
                   >
                     <span className="text-skin-base">Full Margin</span>
                     <br />
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-[#E879F9] to-[#A855F7] bg-[length:200%_auto] animate-[fm-text-shimmer_3s_linear_infinite] drop-shadow-sm font-black">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-[#E879F9] to-[#A855F7] bg-[length:200%_auto] animate-[fm-text-shimmer_6s_linear_infinite] drop-shadow-sm font-black">
                       L’écosystème du
                       <br /> trader moderne
                     </span>
@@ -110,19 +108,14 @@ export default function Home() {
                 {/* Bouton principal */}
                 <div
                   className="
-                    mt-10 sm:mt-12 md:mt-14
-                    min-[760px]:max-[1023px]:mt-14
-                    min-[760px]:max-[1023px]:justify-self-end
+                    mt-10 sm:mt-12 md:mt-14 md:justify-self-end lg:mt-14 lg:justify-self-auto
                   "
                   data-cue="fade"
                   data-delay="240"
                 >
                   <div
                     className="
-                      flex flex-wrap items-center gap-3
-                      min-[760px]:max-[1023px]:flex-col
-                      min-[760px]:max-[1023px]:items-end
-                      min-[760px]:max-[1023px]:gap-2
+                      flex flex-wrap items-center gap-3 md:flex-col md:items-end md:gap-2 lg:flex-row lg:items-center lg:gap-3
                     "
                   >
                     <button
@@ -134,7 +127,7 @@ export default function Home() {
                         overflow-hidden transition-all duration-300
                         hover:scale-105 hover:shadow-[0_0_20px_rgba(111,60,255,0.4)]
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-ring
-                        min-[760px]:max-[1023px]:w-56 text-center
+                        md:w-56 lg:w-auto text-center
                       "
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">
@@ -152,8 +145,8 @@ export default function Home() {
                         rounded-full px-7 py-3.5 text-sm font-semibold
                         bg-transparent text-skin-base border border-skin-border/50
                         hover:bg-skin-surface/80 hover:border-skin-border
-                        transition-all duration-300 backdrop-blur-sm
-                        text-center min-[760px]:max-[1023px]:w-56
+                        transition-all duration-300 backdrop-blur-none sm:backdrop-blur-sm
+                        text-center md:w-56 lg:w-auto
                       "
                     >
                       Découvrir
@@ -167,7 +160,7 @@ export default function Home() {
                 {/* Ticker */}
                 <div
                   className="
-                    mt-6 md:mt-7 min-[760px]:max-[1023px]:col-span-2
+                    mt-6 md:mt-7 md:col-span-2 lg:col-span-1
                     overflow-x-hidden
                   "
                   data-cue="fade"

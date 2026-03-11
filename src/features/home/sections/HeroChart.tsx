@@ -11,10 +11,11 @@ export default function HeroChart() {
           left-1/2 -translate-x-1/2          /* centré mobile */
           lg:left-auto lg:translate-x-0 lg:right-0
           pointer-events-none
-          w-[560px]                          /* 👉 plus large sur mobile */
-          sm:w-[620px]
-          md:w-[720px]
-          lg:w-[920px]
+          w-[130%]                           /* 👉 plus large sur mobile, dépasse proprement */
+          max-w-[560px]
+          sm:max-w-[620px]
+          md:max-w-[720px]
+          lg:w-[920px] lg:max-w-none
           xl:w-[1000px]
         "
       >

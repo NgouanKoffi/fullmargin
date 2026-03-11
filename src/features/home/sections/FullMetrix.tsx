@@ -141,7 +141,7 @@ export default function FullMetrix() {
       <div className="mx-auto max-w-[1400px] px-3 sm:px-6 lg:px-10 pt-10 sm:pt-12 lg:pt-14">
         <div className="text-center mb-6 sm:mb-8">
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-skin-base">
-            Découvrez <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] via-[#3B82F6] to-[#8B5CF6] bg-[length:200%_auto] animate-[fm-text-shimmer_3s_linear_infinite]">FullMetrix</span>
+            Découvrez <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] via-[#3B82F6] to-[#8B5CF6] bg-[length:200%_auto] animate-[fm-text-shimmer_6s_linear_infinite]">FullMetrix</span>
           </h2>
 
           {/* ✅ Bouton détails */}

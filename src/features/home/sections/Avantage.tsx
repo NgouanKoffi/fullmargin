@@ -55,7 +55,7 @@ export default function Avantage({ ctaHref = "#ecosysteme" }: Props) {
           {/* IMAGE GAUCHE avec conteneur premium */}
           <div className="relative group perspective-[1000px]">
             {/* Glow abstrait */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-fm-primary/20 to-fm-accent/20 rounded-[48px] blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-fm-primary/20 to-fm-accent/20 rounded-[48px] blur-[30px] lg:blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
             <div
               className="
                 relative z-10
@@ -94,7 +94,7 @@ export default function Avantage({ ctaHref = "#ecosysteme" }: Props) {
                   hover:bg-white/10 dark:hover:bg-white/10
                   hover:border-fm-primary/50
                   transition-all duration-300
-                  backdrop-blur-sm
+                  backdrop-blur-none sm:backdrop-blur-sm
                   px-4 sm:px-5 py-3
                   group
                 "

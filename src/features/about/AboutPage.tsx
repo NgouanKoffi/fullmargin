@@ -24,9 +24,9 @@ function openSupport(e?: React.MouseEvent | React.KeyboardEvent) {
   window.dispatchEvent(new CustomEvent("fm:open-support"));
 }
 
-function openAccount(e?: React.MouseEvent | React.KeyboardEvent) {
+function openAccount(e?: React.MouseEvent | React.KeyboardEvent, mode: "signin" | "signup" = "signup") {
   e?.preventDefault?.();
-  window.dispatchEvent(new CustomEvent("fm:open-account"));
+  window.dispatchEvent(new CustomEvent("fm:open-account", { detail: { mode } }));
 }
 
 /* petit wrapper pour UNIFIER la taille des icônes */
@@ -515,17 +515,29 @@ export default function About() {
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               {/* Invité : seul bouton AuthModal */}
               <IfGuest>
-                <button
-                  type="button"
-                  onClick={openAccount}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-bold
-                         bg-fm-primary text-white shadow-[0_8px_24px_rgba(111,60,255,0.4)]
-                         transition-all duration-300 hover:scale-105 hover:shadow-[0_12px_32px_rgba(111,60,255,0.6)]
-                         focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-ring"
-                >
-                  Créer un compte
-                  <ArrowRight className="w-5 h-5" />
-                </button>
+                <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={(e) => openAccount(e, "signup")}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-bold
+                           bg-transparent text-skin-base border border-fm-primary/20 hover:border-fm-primary/40 dark:border-white/20
+                           transition-all duration-300 hover:scale-105 hover:bg-slate-50 dark:hover:bg-white/5
+                           focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-ring"
+                  >
+                    S'inscrire
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => openAccount(e, "signup")}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-bold
+                           bg-fm-primary text-white shadow-[0_8px_24px_rgba(111,60,255,0.4)]
+                           transition-all duration-300 hover:scale-105 hover:shadow-[0_12px_32px_rgba(111,60,255,0.6)]
+                           focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-ring"
+                  >
+                    Créer un compte
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
               </IfGuest>
 
               {/* Connecté : seulement "Nous écrire" */}

@@ -33,7 +33,7 @@ function CommunityLoaderCard({
         role="button"
         tabIndex={0}
         onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onClick()}
-        className="relative overflow-hidden rounded-[24px] bg-[#070A1A]/80 border border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-2xl h-full min-h-[220px] flex flex-col p-6 cursor-pointer focus:outline-none focus:ring-2 focus:ring-fm-primary/60 transition-transform duration-500 hover:-translate-y-1"
+        className="relative overflow-hidden rounded-[24px] bg-[#070A1A]/80 border border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-none sm:backdrop-blur-md h-full min-h-[220px] flex flex-col p-6 cursor-pointer focus:outline-none focus:ring-2 focus:ring-fm-primary/60 transition-transform duration-500 hover:-translate-y-1"
       >
         {/* Shimmer sweep */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">

@@ -9,21 +9,15 @@ import solutionLight from "@assets/gif/4-white.webp";
 import solutionDark from "@assets/gif/5-black.webp";
 
 export default function SocialProof() {
-  const rootRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: rootRef,
-    offset: ["start 80%", "end 20%"],
-  });
-
-  const lift = useTransform(scrollYProgress, [0, 1], [12, 0]);
-  const fade = useTransform(scrollYProgress, [0, 0.25, 1], [0, 1, 1]);
-
   return (
-    <section ref={rootRef} className="w-full mt-10 sm:mt-14 lg:mt-20">
+    <section className="w-full mt-10 sm:mt-14 lg:mt-20">
       <div className="mx-auto max-w-[1300px] px-3 sm:px-6 lg:px-10 pb-6 sm:pb-8 lg:pb-10">
         {/* ===== TEXTE DU HAUT ===== */}
         <motion.p
-          style={{ opacity: fade, y: lift }}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           className="
             mb-10 sm:mb-12 lg:mb-14
             text-center
@@ -54,7 +48,7 @@ export default function SocialProof() {
               bg-white/5 dark:bg-[#0A0C18]
               border border-white/10 dark:border-white/5
               shadow-[0_8px_32px_rgba(0,0,0,0.12)]
-              backdrop-blur-xl
+              backdrop-blur-none sm:backdrop-blur-md
               flex flex-col group
             "
           >
@@ -109,7 +103,7 @@ export default function SocialProof() {
               bg-white/5 dark:bg-[#0A0C18]
               border border-white/10 dark:border-white/5
               shadow-[0_8px_32px_rgba(111,60,255,0.08)]
-              backdrop-blur-xl
+              backdrop-blur-none sm:backdrop-blur-md
               flex flex-col group
             "
           >
