@@ -708,6 +708,23 @@ const DEFAULTS = {
   <p>— L'équipe {{app.name}}</p>
 </div>`.trim(),
   },
+
+  "community.post_deleted_by_admin": {
+    subject: "Votre publication a été retirée 📢",
+    html: `
+<div style="font-family:Inter,Arial,sans-serif;font-size:16px;color:#111;line-height:1.6">
+  <p>Bonjour <b>{{user.firstName}}</b>,</p>
+  <p>Nous vous informons qu'un administrateur a retiré l'une de vos publications dans la communauté <b>{{community.name}}</b>.</p>
+  
+  <div style="background:#fef2f2; border-radius:14px; padding:20px; margin:20px 0; border:1px solid #fecdd3; color:#9f1239;">
+    <p style="margin:0 0 10px 0; font-weight:600; font-size:16px;">Motif du retrait :</p>
+    <p style="margin:0; font-size:14px;">{{reason}}</p>
+  </div>
+
+  <p>Nous vous rappelons que toutes les publications doivent respecter les conditions d'utilisation et la charte de la communauté.</p>
+  <p>— L'équipe {{app.name}}</p>
+</div>`.trim(),
+  },
 };
 
 module.exports = { DEFAULTS };

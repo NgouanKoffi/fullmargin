@@ -71,14 +71,26 @@ module.exports = (router) => {
 
       const User = require("../../../models/user.model");
       const { createNotif } = require("../../../utils/notifications");
-      const admins = await User.find({ roles: "admin" }).select("_id").lean();
+      
+      // On n'envoie qu'aux admins qui ont la permission "communautes"
+      const admins = await User.find({ 
+        roles: "admin",
+        adminPermissions: "communautes" 
+      }).select("_id").lean();
+
+      // On récupère aussi le nom du demandeur pour la notif
+      const requester = await User.findById(req.auth.userId).select("fullName").lean();
       
       for (const admin of admins) {
         await createNotif({
           userId: admin._id,
           kind: "community_deletion_requested",
           communityId: c._id,
-          payload: { reason: c.deletionReason, name: c.name }
+          payload: { 
+            reason: c.deletionReason, 
+            communityName: c.name,
+            ownerName: requester?.fullName || "Un propriétaire"
+          }
         });
       }
 
@@ -103,14 +115,24 @@ module.exports = (router) => {
 
       const User = require("../../../models/user.model");
       const { createNotif } = require("../../../utils/notifications");
-      const admins = await User.find({ roles: "admin" }).select("_id").lean();
+      
+      // On n'envoie qu'aux admins qui ont la permission "communautes"
+      const admins = await User.find({ 
+        roles: "admin",
+        adminPermissions: "communautes" 
+      }).select("_id").lean();
+
+      const requester = await User.findById(req.auth.userId).select("fullName").lean();
 
       for (const admin of admins) {
         await createNotif({
           userId: admin._id,
           kind: "community_restoration_requested",
           communityId: c._id,
-          payload: { name: c.name }
+          payload: { 
+            communityName: c.name,
+            ownerName: requester?.fullName || "Un propriétaire"
+          }
         });
       }
 

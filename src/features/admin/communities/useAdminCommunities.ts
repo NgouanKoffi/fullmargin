@@ -1,5 +1,6 @@
 // src/features/admin/communities/useAdminCommunities.ts
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   fetchCommunities,
   fetchDeletionRequests,
@@ -31,7 +32,25 @@ function resolveId(c: CommunityItem): string {
 // ─── hook ─────────────────────────────────────────────────────────────────────
 
 export function useAdminCommunities() {
-  const [tab, setTab] = useState<TabKey>("communities");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = (searchParams.get("tab") as TabKey) || "communities";
+
+  const [tab, _setTab] = useState<TabKey>(initialTab);
+
+  useEffect(() => {
+    const t = searchParams.get("tab") as TabKey;
+    if (t && t !== tab) {
+      _setTab(t);
+    }
+  }, [searchParams, tab]);
+
+  const setTab = useCallback((newTab: TabKey) => {
+    _setTab(newTab);
+    setSearchParams((prev) => {
+      prev.set("tab", newTab);
+      return prev;
+    }, { replace: true });
+  }, [setSearchParams]);
   const [communities, setCommunities] = useState<CommunityItem[]>([]);
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const [posts, setPosts] = useState<PostItem[]>([]);

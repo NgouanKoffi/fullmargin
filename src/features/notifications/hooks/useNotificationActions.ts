@@ -68,6 +68,10 @@ export function useNotificationActions(markAsRead: (id: string) => void) {
       "community_post_deleted_by_admin",
       "community_comment_deleted",
     ];
+    if (kind === "community_deletion_requested") {
+      return navigate("/admin/communautes?tab=requests");
+    }
+
     if (postKinds.includes(kind)) {
       const postId = (payload.postId || payload.relatedPostId) as
         | string

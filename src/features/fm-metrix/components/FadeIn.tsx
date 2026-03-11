@@ -8,10 +8,7 @@ type Props = {
   className?: string;
   direction?: "up" | "down" | "left" | "right" | "none";
   fullWidth?: boolean;
-<<<<<<< HEAD
   onClick?: () => void;
-=======
->>>>>>> origin/master
 };
 
 export default function FadeIn({
@@ -20,10 +17,7 @@ export default function FadeIn({
   className = "",
   direction = "up",
   fullWidth = false,
-<<<<<<< HEAD
   onClick,
-=======
->>>>>>> origin/master
 }: Props) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, margin: "-10% 0px" });
@@ -59,10 +53,7 @@ export default function FadeIn({
       }}
       className={className}
       style={{ width: fullWidth ? "100%" : "auto" }}
-<<<<<<< HEAD
       onClick={onClick}
-=======
->>>>>>> origin/master
     >
       {children}
     </motion.div>

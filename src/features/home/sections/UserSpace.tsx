@@ -6,7 +6,7 @@ type Props = {
   ctaHref?: string;
 };
 
-export default function UserSpace({ ctaHref = "#ecosysteme" }: Props) {
+export default function UserSpace({ ctaHref = "/finance#accounts" }: Props) {
   return (
     <section className="w-full">
       <div className="mx-auto max-w-[1400px] px-3 sm:px-6 lg:px-10 py-12 sm:py-14 lg:py-16">
