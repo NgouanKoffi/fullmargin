@@ -4,7 +4,9 @@ const { verifyAuthHeader } = require("../auth/_helpers");
 const Community = require("../../models/community.model");
 const CommunityPost = require("../../models/communityPost.model");
 const Course = require("../../models/course.model");
+const User = require("../../models/user.model");
 const { createNotif } = require("../../utils/notifications");
+const { sendCommunityPostDeletedEmail, sendCommunityDeletedByAdminEmail } = require("../../utils/mailer");
 
 // Middleware Admin stricte
 function requireAdmin(req, res, next) {
@@ -29,6 +31,29 @@ function requireAdmin(req, res, next) {
 
 module.exports = (router) => {
   const jsonParser = express.json();
+
+  // 0️⃣ LISTER TOUS LES POSTS
+  router.get("/moderate/posts", requireAdmin, async (req, res) => {
+    try {
+      const { communityId, page = 1, limit = 50 } = req.query;
+      const query = { deletedAt: null };
+      if (communityId) query.communityId = communityId;
+
+      const posts = await CommunityPost.find(query)
+        .populate("authorId", "fullName email avatarUrl")
+        .populate("communityId", "name slug logoUrl")
+        .sort({ createdAt: -1 })
+        .limit(Number(limit))
+        .skip((Number(page) - 1) * Number(limit));
+
+      const total = await CommunityPost.countDocuments(query);
+
+      return res.json({ ok: true, posts, total });
+    } catch (e) {
+      console.error("[ADMIN MODERATION] List Posts Error:", e);
+      return res.status(500).json({ ok: false, error: "Erreur serveur" });
+    }
+  });
 
   // 1️⃣ SUSPENDRE / SUPPRIMER UN POST
   router.post("/moderate/post", requireAdmin, jsonParser, async (req, res) => {
@@ -61,6 +86,22 @@ module.exports = (router) => {
           reason: reason, // On transmet le motif !
         },
       });
+
+      // 📧 Envoyer un email à l'auteur
+      try {
+        const author = await User.findById(post.authorId).lean();
+        const community = await Community.findById(post.communityId).lean();
+        if (author && author.email) {
+          await sendCommunityPostDeletedEmail({
+            to: author.email,
+            fullName: author.fullName,
+            communityName: community ? community.name : "une communauté",
+            reason: reason,
+          });
+        }
+      } catch (err) {
+        console.error("[ADMIN MODERATION] Email Error:", err);
+      }
 
       return res.json({ ok: true, message: "Post suspendu avec succès" });
     } catch (e) {
@@ -148,6 +189,21 @@ module.exports = (router) => {
             reason: reason,
           },
         });
+
+        // 📧 Envoyer un email au propriétaire
+        try {
+          const owner = await User.findById(community.ownerId).lean();
+          if (owner?.email) {
+            await sendCommunityDeletedByAdminEmail({
+              to: owner.email,
+              fullName: owner.fullName,
+              communityName: community.name,
+              reason,
+            });
+          }
+        } catch (err) {
+          console.error("[ADMIN MODERATION] Community email error:", err);
+        }
 
         return res.json({
           ok: true,
