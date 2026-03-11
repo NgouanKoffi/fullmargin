@@ -16,7 +16,7 @@ export default function AdminCommunautePage() {
   const ctx = useAdminCommunities();
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
       {/* HEADER */}
       <header className="flex flex-col gap-2">
@@ -136,7 +136,7 @@ export default function AdminCommunautePage() {
               {ctx.filteredPosts.length === 0 ? (
                 <EmptyState label="Aucune publication trouvée." icon={MessageSquareText} />
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4 items-stretch">
                   {ctx.filteredPosts.map((p) => {
                     const id = p.id || String(p._id);
                     return (
