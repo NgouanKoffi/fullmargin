@@ -69,10 +69,11 @@ export default function FeatureShowcase() {
   // ✅ Toujours renvoyer vers la page de présentation FullMetrix
   const handleMetrixClick = () => {
     navigate("/fm-metrix/a-propos");
-    // (Alternative si tu veux forcer hors SPA: window.location.href = "/fm-metrix/a-propos";)
   };
 
+  const btnBase =
     "inline-flex items-center gap-2 rounded-xl bg-fm-primary text-white border border-transparent hover:shadow-[0_8px_20px_rgba(111,60,255,0.4)] px-5 py-2.5 text-sm font-bold transition-all duration-300 self-start group/btn hover:-translate-y-0.5";
+
 
   return (
     <section className="w-full">

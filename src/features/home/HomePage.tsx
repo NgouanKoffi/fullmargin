@@ -115,7 +115,6 @@ export default function Home() {
 
                 {/* Bouton principal */}
                 <div
-                <div
                   className="mt-10 sm:mt-12 md:mt-14 w-full flex justify-center min-[1130px]:justify-start"
                   data-cue="fade"
                   data-delay="240"
