@@ -36,6 +36,18 @@ export default function Home() {
     }
   };
 
+  const handleDiscover = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isGuest) {
+      window.dispatchEvent(
+        new CustomEvent("fm:open-account", { detail: { mode: "signin" } }),
+      );
+      return;
+    }
+    // Si connecté, scroller vers la section features
+    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <main className="overflow-x-hidden">
       <section className="w-full fm-section relative overflow-hidden" id="hero">
@@ -145,8 +157,9 @@ export default function Home() {
                       </span>
                       <div className="absolute inset-0 bg-gradient-to-r from-fm-accent to-fm-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </button>
-                    <a
-                      href="#features"
+                    <button
+                      type="button"
+                      onClick={handleDiscover}
                       className="
                         group relative flex items-center justify-center gap-2
                         rounded-full px-7 py-3.5 text-sm font-semibold
@@ -160,7 +173,7 @@ export default function Home() {
                       <svg className="w-4 h-4 transition-transform group-hover:translate-y-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                       </svg>
-                    </a>
+                    </button>
                   </div>
                 </div>
 
