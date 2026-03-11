@@ -114,49 +114,6 @@ export function useHeaderState() {
     // Ferme aussi le drawer quand le modal d'auth s'ouvre
     const openAccountModal = () => setMobileMenu(false);
 
-    const onLaunchFast = async () => {
-      window.dispatchEvent(
-        new CustomEvent("fm:toast", {
-          detail: {
-            title: "Lancement du direct...",
-            message: "Préparation de ta salle personnelle.",
-            tone: "info",
-          },
-        })
-      );
-
-      try {
-        const session = loadSession() as { token?: string } | null;
-        const token = session?.token;
-        if (!token) return;
-
-        const res = await fetch(`${API_BASE}/communaute/lives/start-fast`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const json = await res.json();
-        if (json.ok && json.data?.live?.id) {
-          navigate(`/direct/${json.data.live.id}`);
-        } else {
-          throw new Error(json.error || "Erreur lors du lancement.");
-        }
-      } catch (e) {
-        window.dispatchEvent(
-          new CustomEvent("fm:toast", {
-            detail: {
-              title: "Erreur",
-              message: (e as Error).message || "Impossible de lancer le direct.",
-              tone: "error",
-            },
-          })
-        );
-      }
-    };
-
     window.addEventListener("fm:open-support", openS as EventListener);
     window.addEventListener("fm:close-support", closeS as EventListener);
     window.addEventListener("fm:open-account-quick", openQ as EventListener);
@@ -169,7 +126,6 @@ export function useHeaderState() {
     window.addEventListener("fm:open-notifications", openNotif as EventListener);
     window.addEventListener("fm:close-mobile-drawer", closeMobileDrawer as EventListener);
     window.addEventListener("fm:open-account", openAccountModal as EventListener);
-    window.addEventListener("fm:launch-instant-live", onLaunchFast as EventListener);
 
     return () => {
       window.removeEventListener("fm:open-support", openS as EventListener);
@@ -184,7 +140,6 @@ export function useHeaderState() {
       window.removeEventListener("fm:open-notifications", openNotif as EventListener);
       window.removeEventListener("fm:close-mobile-drawer", closeMobileDrawer as EventListener);
       window.removeEventListener("fm:open-account", openAccountModal as EventListener);
-      window.removeEventListener("fm:launch-instant-live", onLaunchFast as EventListener);
     };
   }, [navigate]);
 

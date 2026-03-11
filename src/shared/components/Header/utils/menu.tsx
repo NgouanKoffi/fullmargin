@@ -20,7 +20,6 @@ import {
   CreditCard,
   Users,
   MessageSquareText,
-  Radio,
 } from "lucide-react";
 import { API_BASE } from "@core/api/client";
 import { loadSession } from "@core/auth/lib/storage";
@@ -179,13 +178,6 @@ function authedItems(
   });
   items.push({ label: "Finance", icon: <Chart />, href: "/finance" });
   items.push({ label: "Journal de trading", icon: <Book />, href: "/journal" });
-  items.push({
-    label: "Lancer Live",
-    icon: <Radio className="w-5 h-5" />,
-    onClick: () => {
-      window.dispatchEvent(new CustomEvent("fm:launch-instant-live"));
-    },
-  });
   items.push({
     label: "FM Metrix",
     icon: <LayoutDashboard className="w-5 h-5" />,

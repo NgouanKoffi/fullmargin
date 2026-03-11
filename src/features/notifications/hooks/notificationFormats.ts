@@ -63,7 +63,7 @@ export const getNotificationTitle = (notif: Notification): string => {
     case "community_request_rejected":
       return `Votre demande pour ${communityName} a été refusée`;
     case "community_deletion_requested":
-      return `🗑️ ${payload.ownerName || "Un propriétaire"} demande la suppression de "${payload.communityName || communityName}"`;
+      return `🗑️ ${payload.ownerName || "Un propriétaire"} demande la suppression de sa communauté${payload.communityName ? ` "${payload.communityName}"` : ""}`;
     case "community_deletion_rejected":
       return `↩️ La demande de suppression de "${payload.communityName || communityName}" a été refusée`;
     case "community_post_deleted_by_admin":
