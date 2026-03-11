@@ -36,25 +36,24 @@ export default function Home() {
     }
   };
 
-  const handleDiscover = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (isGuest) {
-      window.dispatchEvent(
-        new CustomEvent("fm:open-account", { detail: { mode: "signin" } }),
-      );
-      return;
-    }
-    // Si connecté, scroller vers la section features
-    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <main className="overflow-x-hidden">
       <section className="w-full fm-section relative overflow-hidden" id="hero">
-        {/* Dynamic Backgrounds */}
-        <div className="fm-bg absolute inset-0 pointer-events-none z-0">
-          <div className="fm-orb fm-orb--a" />
-          <div className="fm-orb fm-orb--b" />
+        {/* Premium Background (from FullMetrix) */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          {/* LIGHT MODE BACKGROUND */}
+          <div className="absolute inset-0 block dark:hidden bg-zinc-50"></div>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[500px] rounded-full bg-violet-400/20 blur-[120px] dark:hidden animate-[pulse_8s_ease-in-out_infinite]"></div>
+          <div className="absolute top-[20%] -left-[10%] w-[50vw] h-[500px] rounded-full bg-fuchsia-400/10 blur-[100px] dark:hidden animate-[pulse_12s_ease-in-out_infinite] delay-1000"></div>
+
+          {/* DARK MODE BACKGROUND */}
+          <div className="absolute inset-0 hidden dark:block bg-[#0A0A0A]"></div>
+          <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80vw] h-[60vw] max-h-[800px] rounded-[100%] bg-violet-900/30 blur-[150px] hidden dark:block animate-[pulse_10s_ease-in-out_infinite] mix-blend-screen"></div>
+          <div className="absolute top-[30%] -right-[20%] w-[60vw] h-[60vw] max-h-[700px] rounded-[100%] bg-fuchsia-900/20 blur-[120px] hidden dark:block animate-[pulse_15s_ease-in-out_infinite] delay-1000 mix-blend-screen"></div>
+
+          {/* SUBTLE GRID PATTERN (Clean & Modern) */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000010_1px,transparent_1px),linear-gradient(to_bottom,#00000010_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_20%,#000_60%,transparent_100%)]"></div>
         </div>
 
         <div
@@ -70,23 +69,17 @@ export default function Home() {
           <div
             className="
                 grid grid-cols-1
-                lg:grid-cols-[0.9fr_1.1fr]
+                min-[1130px]:grid-cols-[0.9fr_1.1fr]
                 items-center
-                gap-10 md:gap-12 lg:gap-16
+                gap-10 md:gap-12 min-[1130px]:gap-16
                 will-change-transform
               "
             style={{ transform: "translateZ(0)" }}
           >
             {/* Colonne gauche (texte) */}
-            <div className="min-w-0 lg:order-none">
-              <div
-                className="
-                  min-[760px]:max-[1023px]:grid
-                  min-[760px]:max-[1023px]:grid-cols-[1fr_auto]
-                  min-[760px]:max-[1023px]:gap-8
-                "
-              >
-                <div className="space-y-4 sm:space-y-5 md:space-y-6">
+            <div className="relative z-20 min-w-0 min-[1130px]:order-none">
+              <div className="flex flex-col items-center min-[1130px]:items-start text-center min-[1130px]:text-left w-full">
+                <div className="space-y-4 sm:space-y-5 md:space-y-6 relative z-30 flex flex-col items-center min-[1130px]:items-start w-full">
 
                   <h1
                     data-cue="slide-up"
@@ -94,14 +87,15 @@ export default function Home() {
                     className="
                       text-4xl sm:text-5xl lg:text-6xl xl:text-[4.2rem]
                       leading-[1.12] sm:leading-[1.08] lg:leading-[1.05]
-                      font-extrabold tracking-[-0.02em] max-w-[95%]
+                      font-extrabold tracking-[-0.02em]
                     "
                   >
-                    <span className="text-skin-base">Full Margin</span>
+                    <span className="text-skin-base drop-shadow-sm">Full Margin</span>
                     <br />
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-[#E879F9] to-[#A855F7] bg-[length:200%_auto] animate-[fm-text-shimmer_3s_linear_infinite] drop-shadow-sm font-black">
-                      L’écosystème du
-                      <br /> trader moderne
+                    <span className="relative inline-block mt-1">
+                      <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-white via-[#E879F9] to-[#A855F7] bg-[length:200%_auto] animate-[fm-text-shimmer_3s_linear_infinite] drop-shadow-sm font-black">
+                        L’écosystème du trader moderne
+                      </span>
                     </span>
                   </h1>
 
@@ -121,32 +115,21 @@ export default function Home() {
 
                 {/* Bouton principal */}
                 <div
-                  className="
-                    mt-10 sm:mt-12 md:mt-14
-                    min-[760px]:max-[1023px]:mt-14
-                    min-[760px]:max-[1023px]:justify-self-end
-                  "
+                  className="mt-10 sm:mt-12 md:mt-14 w-full flex justify-center min-[1130px]:justify-start"
                   data-cue="fade"
                   data-delay="240"
                 >
-                  <div
-                    className="
-                      flex flex-wrap items-center gap-3
-                      min-[760px]:max-[1023px]:flex-col
-                      min-[760px]:max-[1023px]:items-end
-                      min-[760px]:max-[1023px]:gap-2
-                    "
-                  >
+                  <div className="flex flex-col sm:flex-row items-center justify-center min-[1130px]:justify-start gap-4 sm:gap-3 w-full sm:w-auto">
                     <button
                       type="button"
                       onClick={handlePrimary}
                       className="
-                        relative group rounded-full px-7 py-3.5 text-sm font-bold
+                        relative group rounded-full px-5 sm:px-7 py-3 text-sm font-bold
                         bg-fm-primary text-white
                         overflow-hidden transition-all duration-300
                         hover:scale-105 hover:shadow-[0_0_20px_rgba(111,60,255,0.4)]
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-ring
-                        min-[760px]:max-[1023px]:w-56 text-center
+                        w-full sm:w-auto text-center
                       "
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">
@@ -157,23 +140,22 @@ export default function Home() {
                       </span>
                       <div className="absolute inset-0 bg-gradient-to-r from-fm-accent to-fm-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </button>
-                    <button
-                      type="button"
-                      onClick={handleDiscover}
+                    <a
+                      href="#features"
                       className="
                         group relative flex items-center justify-center gap-2
-                        rounded-full px-7 py-3.5 text-sm font-semibold
+                        rounded-full px-5 sm:px-7 py-3 text-sm font-semibold
                         bg-transparent text-skin-base border border-skin-border/50
                         hover:bg-skin-surface/80 hover:border-skin-border
                         transition-all duration-300 backdrop-blur-sm
-                        text-center min-[760px]:max-[1023px]:w-56
+                        w-full sm:w-auto text-center
                       "
                     >
                       Découvrir
                       <svg className="w-4 h-4 transition-transform group-hover:translate-y-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                       </svg>
-                    </button>
+                    </a>
                   </div>
                 </div>
 
@@ -194,8 +176,9 @@ export default function Home() {
             {/* Colonne droite (visuel hero) */}
             <div
               className="
-                order-last lg:order-none
-                min-w-0 w-full lg:justify-self-end
+                hidden min-[1130px]:block
+                order-last min-[1130px]:order-none
+                min-w-0 w-full min-[1130px]:justify-self-end
                 relative overflow-visible
               "
               data-cue="zoom"
@@ -221,14 +204,14 @@ export default function Home() {
       </section>
 
       {/* ===== FEATURE SHOWCASE (3D) ===== */}
-      <section className="cv-auto fm-section">
+      <section id="features" className="cv-auto fm-section scroll-mt-20">
         <FeatureShowcase />
       </section>
 
       {/* ===== COPY TRADERS + USER SPACE ===== */}
       <section className="cv-auto fm-section">
         <Avantage ctaHref="#ctrader" />
-        <UserSpace ctaHref="#mt5" />
+        <UserSpace ctaHref="/finance#accounts" />
       </section>
 
       {/* ===== FULL METRIX VIDEO (juste avant CommunityHub & MarketplaceShowcase) ===== */}
