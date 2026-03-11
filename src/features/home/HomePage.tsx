@@ -162,7 +162,7 @@ export default function Home() {
                 {/* Ticker */}
                 <div
                   className="
-                    mt-6 md:mt-7 md:col-span-2 lg:col-span-1
+                    mt-6 md:mt-7 min-[760px]:max-[1023px]:col-span-2
                     overflow-x-hidden
                   "
                   data-cue="fade"
