@@ -26,7 +26,7 @@ export function WarningModal({ open, title, loading, onConfirm, onCancel }: Prop
   };
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className="w-full max-w-md bg-skin-surface rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="px-6 py-4 border-b border-skin-border/20 flex items-center justify-between bg-orange-500/10">
           <h3 className="text-lg font-bold text-orange-600 dark:text-orange-400 flex items-center gap-2">
