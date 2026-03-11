@@ -256,7 +256,7 @@ export default function MobileDrawer({ open, groups, onClose }: Props) {
   return createPortal(
     <div
       id="mobile-drawer"
-      className="min-[1175px]:hidden fixed inset-x-0 top-16 bottom-0 z-[130] bg-white/90 dark:bg-[#0f1115]/90 backdrop-blur-md transition-transform"
+      className="min-[1340px]:hidden fixed inset-x-0 top-16 bottom-0 z-[130] bg-white/90 dark:bg-[#0f1115]/90 backdrop-blur-md transition-transform"
       role="region"
       aria-label="Menu mobile"
     >

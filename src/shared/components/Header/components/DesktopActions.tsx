@@ -156,9 +156,9 @@ export default function DesktopActions(props: Props) {
   const showNotifBadge = notificationsUnread > 0;
 
   return (
-    <div className="flex items-center gap-2 max-[404px]:gap-1.5">
+    <div className="flex items-center gap-1 min-[1150px]:gap-2 max-[404px]:gap-1.5">
       {isAuthed && (
-        <div className="inline-flex max-[370px]:hidden min-[1175px]:inline-flex">
+        <div className="inline-flex max-[370px]:hidden lg:inline-flex">
           <BalanceChip
             marketplace={sellerAvailable}
             community={communityAvailable}
@@ -233,7 +233,7 @@ export default function DesktopActions(props: Props) {
         type="button"
         onClick={handleAccountClick}
         aria-pressed={isAccountSectionActive}
-        className={`hidden min-[1175px]:inline-flex items-center justify-center w-9 h-9 rounded-full relative
+        className={`hidden lg:inline-flex items-center justify-center w-8 h-8 min-[1150px]:w-9 min-[1150px]:h-9 rounded-full relative
                ring-1 ring-skin-border/20 supports-[backdrop-filter]:bg-skin-header/40
                bg-skin-header/60 backdrop-blur-md transition-colors
                focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-ring

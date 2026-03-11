@@ -1,7 +1,7 @@
 // C:\Users\ADMIN\Desktop\fullmargin-site\src\components\Header\constants.ts
 import type { Group } from "./types";
 
-export const BREAKPOINT = 1175;
+export const BREAKPOINT = 1340;
 export const BOTTOM_H = 76;
 
 /** NB: l'affichage conditionnel (auth / hasShop) est géré dans DesktopNav */

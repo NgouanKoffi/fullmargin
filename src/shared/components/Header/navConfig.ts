@@ -65,6 +65,19 @@ export function buildHeaderNav({
     { key: "tarifs", label: "Tarifs", href: "/tarifs" },
     // { key: "faq", label: "FAQ", href: "/faq" },
 
+    // 🆕 Mes outils (dropdown protégé par auth)
+    {
+      key: "mes-outils",
+      label: "Mes outils",
+      items: [
+        { key: "tools-notes", label: "Mes notes", href: "/notes" },
+        { key: "tools-tasks", label: "Tâches & projets", href: "/projets" },
+        { key: "tools-finances", label: "Finance", href: "/finance" },
+        { key: "tools-journal", label: "Journal de trading", href: "/journal" },
+        { key: "tools-podcasts", label: "Podcasts", href: "/podcasts" },
+      ],
+    },
+
     // 🆕 Lien FullMetrix scintillant mis en évidence
     {
       key: "fullmetrix",

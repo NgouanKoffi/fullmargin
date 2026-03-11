@@ -103,7 +103,7 @@ export default function DesktopNav({ groups }: Props) {
   return (
     <nav
       aria-label="Navigation principale"
-      className="hidden min-[1175px]:block"
+      className="hidden lg:block"
     >
       <div
         ref={navRef}
@@ -128,7 +128,7 @@ export default function DesktopNav({ groups }: Props) {
                   key={g.key}
                   to={to}
                   className={`
-                    relative rounded-full px-4 py-2 text-sm whitespace-nowrap flex items-center gap-1.5 font-bold tracking-wide
+                    relative rounded-full px-1.5 min-[1150px]:px-2.5 min-[1340px]:px-4 py-2 text-[12px] min-[1150px]:text-[13px] min-[1340px]:text-sm whitespace-nowrap flex items-center gap-1.5 font-bold tracking-wide
                     hover:bg-white/10 dark:hover:bg-white/10 transition-colors group
                     ${active ? 'bg-white/5 dark:bg-white/10' : ''}
                   `}
@@ -146,7 +146,7 @@ export default function DesktopNav({ groups }: Props) {
                 key={g.key}
                 to={to}
                 className={`
-                  relative rounded-full px-4 py-2 text-sm whitespace-nowrap flex items-center gap-1
+                  relative rounded-full px-1.5 min-[1150px]:px-2.5 min-[1340px]:px-4 py-2 text-[12px] min-[1150px]:text-[13px] min-[1340px]:text-sm whitespace-nowrap flex items-center gap-1
                   text-skin-base/90 hover:text-skin-base
                   hover:bg-white/10 dark:hover:bg-white/10
                   ${active ? parentActiveCls : ""}
@@ -175,11 +175,11 @@ export default function DesktopNav({ groups }: Props) {
               <button
                 type="button"
                 className={`
-                  relative rounded-full px-4 py-2 text-sm
+                  relative rounded-full px-1.5 min-[1150px]:px-2.5 min-[1340px]:px-4 py-2 text-[12px] min-[1150px]:text-[13px] min-[1340px]:text-sm
                   text-skin-base/90 hover:text-skin-base
                   transition-colors hover:bg-white/10 dark:hover:bg-white/10
                   focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-ring
-                  whitespace-nowrap flex items-center gap-1
+                  whitespace-nowrap flex items-center gap-0.5 min-[1150px]:gap-1
                   ${isParentActive ? parentActiveCls : ""}
                 `}
                 aria-haspopup="menu"

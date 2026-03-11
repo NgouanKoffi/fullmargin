@@ -84,7 +84,7 @@ export default function MobileHamburger({
   const showImg = Boolean(avatarSrc && avatarSrc.trim() !== "");
 
   return (
-    <div className="min-[1175px]:hidden ml-auto flex items-center gap-2">
+    <div className="lg:hidden ml-auto flex items-center gap-2">
       {/* Avatar → modal centré */}
       <button
         type="button"

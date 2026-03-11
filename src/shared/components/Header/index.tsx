@@ -53,10 +53,10 @@ export default function Header() {
       `}</style>
 
       <div className="supports-[backdrop-filter]:bg-skin-header/55 bg-skin-header/90 backdrop-blur-xl transition-colors">
-        <div className="mx-auto w-full px-4 sm:px-8 lg:px-10 xl:px-16">
-          <div className="h-16 grid grid-cols-[auto_1fr_auto] items-center">
+        <div className="mx-auto w-full max-w-[1400px] px-3 sm:px-4 lg:px-6 min-[1340px]:px-8">
+          <div className="h-16 flex items-center justify-between lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-4 min-[1340px]:gap-8">
             <LogoBrand logoSrc={logo} />
-            <div className="justify-self-center">
+            <div className="hidden lg:flex justify-center w-full">
               <DesktopNav groups={navGroups} />
             </div>
             <div className="flex items-center gap-2 justify-self-end">
