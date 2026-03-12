@@ -93,7 +93,7 @@ export default function Home() {
                     <span className="text-skin-base drop-shadow-sm">Full Margin</span>
                     <br />
                     <span className="relative inline-block mt-1">
-                      <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-white via-[#E879F9] to-[#A855F7] bg-[length:200%_auto] animate-[fm-text-shimmer_3s_linear_infinite] drop-shadow-sm font-black">
+                      <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-white via-[#E879F9] to-[#A855F7] bg-[length:200%_auto] animate-[fm-text-shimmer_8s_linear_infinite] drop-shadow-sm font-black">
                         L’écosystème du trader moderne
                       </span>
                     </span>

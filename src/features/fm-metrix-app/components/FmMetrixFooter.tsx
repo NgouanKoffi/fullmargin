@@ -12,7 +12,7 @@ type Props = {
 
 export default function FmMetrixFooter({ goToFM, isLoading }: Props) {
   return (
-    <footer className="w-full bg-white dark:bg-black">
+    <footer className="w-full bg-skin-bg">
       {/* ✅ Bandeau violet (arrondi en haut) */}
       <section className="mx-auto max-w-[1600px] px-4 md:px-6 pt-10 md:pt-14">
         <div className="relative overflow-visible">
@@ -85,16 +85,16 @@ export default function FmMetrixFooter({ goToFM, isLoading }: Props) {
       </section>
 
       {/* ✅ Barre noire du bas (SANS Canva) */}
-      <div className="mt-0 bg-black">
+      <div className="mt-0 bg-skin-bg border-t border-skin-border/20">
         <div className="mx-auto max-w-[1600px] px-4 md:px-6 py-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-sm text-white/85">
-              <a href="/conditions" className="hover:text-white transition">
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-sm text-skin-muted">
+              <a href="/conditions" className="hover:text-skin-base transition">
                 Conditions et assistance
               </a>
               <a
                 href="/politique-de-confidentialite"
-                className="hover:text-white transition"
+                className="hover:text-skin-base transition"
               >
                 Politique de confidentialité
               </a>
