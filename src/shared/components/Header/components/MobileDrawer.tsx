@@ -405,9 +405,9 @@ export default function MobileDrawer({ open, groups, onClose }: Props) {
 
                       return (
                         <li key={it.key}>
-                          <Link
-                            to={to}
-                            onClick={(e) => {
+                          {(() => {
+                            const isExternal = to.startsWith("http");
+                            const handleClick = (e: React.MouseEvent) => {
                               if (!isAuthed && isProtectedTool) {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -416,34 +416,60 @@ export default function MobileDrawer({ open, groups, onClose }: Props) {
                                 return;
                               }
                               onClose();
-                            }}
-                            aria-current={isActive ? "page" : undefined}
-                            className={`${dropdownItem} ${
+                            };
+                            const className = `${dropdownItem} ${
                               isActive
                                 ? "bg-violet-600 text-white"
                                 : "text-skin-base/90 hover:text-skin-base hover:bg-black/5 dark:hover:bg-white/10"
-                            }`}
-                          >
-                            <span
-                              className="
-                                inline-flex items-center justify-center
-                                w-9 h-9 rounded-full
-                                bg-violet-500/10
-                                dark:bg-white/10
-                                ring-1 ring-black/5 dark:ring-white/10
-                                shrink-0
-                              "
-                            >
-                              {/* icône : priorité au it.icon, sinon fallback label */}
-                              {it.icon ?? renderSubIcon(g.key, it.label)}
-                            </span>
-                            <span className="truncate flex-1">{it.label}</span>
-                            {it.badge ? (
-                              <span className="inline-flex items-center justify-center min-w-[1.2rem] h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-semibold">
-                                {it.badge > 99 ? "99+" : it.badge}
-                              </span>
-                            ) : null}
-                          </Link>
+                            }`;
+                            const content = (
+                              <>
+                                <span
+                                  className="
+                                    inline-flex items-center justify-center
+                                    w-9 h-9 rounded-full
+                                    bg-violet-500/10
+                                    dark:bg-white/10
+                                    ring-1 ring-black/5 dark:ring-white/10
+                                    shrink-0
+                                  "
+                                >
+                                  {it.icon ?? renderSubIcon(g.key, it.label)}
+                                </span>
+                                <span className="truncate flex-1">{it.label}</span>
+                                {it.badge ? (
+                                  <span className="inline-flex items-center justify-center min-w-[1.2rem] h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-semibold">
+                                    {it.badge > 99 ? "99+" : it.badge}
+                                  </span>
+                                ) : null}
+                              </>
+                            );
+
+                            if (isExternal) {
+                              return (
+                                <a
+                                  href={to}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={handleClick}
+                                  className={className}
+                                >
+                                  {content}
+                                </a>
+                              );
+                            }
+
+                            return (
+                              <Link
+                                to={to}
+                                onClick={handleClick}
+                                aria-current={isActive ? "page" : undefined}
+                                className={className}
+                              >
+                                {content}
+                              </Link>
+                            );
+                          })()}
                         </li>
                       );
                     })}

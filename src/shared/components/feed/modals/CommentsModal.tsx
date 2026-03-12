@@ -438,14 +438,16 @@ export default function CommentsModal({
 
               {deletedFinal && <DeletedPostBanner />}
 
-              <PostContent
-                post={post}
-                clampLength={420}
-                onOpenLightbox={(i: number) => {
-                  setLbIndex(i);
-                  setLbOpen(true);
-                }}
-              />
+              {!deletedFinal && (
+                <PostContent
+                  post={post}
+                  clampLength={420}
+                  onOpenLightbox={(i: number) => {
+                    setLbIndex(i);
+                    setLbOpen(true);
+                  }}
+                />
+              )}
             </article>
 
             {/* Commentaires */}

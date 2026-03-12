@@ -9,10 +9,6 @@ const {
 
 const { createNotif } = require("../../../utils/notifications");
 
-/**
- * POST /api/communaute/lives/start-now
- * body: { communityId, title?, description?, isPublic?, durationMinutes?, endsAt? }
- */
 module.exports = (router) => {
   router.post("/start-now", requireAuth, async (req, res) => {
     const userId = String(req.auth.userId);
@@ -26,20 +22,15 @@ module.exports = (router) => {
     } = req.body || {};
 
     if (!communityId) {
-      return res
-        .status(400)
-        .json({ ok: false, error: "communityId requis dans le body." });
+      return res.status(400).json({ ok: false, error: "communityId requis dans le body." });
     }
 
     const check = await assertIsOwner(userId, communityId);
-    if (!check.ok) {
-      return res.status(403).json({ ok: false, error: check.error });
-    }
+    if (!check.ok) return res.status(403).json({ ok: false, error: check.error });
 
     const community = check.community;
 
     try {
-      // On ferme proprement les lives encore "live" de cette communauté
       await CommunityLive.updateMany(
         { communityId, status: "live" },
         { $set: { status: "ended", endedAt: new Date() } },
@@ -51,39 +42,16 @@ module.exports = (router) => {
       if (endsAt) {
         plannedEndAt = new Date(endsAt);
       } else if (durationMinutes && Number(durationMinutes) > 0) {
-        plannedEndAt = new Date(
-          now.getTime() + Number(durationMinutes) * 60000,
-        );
+        plannedEndAt = new Date(now.getTime() + Number(durationMinutes) * 60000);
       } else {
         plannedEndAt = new Date(now.getTime() + 90 * 60000);
       }
 
-      // ----- Titre “officiel” du live -----
-      const finalTitle =
-        title ||
-        `Live du ${now.toLocaleDateString("fr-FR")} à ${now.toLocaleTimeString(
-          "fr-FR",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-          },
-        )}`;
+      const finalTitle = title || `Live du ${now.toLocaleDateString("fr-FR")} à ${now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`;
 
-      // ----- Nom de salle Jitsi lisible (ce que voient les membres) -----
-      const baseForRoom = title || community?.name || "FullMargin Live";
-
-      // on “slugifie” pour Jitsi : minuscules, tirets, pas d'accents
-      const safeBase =
-        baseForRoom
-          .toString()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "") // enlever accents
-          .replace(/[^a-zA-Z0-9]+/g, "-") // tout le reste -> tirets
-          .replace(/^-+|-+$/g, "") // pas de tirets en début/fin
-          .toLowerCase() || "live";
-
-      const shortId = Date.now().toString(36).slice(-6);
-      const roomName = `fm-${safeBase}-${shortId}`;
+      // 🔴 ID DE SALLE PROPRE : Minuscules et chiffres uniquement, court, Jitsi ne plantera plus dessus
+      const shortId = Date.now().toString(36).toLowerCase();
+      const roomName = `fmlive${shortId}`; 
 
       const live = await CommunityLive.create({
         communityId,
@@ -93,21 +61,16 @@ module.exports = (router) => {
         startsAt: now,
         plannedEndAt,
         createdBy: userId,
-        roomName,
+        roomName, 
         isPublic: !!isPublic,
       });
 
-      // 🔔 notif live démarré (aux membres)
       const members = await CommunityMember.find({
         communityId,
         $or: [{ status: "active" }, { status: { $exists: false } }],
-      })
-        .select({ userId: 1 })
-        .lean();
+      }).select({ userId: 1 }).lean();
 
-      const toNotify = members
-        .map((m) => String(m.userId))
-        .filter((uid) => uid !== userId);
+      const toNotify = members.map((m) => String(m.userId)).filter((uid) => uid !== userId);
 
       await Promise.all(
         toNotify.map((uid) =>
@@ -127,19 +90,10 @@ module.exports = (router) => {
         ),
       );
 
-      return res.json({
-        ok: true,
-        data: {
-          // ✅ IMPORTANT : passer userId -> isOwner fiable
-          live: mapLive(live, userId),
-        },
-      });
+      return res.json({ ok: true, data: { live: mapLive(live, userId) } });
     } catch (e) {
       console.error("[LIVES] POST /start-now ERROR:", e);
-      return res.status(500).json({
-        ok: false,
-        error: "Impossible de lancer le direct.",
-      });
+      return res.status(500).json({ ok: false, error: "Impossible de lancer le direct." });
     }
   });
 };

@@ -54,7 +54,7 @@ export function useNotificationActions(markAsRead: (id: string) => void) {
       kind === "community_live_scheduled"
     ) {
       const liveId = payload.liveId as string | undefined;
-      if (liveId) return navigate(`/communaute/direct/${liveId}`);
+      if (liveId) return navigate(`/direct/${liveId}`);
       const slug = payload.communitySlug || notif.communityId;
       return navigate(slug ? `/communaute/${slug}` : "/communautes");
     }

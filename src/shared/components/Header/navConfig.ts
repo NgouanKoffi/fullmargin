@@ -74,6 +74,7 @@ export function buildHeaderNav({
         { key: "tools-tasks", label: "Tâches & projets", href: "/projets" },
         { key: "tools-finances", label: "Finance", href: "/finance" },
         { key: "tools-journal", label: "Journal de trading", href: "/journal" },
+        { key: "tools-live", label: "Lancer un live", href: "https://live.fullmargin.net/" },
         { key: "tools-podcasts", label: "Podcasts", href: "/podcasts" },
       ],
     },

@@ -228,29 +228,28 @@ export default function DesktopNav({ groups }: Props) {
                     const active = isHrefStrictActive(pathname, search, to);
                     const isProtectedTool = TOOL_PROTECTED_KEYS.has(it.key);
 
-                    return (
-                      <Link
-                        key={it.key}
-                        to={to}
-                        className={`flex items-center gap-3 w-full rounded-xl px-3 py-2.5 text-sm transition-colors
-                          ${
-                            active
-                              ? "bg-violet-600 text-white"
-                              : "text-skin-base/90 hover:text-skin-base hover:bg-black/5 dark:hover:bg-white/10"
-                          }`}
-                        role="menuitem"
-                        onClick={(e) => {
-                          // 🔒 protection Mes outils → ouvre AuthModal si pas connecté
-                          if (!isAuthed && isProtectedTool) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setOpenKey(null);
-                            openAuth("signin");
-                            return;
-                          }
-                          setOpenKey(null);
-                        }}
-                      >
+                    const isExternal = to.startsWith("http");
+                    const className = `flex items-center gap-3 w-full rounded-xl px-3 py-2.5 text-sm transition-colors
+                      ${
+                        active
+                          ? "bg-violet-600 text-white"
+                          : "text-skin-base/90 hover:text-skin-base hover:bg-black/5 dark:hover:bg-white/10"
+                      }`;
+                    const handleClick = (e: React.MouseEvent) => {
+                      if (!isAuthed && isProtectedTool) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setOpenKey(null);
+                        openAuth("signin");
+                        return;
+                      }
+                      if (!isExternal) {
+                        setOpenKey(null);
+                      }
+                    };
+
+                    const content = (
+                      <>
                         {it.icon && (
                           <span
                             className="inline-flex items-center justify-center
@@ -268,6 +267,34 @@ export default function DesktopNav({ groups }: Props) {
                             {it.badge > 99 ? "99+" : it.badge}
                           </span>
                         ) : null}
+                      </>
+                    );
+
+                    if (isExternal) {
+                      return (
+                        <a
+                          key={it.key}
+                          href={to}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={className}
+                          role="menuitem"
+                          onClick={handleClick}
+                        >
+                          {content}
+                        </a>
+                      );
+                    }
+
+                    return (
+                      <Link
+                        key={it.key}
+                        to={to}
+                        className={className}
+                        role="menuitem"
+                        onClick={handleClick}
+                      >
+                        {content}
                       </Link>
                     );
                   })}

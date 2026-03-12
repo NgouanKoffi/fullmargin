@@ -20,6 +20,7 @@ import {
   CreditCard,
   Users,
   MessageSquareText,
+  Radio,
 } from "lucide-react";
 import { API_BASE } from "@core/api/client";
 import { loadSession } from "@core/auth/lib/storage";
@@ -178,6 +179,13 @@ function authedItems(
   });
   items.push({ label: "Finance", icon: <Chart />, href: "/finance" });
   items.push({ label: "Journal de trading", icon: <Book />, href: "/journal" });
+  items.push({
+    label: "Lancer un live",
+    icon: <Radio className="w-5 h-5" />,
+    onClick: () => {
+      window.open("https://live.fullmargin.net/", "_blank");
+    },
+  });
   items.push({
     label: "FM Metrix",
     icon: <LayoutDashboard className="w-5 h-5" />,
