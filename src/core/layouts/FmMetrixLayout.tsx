@@ -3,7 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useLayoutEffect, useState } from "react";
 
 import Header from "@shared/components/Header";
-// ✅ pas de Footer ici
+import Footer from "@shared/components/Footer";
 import AuthModal from "@core/auth/AuthModal";
 import TwoFactorModal from "@core/auth/ui/modals/TwoFactor/TwoFactorModal";
 import SupportClient from "@shared/components/Support/SupportClient";
@@ -58,10 +58,7 @@ export default function FmMetrixLayout() {
       {/* Modals globaux */}
       <AuthModal />
       <TwoFactorModal />
-
-      {/* ✅ PAS DE FOOTER */}
-
-      {/* Support */}
+      <Footer />
       <SupportPanel open={supportOpen} onClose={handleCloseSupport} />
       <SupportClient />
 

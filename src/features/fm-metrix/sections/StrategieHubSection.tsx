@@ -7,18 +7,9 @@ import WindowFrame from "../components/WindowFrame";
 import StrategieHubWebm from "@assets/gif/converted/Strategie hub.webm";
 import StrategieHubMp4 from "@assets/gif/converted/Strategie hub.mp4";
 
-type Props = { goToFM: () => void; isLoading: boolean };
-
-export default function StrategieHubSection({ goToFM, isLoading }: Props) {
+export default function StrategieHubSection() {
   return (
-    <section className="py-32 relative overflow-hidden">
-      {/* Decorative Background Mesh */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[10%] left-[20%] w-[800px] h-[800px] bg-indigo-500/10 dark:bg-indigo-600/10 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '10s' }} />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[700px] h-[700px] bg-cyan-500/5 dark:bg-cyan-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '12s' }} />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
-      </div>
-
+    <section className="py-32 relative overflow-hidden bg-transparent">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-8 relative z-10">
         
         <FadeIn className="text-center mb-24 max-w-3xl mx-auto">
@@ -27,7 +18,7 @@ export default function StrategieHubSection({ goToFM, isLoading }: Props) {
           </h2>
           <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-zinc-900 dark:text-white">
             Forgez votre système, <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500 dark:from-indigo-400 dark:to-cyan-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 dark:from-violet-400 dark:via-fuchsia-400 dark:to-violet-400 bg-[length:200%_auto] animate-[fm-text-shimmer_6s_linear_infinite]">
               partagez votre succès
             </span>
           </h3>
@@ -51,7 +42,7 @@ export default function StrategieHubSection({ goToFM, isLoading }: Props) {
                 Le poste de commandement de votre trading. Construisez, testez et optimisez vos systèmes avec nos algorithmes natifs de précision. Un tableau blanc pour votre edge.
               </p>
 
-              <div className="space-y-5 flex-1 mb-10">
+              <div className="space-y-5 flex-1 mb-8">
                 <div className="flex items-start gap-4">
                   <div className="mt-1 w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></div>
                   <p className="text-sm text-zinc-700 dark:text-zinc-300">Constructeur de stratégie visuel et intuitif</p>
@@ -65,6 +56,16 @@ export default function StrategieHubSection({ goToFM, isLoading }: Props) {
                   <p className="text-sm text-zinc-700 dark:text-zinc-300">Suggestions d'amélioration et optimisation par l'Intelligence Artificielle</p>
                 </div>
               </div>
+
+              <a
+                href="https://ia.fullmargin.net/strategies"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] w-fit"
+              >
+                <span>Découvrir</span>
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </a>
 
             </div>
 
@@ -104,19 +105,15 @@ export default function StrategieHubSection({ goToFM, isLoading }: Props) {
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={goToFM}
-              disabled={isLoading}
+            <a
+              href="https://ia.fullmargin.net/copy-trading"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full relative inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-medium tracking-wide transition-all group-hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.3)] hover:scale-[1.02] active:scale-[0.98] mt-auto"
             >
-              <span>{isLoading ? "Préparation..." : "Connecter le réseau"}</span>
-              {isLoading ? (
-                <span className="h-4 w-4 rounded-full border-2 border-current border-t-transparent animate-spin ml-2" />
-              ) : (
-                <ArrowRight className="h-4 w-4 ml-2" />
-              )}
-            </button>
+              <span>Connecter le réseau</span>
+              <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            </a>
           </FadeIn>
 
         </div>

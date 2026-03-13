@@ -28,7 +28,7 @@ export default function FinalCtaSection({ goToFM, isLoading }: Props) {
 
             <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 leading-tight tracking-tight">
               Propulsez votre{" "}
-              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-violet-400 bg-[length:200%_auto] animate-[fm-text-shimmer_6s_linear_infinite] bg-clip-text text-transparent">
                 Trading
               </span>
               <br />

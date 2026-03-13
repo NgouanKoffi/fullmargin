@@ -9,23 +9,7 @@ type Props = {
 
 export default function HeroFullMetrix({ goToFM, isLoading }: Props) {
   return (
-    <section className="relative min-h-screen flex flex-col items-center pt-20 pb-24 overflow-hidden">
-      
-      {/* 1. BACKGROUND ENVIRONMENT */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* LIGHT MODE BACKGROUND */}
-        <div className="absolute inset-0 block dark:hidden bg-zinc-50"></div>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[500px] rounded-full bg-violet-400/20 blur-[120px] dark:hidden animate-[pulse_8s_ease-in-out_infinite]"></div>
-        <div className="absolute top-[20%] -left-[10%] w-[50vw] h-[500px] rounded-full bg-fuchsia-400/10 blur-[100px] dark:hidden animate-[pulse_12s_ease-in-out_infinite] delay-1000"></div>
-
-        {/* DARK MODE BACKGROUND */}
-        <div className="absolute inset-0 hidden dark:block bg-[#0A0A0A]"></div>
-        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80vw] h-[60vw] max-h-[800px] rounded-[100%] bg-violet-900/30 blur-[150px] hidden dark:block animate-[pulse_10s_ease-in-out_infinite] mix-blend-screen"></div>
-        <div className="absolute top-[30%] -right-[20%] w-[60vw] h-[60vw] max-h-[700px] rounded-[100%] bg-fuchsia-900/20 blur-[120px] hidden dark:block animate-[pulse_15s_ease-in-out_infinite] delay-1000 mix-blend-screen"></div>
-
-        {/* SUBTLE GRID PATTERN (Clean & Modern) */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000005_1px,transparent_1px),linear-gradient(to_bottom,#00000005_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_20%,#000_60%,transparent_100%)]"></div>
-      </div>
+    <section className="relative min-h-screen flex flex-col items-center pt-8 pb-24 overflow-hidden bg-transparent">
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 mt-4 md:mt-6 flex flex-col items-center">
         
@@ -51,7 +35,7 @@ export default function HeroFullMetrix({ goToFM, isLoading }: Props) {
           >
             L'écosystème ultime pour{" "}
             <span className="relative whitespace-nowrap">
-              <span className="relative z-10 bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 bg-clip-text text-transparent">
+              <span className="relative z-10 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 dark:from-violet-400 dark:via-fuchsia-400 dark:to-violet-400 bg-[length:200%_auto] animate-[fm-text-shimmer_6s_linear_infinite] bg-clip-text text-transparent">
                 trader d'élite
               </span>
               <span className="absolute -bottom-2 left-0 right-0 h-[0.15em] bg-violet-500/20 dark:bg-violet-400/20 rounded-full blur-sm -z-10"></span>

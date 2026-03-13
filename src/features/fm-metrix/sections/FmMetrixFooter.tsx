@@ -12,26 +12,13 @@ type Props = {
 
 export default function FmMetrixFooter({ goToFM, isLoading }: Props) {
   return (
-    <footer className="relative pt-32 pb-12 overflow-hidden">
-      
-      {/* Background & Aurora effects */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* Dark Mode: Starry bg with overlay */}
-        <div className="absolute inset-0 hidden dark:block opacity-40">
-          <img src={BgFooter} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent"></div>
-        </div>
-        
-        {/* Light Mode: Subtle glow */}
-        <div className="absolute inset-0 block dark:hidden bg-gradient-to-b from-transparent to-zinc-50"></div>
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-violet-500/5 rounded-[100%] blur-[100px] dark:hidden"></div>
-      </div>
+    <footer className="relative pt-32 pb-12 overflow-hidden bg-transparent">
 
       <div className="mx-auto max-w-[1440px] px-6 lg:px-8 relative z-10">
 
         {/* --- MAIN CTA --- */}
         <FadeIn direction="up" className="mb-32">
-          <div className="relative rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 px-8 py-20 lg:py-24 text-center overflow-hidden flex flex-col items-center group shadow-2xl dark:shadow-none">
+          <div className="relative rounded-[2.5rem] bg-white/60 dark:bg-zinc-900/40 backdrop-blur-xl border border-zinc-200/60 dark:border-white/10 px-8 py-20 lg:py-24 text-center overflow-hidden flex flex-col items-center group shadow-2xl dark:shadow-none">
             
             {/* CTA Background animations */}
             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
@@ -47,7 +34,7 @@ export default function FmMetrixFooter({ goToFM, isLoading }: Props) {
               
               <h2 className="text-4xl md:text-5xl lg:text-7xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight max-w-4xl transition-colors duration-500">
                 Prenez l'avantage{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 dark:from-violet-400 dark:via-fuchsia-400 dark:to-violet-400 bg-[length:200%_auto] animate-[fm-text-shimmer_6s_linear_infinite]">
                   dès aujourd'hui.
                 </span>
               </h2>

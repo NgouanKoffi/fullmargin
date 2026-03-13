@@ -13,15 +13,8 @@ type Props = { goToFM: () => void; isLoading: boolean };
 
 export default function FeatureGrid2x2({ goToFM, isLoading }: Props) {
   return (
-    <section id="fmmetrix-features" className="py-16 relative overflow-hidden bg-zinc-50 dark:bg-[#0A0A0A]">
+    <section id="fmmetrix-features" className="py-16 relative overflow-hidden bg-transparent">
       
-      {/* Background ambient lights */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[20%] right-[-10%] w-[50vw] h-[500px] bg-violet-400/20 dark:bg-violet-600/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[60vw] h-[600px] bg-fuchsia-400/20 dark:bg-fuchsia-600/10 rounded-full blur-[120px]" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
-      </div>
-
       <div className="mx-auto max-w-[1440px] px-6 lg:px-8 relative z-10">
         
         {/* ROW 1: Mode BACKTEST (Text on Right) */}
@@ -43,86 +36,94 @@ export default function FeatureGrid2x2({ goToFM, isLoading }: Props) {
           </FadeIn>
 
           {/* Right: Text Content */}
-          <FadeIn direction="left" delay={0.2} className="w-full lg:w-1/2 order-1 lg:order-2 flex flex-col justify-center">
+          <FadeIn direction="left" delay={0.2} className="w-full lg:w-1/2 order-1 lg:order-2 flex flex-col justify-center rounded-[2rem] bg-white/60 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-white/5 p-8 lg:p-12 backdrop-blur-xl shadow-xl hover:shadow-[0_20px_60px_-15px_rgba(139,92,246,0.15)] transition-all duration-500 group overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-violet-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             
-            <h3 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 text-zinc-900 dark:text-white uppercase tracking-tight">
-              Mode <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400">BACKTEST</span>
-            </h3>
-            
-            <ul className="space-y-5 mb-10">
-              <li className="flex items-start gap-4">
-                <div className="mt-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
-                  <ChevronRight className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
-                  Outils d'analyses
-                </span>
-              </li>
-              <li className="flex items-start gap-4">
-                <div className="mt-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
-                  <ChevronRight className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
-                  Mode replay des indices synthétiques et du forex
-                </span>
-              </li>
-              <li className="flex items-start gap-4">
-                <div className="mt-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
-                  <ChevronRight className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
-                  Des Indicateurs uniques et performants
-                </span>
-              </li>
-            </ul>
+            <div className="relative z-10">
+              <h3 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 text-zinc-900 dark:text-white uppercase tracking-tight">
+                Mode <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 dark:from-violet-400 dark:via-fuchsia-400 dark:to-violet-400 bg-[length:200%_auto] animate-[fm-text-shimmer_6s_linear_infinite]">BACKTEST</span>
+              </h3>
+              
+              <ul className="space-y-5 mb-10">
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
+                    Outils d'analyses
+                  </span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
+                    Mode replay des indices synthétiques et du forex
+                  </span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
+                    Des Indicateurs uniques et performants
+                  </span>
+                </li>
+              </ul>
 
-            <button
-              onClick={goToFM}
-              disabled={isLoading}
-              className="group self-start inline-flex items-center gap-2 px-8 py-4 rounded-3xl bg-violet-500 hover:bg-violet-600 text-white font-bold text-lg md:text-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] hover:-translate-y-1"
-            >
-              Découvrir <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+              <a
+                href="https://ia.fullmargin.net/backtest"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/btn self-start inline-flex items-center gap-2 px-8 py-4 rounded-3xl bg-violet-500 hover:bg-violet-600 text-white font-bold text-lg md:text-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] hover:-translate-y-1 w-fit"
+              >
+                Découvrir <ChevronRight className="w-5 h-5 group/btn-hover:translate-x-1 transition-transform" />
+              </a>
+            </div>
           </FadeIn>
         </div>
 
 
-        {/* ROW 2: Stratégies Avancés (Text on Left) */}
+        {/* ROW 2: Stratégies Avancées (Text on Left) */}
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
           
           {/* Left: Text Content */}
-          <FadeIn direction="right" delay={0.2} className="w-full lg:w-1/2 flex flex-col justify-center">
-            
-            <h3 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 text-zinc-900 dark:text-white uppercase tracking-tight">
-              STRATEGIES <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400">AVANCÉS</span>
-            </h3>
-            
-            <ul className="space-y-5 mb-10">
-              <li className="flex items-start gap-4">
-                <div className="mt-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
-                  <ChevronRight className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
-                  Analyse par IA avancé
-                </span>
-              </li>
-              <li className="flex items-start gap-4">
-                <div className="mt-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
-                  <ChevronRight className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
-                  Stratégies d'analyse technique intégrées
-                </span>
-              </li>
-            </ul>
+          <FadeIn direction="right" delay={0.2} className="w-full lg:w-1/2 flex flex-col justify-center rounded-[2rem] bg-indigo-900/5 dark:bg-fuchsia-900/5 border border-fuchsia-500/20 p-8 lg:p-12 backdrop-blur-xl shadow-xl hover:shadow-[0_20px_60px_-15px_rgba(217,70,239,0.15)] transition-all duration-500 group overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-fuchsia-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-            <button
-              onClick={goToFM}
-              disabled={isLoading}
-              className="group self-start inline-flex items-center gap-2 px-8 py-4 rounded-3xl bg-violet-500 hover:bg-violet-600 text-white font-bold text-lg md:text-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] hover:-translate-y-1"
-            >
-              Découvrir <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            <div className="relative z-10">
+              <h3 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 text-zinc-900 dark:text-white uppercase tracking-tight">
+                STRATÉGIES <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 dark:from-violet-400 dark:via-fuchsia-400 dark:to-violet-400 bg-[length:200%_auto] animate-[fm-text-shimmer_6s_linear_infinite]">AVANCÉES</span>
+              </h3>
+              
+              <ul className="space-y-5 mb-10">
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
+                    Analyse par IA avancée
+                  </span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="mt-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-100 leading-tight">
+                    Stratégies d'analyse technique intégrées
+                  </span>
+                </li>
+              </ul>
+
+              <a
+                href="https://ia.fullmargin.net/backtest"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/btn self-start inline-flex items-center gap-2 px-8 py-4 rounded-3xl bg-violet-500 hover:bg-violet-600 text-white font-bold text-lg md:text-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] hover:-translate-y-1 w-fit"
+              >
+                Découvrir <ChevronRight className="w-5 h-5 group/btn-hover:translate-x-1 transition-transform" />
+              </a>
+            </div>
           </FadeIn>
 
           {/* Right: Video Frame */}
@@ -133,7 +134,7 @@ export default function FeatureGrid2x2({ goToFM, isLoading }: Props) {
                 <LoopVideo
                   webm={Backtest2Webm}
                   mp4={Backtest2Mp4}
-                  label="Stratégies Avancés"
+                  label="Stratégies Avancées"
                   className="w-full h-auto object-cover"
                 />
               </WindowFrame>
