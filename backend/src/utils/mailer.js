@@ -1,7 +1,7 @@
 // C:\Users\ADMIN\Desktop\fullmargin-site\backend\src\utils\mailer.js
 const MailTemplate = require("../models/mailTemplate.model");
 const { DEFAULTS } = require("./mailer.defaults");
-const { sendEmail } = require("./mailer.sendgrid");
+const { sendEmail, sendBulkEmail } = require("./mailer.sendgrid");
 const {
   normalizeCtx,
   renderTemplate,
@@ -511,6 +511,7 @@ async function sendCommunityDeletedByAdminEmail({
 
 module.exports = {
   sendEmail,
+  sendBulkEmail,
   sendLoginCode,
   sendWelcomeEmail,
   sendPasswordResetCode,

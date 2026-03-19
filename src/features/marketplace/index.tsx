@@ -14,21 +14,6 @@ import { ChevronsUpDown } from "lucide-react";
 import MarketSideNav from "./components/MarketSideNav";
 import { useAuth } from "@core/auth/AuthContext"; // lier AuthContext
 
-const LS_KEY = "fm:market:lastTab";
-
-/** Sauvegarde locale sûre (évite les erreurs no-empty sur catch) */
-function safeSetLS(key: string, value: string): boolean {
-  try {
-    localStorage.setItem(key, value);
-    return true;
-  } catch (err) {
-    if (import.meta?.env?.DEV) {
-      console.debug("localStorage.setItem failed", { key, err });
-    }
-    return false;
-  }
-}
-
 /** Hook media query simple (ex: "(min-width: 768px)") */
 function useMediaQuery(query: string) {
   const [match, setMatch] = useState<boolean>(() =>
@@ -57,22 +42,13 @@ export default function Marketplace() {
     void status;
   }, [status]);
 
-  // URL d'abord, sinon LS, sinon 'dashboard'
+  // URL d'abord, sinon on tombe systématiquement sur l'onglet produits.
   const urlTab = params.get("tab");
-  const requestedStr: string = (urlTab ||
-    localStorage.getItem(LS_KEY) ||
-    "dashboard") as string;
+  const requestedStr: string = (urlTab || "products") as string;
 
   // Tab meta (comp + si require shop)
   const meta = useMemo(() => getTabMeta(requestedStr), [requestedStr]);
   const TabComponent: ComponentType = meta.comp;
-
-  // Sync URL ←→ LS (URL = source de vérité ; LS écrit après)
-  useEffect(() => {
-    if (urlTab) {
-      safeSetLS(LS_KEY, urlTab);
-    }
-  }, [urlTab]);
 
   // Ne pas conserver d'autres query params parasites
   const go = useCallback(
@@ -80,7 +56,6 @@ export default function Marketplace() {
       const next = new URLSearchParams();
       next.set("tab", nextTab);
       navigate({ search: `?${next.toString()}` });
-      safeSetLS(LS_KEY, nextTab);
     },
     [navigate]
   );

@@ -1,6 +1,6 @@
 // src/pages/communaute/public/community-details/tabs/Formations/FormationsWizard.tsx
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Eye } from "lucide-react";
 
 import ProgressSteps from "./composants/ProgressSteps";
 import BottomBar from "./composants/BottomBar";
@@ -24,6 +24,7 @@ import {
   mergeModulesPreserveMedia,
 } from "./formations.media";
 import { validateAll } from "./formations.validation";
+import FormationsPreview from "./FormationsPreview";
 
 const STORAGE_KEY_DRAFT = "fm:course-draft";
 type DraftMeta = { id?: string; createdAt?: string };
@@ -32,13 +33,13 @@ export type { CourseSaved };
 /* ✅ Ici on accepte aussi les images et on garde subtype */
 type SerializedUIItem = {
   id: string;
-  type: "video" | "pdf" | "image";
+  type: "video" | "pdf" | "image" | "text" | "html";
   title: string;
   durationMin?: number;
   url: string | null;
   filename: string | null;
   __serializedFile: import("./formations.media").SerializedFile | null;
-  subtype?: "video" | "doc" | "link" | "image" | string | null;
+  subtype?: "video" | "doc" | "link" | "image" | "text" | "html" | string | null;
 };
 
 type PersistedLesson = {
@@ -140,6 +141,8 @@ export default function FormationsWizardInner({
     price: undefined,
     visibility: "public",
   }));
+
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     if (initialDraft) setDraft(initialDraft);
@@ -446,21 +449,44 @@ export default function FormationsWizardInner({
         saving ? "pb-24" : "",
       ].join(" ")}
     >
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">
-          {editingMeta?.id ? "Modifier la formation" : "Éditeur de formation"}
-        </h2>
-        <button
-          onClick={onCancel}
-          className="inline-flex items-center justify-center p-2 rounded-lg ring-1 ring-slate-300 hover:bg-black/5 disabled:opacity-50 dark:ring-slate-600 dark:hover:bg-white/10"
-          title="Retour"
-          aria-label="Retour"
-          disabled={saving}
-        >
-          <ArrowLeft className="h-4 w-4" />
-          &nbsp; Retour
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onCancel}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-neutral-900 ring-1 ring-black/5 dark:ring-white/10 shadow-sm hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all disabled:opacity-50 text-sm font-bold text-neutral-700 dark:text-neutral-300"
+            title="Retourner à la liste"
+            aria-label="Retour"
+            disabled={saving}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Retour
+          </button>
+          <h2 className="text-xl sm:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-600 dark:from-white dark:to-neutral-400 hidden sm:block">
+            {editingMeta?.id ? "Modifier la formation" : "Nouvelle formation"}
+          </h2>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          {draft.modules.length > 0 && (
+            <button
+              onClick={() => setShowPreview(true)}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold transition-all shadow-md shadow-violet-500/20"
+              title="Prévisualiser le rendu"
+              disabled={saving}
+            >
+              <Eye className="h-4 w-4" />
+              Prévisualiser
+            </button>
+          )}
+        </div>
       </div>
+
+      {showPreview && (
+        <FormationsPreview
+          draft={draft}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
 
       <ProgressSteps
         step={step}

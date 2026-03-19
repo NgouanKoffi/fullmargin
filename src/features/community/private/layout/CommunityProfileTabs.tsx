@@ -464,15 +464,18 @@ export default function CommunityProfileTabs({
             </button>
           )}
 
-          {/* <-- NOUVEAU BOUTON : Comment ça marche ? --> */}
-          <button
-            onClick={() => setIsTutorialOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full px-4 h-10 text-sm font-medium bg-violet-600/10 text-violet-600 transition-colors hover:bg-violet-600/20 dark:bg-violet-500/10 dark:text-violet-300 dark:hover:bg-violet-500/20 border-0"
-            title="Revoir le tutoriel"
-          >
-            <PlayCircle className="h-4 w-4 text-violet-500" />
-            Comment ça marche ?
-          </button>
+          {/* <-- NOUVEAU BOUTON : Comment ça marche ? (Réservé au propriétaire) --> */}
+          {effectiveIsOwner && (
+            <button
+              onClick={() => setIsTutorialOpen(true)}
+              // J'ai ajouté 'ml-auto sm:ml-0' pour qu'il se place bien visuellement s'il y a de la place
+              className="inline-flex items-center gap-2 rounded-full px-4 h-10 text-sm font-medium bg-violet-600/10 text-violet-600 transition-colors hover:bg-violet-600/20 dark:bg-violet-500/10 dark:text-violet-300 dark:hover:bg-violet-500/20 border-0 ml-auto sm:ml-0"
+              title="Revoir le tutoriel"
+            >
+              <PlayCircle className="h-4 w-4 text-violet-500" />
+              Comment ça marche ?
+            </button>
+          )}
         </div>
       </div>
 
@@ -509,6 +512,7 @@ export default function CommunityProfileTabs({
       <TutorialVideoModal
         isOpen={isTutorialOpen}
         onClose={() => setIsTutorialOpen(false)}
+        videoUrl="https://www.youtube.com/embed/4JgQBbMVsxw"
       />
     </div>
   );

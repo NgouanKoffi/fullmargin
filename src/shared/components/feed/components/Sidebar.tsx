@@ -13,18 +13,23 @@ export function SidebarCard({
   children,
   actionLabel,
   onAction,
+  headerAction, // <-- Ajout de cette prop
 }: {
   title: string;
   icon?: React.ReactNode;
   children: React.ReactNode;
   actionLabel?: string;
   onAction?: () => void;
+  headerAction?: React.ReactNode; // <-- Et de ce type
 }) {
   return (
     <div className="rounded-2xl bg-white/70 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10">
-      <div className="flex items-center gap-2 px-4 sm:px-5 pt-4">
-        {icon}
-        <h3 className="text-sm sm:text-base font-semibold">{title}</h3>
+      <div className="flex items-center justify-between px-4 sm:px-5 pt-4">
+        <div className="flex items-center gap-2">
+          {icon}
+          <h3 className="text-sm sm:text-base font-semibold">{title}</h3>
+        </div>
+        {headerAction}
       </div>
       <div className="px-4 sm:px-5 py-4">{children}</div>
       {actionLabel && (

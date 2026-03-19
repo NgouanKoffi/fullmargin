@@ -7,16 +7,25 @@ import {
   Link2,
   ExternalLink,
   Trash2,
+  Type,
+  Code,
+  ArrowUp,
+  ArrowDown,
+  GripVertical,
 } from "lucide-react";
 
 import type { UIItem } from "./helpers";
 import { displaySelectedName, displayCurrentName, uid } from "./helpers";
 import type { CurriculumItemType } from "../../types";
+import { RichTextDescriptionEditor } from "@shared/components/blocknote/RichTextDescription";
 
 type ResourceCardProps = {
   item: UIItem;
+  index: number;
+  totalItems: number;
   onChangeItem: (patch: Partial<UIItem> & Record<string, unknown>) => void;
   onRemove: () => void;
+  onMoveItem: (toIdx: number) => void;
   onFileChange: (
     baseType: CurriculumItemType,
     file: File | null | undefined
@@ -35,6 +44,10 @@ function renderTypeIcon(subtype: UIItem["subtype"]) {
       return <ImageIcon className="h-4 w-4" />;
     case "link":
       return <Link2 className="h-4 w-4" />;
+    case "text":
+      return <Type className="h-4 w-4" />;
+    case "html":
+      return <Code className="h-4 w-4" />;
     case "doc":
     default:
       return <FileText className="h-4 w-4" />;
@@ -43,8 +56,11 @@ function renderTypeIcon(subtype: UIItem["subtype"]) {
 
 export default function ResourceCard({
   item,
+  index,
+  totalItems,
   onChangeItem,
   onRemove,
+  onMoveItem,
   onFileChange,
 }: ResourceCardProps) {
   const it = item as UIItemWithKey;
@@ -105,6 +121,14 @@ export default function ResourceCard({
       {/* header */}
       <div className="mb-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
+          {/* Poignée de drag */}
+          <div className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+            <GripVertical className="h-4 w-4" />
+          </div>
+          {/* Badge d'ordre */}
+          <span className="flex h-6 w-8 items-center justify-center rounded bg-slate-100 text-[10px] font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            #{index + 1}
+          </span>
           {renderTypeIcon(subtype)}
           <select
             className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-medium dark:border-slate-700 dark:bg-slate-800"
@@ -146,6 +170,28 @@ export default function ResourceCard({
                   durationMin: undefined,
                   __fileInputKey: uid(),
                 });
+              } else if (v === "text") {
+                onChangeItem({
+                  subtype: "text",
+                  type: "text",
+                  url: "",
+                  file: null,
+                  filename: null,
+                  __serializedFile: null,
+                  durationMin: undefined,
+                  __fileInputKey: uid(),
+                });
+              } else if (v === "html") {
+                onChangeItem({
+                  subtype: "html",
+                  type: "html",
+                  url: "",
+                  file: null,
+                  filename: null,
+                  __serializedFile: null,
+                  durationMin: undefined,
+                  __fileInputKey: uid(),
+                });
               } else {
                 onChangeItem({
                   subtype: "doc",
@@ -163,17 +209,44 @@ export default function ResourceCard({
             <option value="video">Vidéo</option>
             <option value="image">Image</option>
             <option value="doc">Document PDF</option>
-            <option value="link">Lien externe</option>
+            <option value="link">Lien externe / Embed simple</option>
+            <option value="text">Texte (Rich Text)</option>
+            <option value="html">Code HTML / Embed Iframe</option>
           </select>
         </div>
 
-        <button
-          type="button"
-          onClick={onRemove}
-          className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 dark:border-rose-700/70 dark:hover:bg-rose-900/30"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
+        <div className="flex items-center gap-1">
+          {/* Boutons de réorganisation */}
+          <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 dark:border-slate-700 dark:bg-slate-800">
+            <button
+              type="button"
+              disabled={index === 0}
+              onClick={() => onMoveItem(index - 1)}
+              className="inline-flex h-6 w-6 items-center justify-center rounded text-slate-500 hover:bg-white hover:text-slate-900 disabled:opacity-30 dark:hover:bg-slate-700 dark:hover:text-white"
+              title="Monter"
+            >
+              <ArrowUp className="h-3 w-3" />
+            </button>
+            <div className="h-3 w-px bg-slate-200 dark:bg-slate-700" />
+            <button
+              type="button"
+              disabled={index === totalItems - 1}
+              onClick={() => onMoveItem(index + 1)}
+              className="inline-flex h-6 w-6 items-center justify-center rounded text-slate-500 hover:bg-white hover:text-slate-900 disabled:opacity-30 dark:hover:bg-slate-700 dark:hover:text-white"
+              title="Descendre"
+            >
+              <ArrowDown className="h-3 w-3" />
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={onRemove}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 dark:border-rose-700/70 dark:hover:bg-rose-900/30"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
 
       {/* titre ressource */}
@@ -188,7 +261,7 @@ export default function ResourceCard({
       </div>
 
       {/* fichier */}
-      {subtype !== "link" && (
+      {subtype !== "link" && subtype !== "text" && subtype !== "html" && (
         <div className="mb-2">
           <input
             key={fileInputKey} // ✅ remount = reset visuel du fichier sélectionné
@@ -304,6 +377,35 @@ export default function ResourceCard({
               className="flex-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs sm:text-sm outline-none dark:border-slate-700 dark:bg-slate-950"
             />
           </div>
+        </div>
+      )}
+
+      {/* Texte riche (BlockNote) */}
+      {subtype === "text" && (
+        <div className="mb-2">
+          <label className="mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-300">
+            Contenu du texte
+          </label>
+          <RichTextDescriptionEditor
+            value={item.url ?? ""}
+            onChange={(val) => onChangeItem({ url: val })}
+          />
+        </div>
+      )}
+
+      {/* Code HTML / Iframe */}
+      {subtype === "html" && (
+        <div className="mb-2">
+          <label className="mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-300">
+            Code HTML / Iframe Embed
+          </label>
+          <textarea
+            placeholder="<iframe src='...' />"
+            value={item.url ?? ""}
+            onChange={(e) => onChangeItem({ url: e.target.value })}
+            rows={5}
+            className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 font-mono text-xs outline-none dark:border-slate-700 dark:bg-slate-950"
+          />
         </div>
       )}
 

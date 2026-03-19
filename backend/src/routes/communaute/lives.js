@@ -1,3 +1,4 @@
+// backend/src/routes/communaute/lives.js
 const express = require("express");
 const router = express.Router();
 
@@ -8,8 +9,8 @@ require("./lives/cancel")(router);
 require("./lives/goLive")(router);
 require("./lives/end")(router);
 
-// ✅ NEW
-require("./lives/jitsiToken")(router);
+// ✅ NEW : On remplace jitsiToken par livekitToken
+require("./lives/livekitToken")(router);
 
 require("./lives/byCommunity")(router);
 require("./lives/publicLive")(router);

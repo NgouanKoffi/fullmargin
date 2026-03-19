@@ -1,4 +1,5 @@
 // src/pages/communaute/private/community-details/tabs/Publications/Publications.tsx
+import { Users, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -37,6 +38,25 @@ export default function Publications({
     "feed",
   );
   const [feedVersion, setFeedVersion] = useState(0);
+
+  // sidebar visible par défaut
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem("fm:community:sidebar-collapsed") === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleSidebar = () => {
+    const next = !isSidebarCollapsed;
+    setIsSidebarCollapsed(next);
+    try {
+      localStorage.setItem("fm:community:sidebar-collapsed", next ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  };
 
   // ── Modal post ouvert depuis notification ──
   const [modalPost, setModalPost] = useState<PostLite | null>(null);
@@ -336,9 +356,26 @@ export default function Publications({
           showDeletedTab={isOwner}
         />
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr),360px] xl:grid-cols-[minmax(0,1fr),400px]">
+        <div
+          className={`grid grid-cols-1 gap-6 ${
+            isSidebarCollapsed
+              ? ""
+              : "lg:grid-cols-[minmax(0,1fr),360px] xl:grid-cols-[minmax(0,1fr),400px]"
+          }`}
+        >
           {/* colonne principale */}
           <div className="min-w-0">
+            {isSidebarCollapsed && (
+              <div className="mb-4 flex justify-end">
+                <button
+                  onClick={toggleSidebar}
+                  className="hidden lg:inline-flex items-center gap-2 rounded-xl bg-white/60 px-3 py-1.5 text-xs font-medium text-slate-600 ring-1 ring-black/10 hover:bg-white dark:bg-white/5 dark:text-slate-200 dark:ring-white/10"
+                >
+                  <Users className="h-4 w-4" />
+                  Afficher le top communautés
+                </button>
+              </div>
+            )}
             {active === "feed" ? (
               <div data-timeline-compact className="_gap flex flex-col gap-4">
                 {showNoPostRightsNotice && (
@@ -409,16 +446,27 @@ export default function Publications({
           </div>
 
           {/* sidebar */}
-          <aside className="space-y-4">
-            <SidebarCard
-              title="Communautés similaires"
-              icon={null}
-              actionLabel="Explorer plus"
-              onAction={() => {}}
-            >
-              <SimilarCommunities />
-            </SidebarCard>
-          </aside>
+          {!isSidebarCollapsed && (
+            <aside className="hidden lg:block space-y-4">
+              <SidebarCard
+                title="Les tops communautés"
+                icon={null}
+                actionLabel="Explorer plus"
+                onAction={() => {}}
+                headerAction={
+                  <button
+                    onClick={toggleSidebar}
+                    className="rounded-lg p-1 text-slate-400 hover:bg-black/5 hover:text-slate-600 dark:hover:bg-white/10 dark:hover:text-slate-200"
+                    title="Réduire"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                }
+              >
+                <SimilarCommunities />
+              </SidebarCard>
+            </aside>
+          )}
         </div>
       </div>
 

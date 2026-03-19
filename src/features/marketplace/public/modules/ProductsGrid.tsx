@@ -151,13 +151,6 @@ export default function ProductsGrid({
           .map(normalizeItem)
           .filter(Boolean) as PublicProductLite[];
 
-        // --- CORRECTION : FILTRAGE CLIENT ---
-        // Si on est en mode "certifié uniquement", on filtre manuellement les résultats
-        // reçus pour être sûr à 100% de ne pas afficher de produits non certifiés.
-        if (certifiedOnly) {
-          normalized = normalized.filter((p) => p.badgeEligible);
-        }
-
         if (alive) {
           setItems(normalized);
           setTotalItems(fetchedTotal);

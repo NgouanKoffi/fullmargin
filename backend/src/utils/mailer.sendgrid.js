@@ -123,4 +123,65 @@ async function sendEmail({
   }
 }
 
-module.exports = { sendEmail, getMailSettingsCached };
+async function sendBulkEmail({
+  recipients,
+  subject,
+  html,
+  text,
+  fromEmail,
+  fromName,
+  attachments = [],
+}) {
+  if (!SENDGRID_KEY) {
+    console.warn("[SendGrid] SENDGRID_API_KEY manquant — bulk email ignoré.");
+    return { ok: false, skipped: true };
+  }
+
+  const settings = await getMailSettingsCached();
+  const finalFromEmail = fromEmail || settings?.fromEmail || ENV_FROM_EMAIL;
+  const finalFromName = fromName || settings?.fromName || ENV_FROM_NAME;
+
+  const mappedAttachments =
+    Array.isArray(attachments) && attachments.length
+      ? attachments.map((a) => {
+          const raw = String(a.contentBase64 || "");
+          const base64 = raw.replace(/^data:.*;base64,/, "");
+          return {
+            content: base64,
+            filename: a.name || "attachment",
+            type: a.type || undefined,
+            disposition: "attachment",
+          };
+        })
+      : undefined;
+
+  const msg = {
+    to: recipients,
+    from: { email: finalFromEmail, name: finalFromName },
+    replyTo: ENV_REPLY_TO ? { email: ENV_REPLY_TO } : undefined,
+    subject,
+    html,
+    text: text || stripHtml(html),
+    ...(mappedAttachments ? { attachments: mappedAttachments } : {}),
+  };
+
+  try {
+    const [res] = await sgMail.sendMultiple(msg);
+    console.log(
+      "[SendGrid] bulk sent ok:",
+      res?.statusCode,
+      "to count:",
+      recipients.length,
+    );
+    return { ok: true, status: res?.statusCode || 202 };
+  } catch (e) {
+    console.error("[SendGrid] BULK SEND FAILED:", {
+      message: e?.message,
+      code: e?.code,
+      response: e?.response?.body,
+    });
+    throw e;
+  }
+}
+
+module.exports = { sendEmail, sendBulkEmail, getMailSettingsCached };

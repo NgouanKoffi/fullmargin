@@ -2,7 +2,7 @@
 
 export type Level = "Débutant" | "Intermédiaire" | "Avancé" | "Tous niveaux";
 
-export type CurriculumItemType = "video" | "pdf" | "image";
+export type CurriculumItemType = "video" | "pdf" | "image" | "text" | "html";
 
 export type CurriculumItem = {
   id: string;

@@ -402,4 +402,37 @@ router.delete("/:id", requireAuth, async (req, res) => {
   }
 });
 
+/* ================= SUPPRESSION GROUPÉE ================= */
+router.post("/batch-delete", requireAuth, async (req, res) => {
+  const rid = req._rid;
+  try {
+    const ids = req.body?.ids;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ ok: false, error: "IDs invalides" });
+    }
+
+    console.log(
+      `[NOTES ${rid}] POST /notes/batch-delete — user=${
+        req.auth.userId
+      } count=${ids.length}`
+    );
+
+    await Note.updateMany(
+      { _id: { $in: ids }, user: req.auth.userId, deletedAt: null },
+      { $set: { deletedAt: new Date() } }
+    );
+
+    return res.status(200).json({ ok: true, data: { deleted: true } });
+  } catch (e) {
+    console.error(
+      `[NOTES ${rid}] POST /notes/batch-delete ERROR (${
+        Date.now() - req._t0
+      }ms): ${e?.stack || e}`
+    );
+    return res
+      .status(500)
+      .json({ ok: false, error: "Suppression groupée impossible" });
+  }
+});
+
 module.exports = router;

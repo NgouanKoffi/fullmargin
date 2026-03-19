@@ -21,7 +21,7 @@ export type UIItem = CurriculumItem & {
   url?: string | null;
   durationMin?: number;
   /** Type de ressource côté UI */
-  subtype?: "video" | "doc" | "link" | "image";
+  subtype?: "video" | "doc" | "link" | "image" | "text" | "html";
 };
 
 /** Extraire un nom “lisible” depuis une URL (dernier segment décodé, sans query/hash) */

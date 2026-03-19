@@ -1,0 +1,51 @@
+import type { Mail } from "./types";
+
+export const MAILS: Mail[] = [
+  {
+    id: "m1",
+    folder: "inbox",
+    fromName: "Equipe FullMargin",
+    fromEmail: "support@fullmargin.net",
+    toEmail: "vous@exemple.com",
+    subject: "Bienvenue sur FullMargin 🚀",
+    snippet: "Votre compte est prêt. Découvrez les nouveautés et démarrez…",
+    date: new Date().toISOString(),
+    starred: true,
+    unread: true,
+    bodyHtml: `<p>Bonjour 👋</p><p><b>Bienvenue sur FullMargin</b> !</p><p>Cliquez pour ouvrir l’app.</p>`,
+  },
+  {
+    id: "m2",
+    folder: "inbox",
+    fromName: "Alex Dupont",
+    fromEmail: "alex@example.com",
+    toEmail: "vous@exemple.com",
+    subject: "Re: Chiffres Q3",
+    snippet: "J’ai mis à jour le doc, dis-moi si ça colle.",
+    date: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+    bodyHtml: `<p>Salut,</p><p>J’ai mis à jour le doc avec les derniers chiffres.</p><p>— Alex</p>`,
+  },
+  {
+    id: "m3",
+    folder: "sent",
+    fromName: "Vous",
+    fromEmail: "vous@exemple.com",
+    toEmail: "alex@example.com",
+    subject: "Chiffres Q3",
+    snippet: "Voici la version envoyée hier.",
+    date: new Date(Date.now() - 1000 * 60 * 60 * 25).toISOString(),
+    bodyHtml: `<p>Voici la version envoyée hier.</p>`,
+  },
+  // exemple corbeille
+  {
+    id: "m4",
+    folder: "trash",
+    fromName: "Spammy",
+    fromEmail: "spam@example.com",
+    toEmail: "vous@exemple.com",
+    subject: "Gagnez un million",
+    snippet: "Cliquez ici ;)",
+    date: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
+    bodyHtml: `<p>nope.</p>`,
+  },
+];

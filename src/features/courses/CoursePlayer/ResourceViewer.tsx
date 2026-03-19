@@ -5,6 +5,7 @@ import { Maximize2, Link2 } from "lucide-react";
 import { API_BASE } from "@core/api/client";
 import { authHeaders } from "./coursePlayerUtils";
 import type { CurriculumItem } from "./coursePlayerTypes";
+import { RichTextBN } from "./RichTextBN";
 
 /* ============ Utils viewer ============ */
 
@@ -128,16 +129,25 @@ export function ResourceViewer({
   useEffect(() => {
     if (!courseId || !item) return;
 
-    // Vidéos & liens → pas de fetch base64
-    if (item.type === "video" || isLink) {
+    // Vidéos, liens, texte & html → pas de fetch base64
+    if (item.type === "video" || isLink || item.type === "text" || item.type === "html") {
       setFileSrc(null);
       setFileError(null);
       setFileLoading(false);
       return;
     }
 
-    // Image interne → URL directe
+    // Image interne → URL directe ou File local
     if (isImage) {
+      const it = item as any;
+      if (it.file && !item.url) {
+        const local = URL.createObjectURL(it.file);
+        setFileSrc(local);
+        setFileError(null);
+        setFileLoading(false);
+        return () => URL.revokeObjectURL(local);
+      }
+
       if (!item.url) {
         setFileSrc(null);
         setFileError("Image introuvable.");
@@ -150,12 +160,21 @@ export function ResourceViewer({
       return;
     }
 
-    // PDF interne sans URL → base64
+    // PDF interne sans URL → base64 ou File local
     if (!isPdf) {
       setFileSrc(null);
       setFileError(null);
       setFileLoading(false);
       return;
+    }
+
+    const it = item as any;
+    if (it.file && !item.url) {
+      const local = URL.createObjectURL(it.file);
+      setFileSrc(local);
+      setFileError(null);
+      setFileLoading(false);
+      return () => URL.revokeObjectURL(local);
     }
 
     let cancel = false;
@@ -203,12 +222,18 @@ export function ResourceViewer({
     };
   }, [courseId, item, isPdf, isImage, isLink]);
 
+  const isTextOrHtml = item.type === "text" || item.type === "html";
+
   const outerClass = fullscreen
     ? "absolute inset-0 bg-black"
-    : "mt-2 w-full rounded-xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-white/10 bg-black";
+    : `mt-2 w-full rounded-xl overflow-hidden ring-1 ring-slate-200/70 dark:ring-white/10 ${
+        isTextOrHtml ? "bg-white dark:bg-slate-900 px-4 py-8 sm:px-8" : "bg-black"
+      }`;
 
   const innerClass = fullscreen
     ? "absolute inset-0 w-full h-full"
+    : isTextOrHtml
+    ? "relative w-full min-h-[300px] max-h-[70vh] overflow-y-auto"
     : "relative w-full aspect-video max-h-[60vh]";
 
   const renderContent = (isFull: boolean) => {
@@ -343,6 +368,25 @@ export function ResourceViewer({
           </a>
           <div className="max-w-full break-all opacity-70 text-xs">{url}</div>
         </div>
+      );
+    }
+
+    // 6) Texte riche (BlockNote)
+    if (item.type === "text") {
+      return (
+        <div className="w-full text-slate-900 dark:text-slate-100">
+          <RichTextBN json={url} />
+        </div>
+      );
+    }
+
+    // 7) Code HTML / Embed
+    if (item.type === "html") {
+      return (
+        <div
+          className="w-full"
+          dangerouslySetInnerHTML={{ __html: url }}
+        />
       );
     }
 

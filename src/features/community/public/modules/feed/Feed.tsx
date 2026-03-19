@@ -1,7 +1,7 @@
 // src/pages/communaute/public/sections/Feed.tsx
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { Users } from "lucide-react";
+import { Users, X } from "lucide-react";
 
 import FeedList from "@shared/components/feed/components/FeedList";
 import {
@@ -56,6 +56,25 @@ function getCurrentUserIdFromSession(s: SessionShape): string | null {
 export default function TabFeed() {
   const [subTab, setSubTab] = useState<FeedSubTab>("my");
   const [ownerId, setOwnerId] = useState<string | null>(null);
+
+  // sidebar visible par défaut
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem("fm:feed:sidebar-collapsed") === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleSidebar = () => {
+    const next = !isSidebarCollapsed;
+    setIsSidebarCollapsed(next);
+    try {
+      localStorage.setItem("fm:feed:sidebar-collapsed", next ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  };
 
   const params = useParams();
   const [search] = useSearchParams();
@@ -214,33 +233,54 @@ export default function TabFeed() {
       <section className="py-4 sm:py-6">
         {/* conteneur centré + largeur max un peu plus grande */}
         <div className="mx-auto max-w-7xl px-3 sm:px-4">
+          {/* Bouton pour réouvrir la sidebar si elle est fermée */}
+          {isSidebarCollapsed && (
+            <div className="mb-4 flex justify-end">
+              <button
+                onClick={toggleSidebar}
+                className="hidden lg:inline-flex items-center gap-2 rounded-xl bg-white/60 px-3 py-1.5 text-xs font-medium text-slate-600 ring-1 ring-black/10 hover:bg-white dark:bg-white/5 dark:text-slate-200 dark:ring-white/10"
+              >
+                <Users className="h-4 w-4" />
+                Afficher le top communautés
+              </button>
+            </div>
+          )}
+
           {/* 2 colonnes : feed large + sidebar plus étroite */}
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_280px] xl:grid-cols-[minmax(0,1.3fr)_300px]">
+          <div
+            className={`grid gap-6 ${
+              isSidebarCollapsed
+                ? "grid-cols-1"
+                : "lg:grid-cols-[minmax(0,1.2fr)_280px] xl:grid-cols-[minmax(0,1.3fr)_300px]"
+            }`}
+          >
             {/* Colonne centrale */}
             <div className="min-w-0 space-y-4 sm:space-y-5">
               {/* Toggle Ma communauté / Public (autres commus) */}
-              <div className="inline-flex rounded-xl bg-white/60 p-1 ring-1 ring-black/10 dark:bg-white/5 dark:ring-white/10">
-                {(
-                  [
-                    { k: "my", label: "Mes communautés" },
-                    { k: "public", label: "Autres communautés" },
-                  ] as const
-                ).map((o) => {
-                  const active = subTab === o.k;
-                  return (
-                    <button
-                      key={o.k}
-                      onClick={() => handleSwitchSubTab(o.k)}
-                      className={`inline-flex items-center rounded-lg px-3.5 py-2 text-sm font-medium transition ${
-                        active
-                          ? "bg-violet-600 text-white"
-                          : "text-slate-700 hover:bg-black/5 dark:text-slate-200 dark:hover:bg-white/10"
-                      }`}
-                    >
-                      {o.label}
-                    </button>
-                  );
-                })}
+              <div className="flex items-center justify-between max-w-full">
+                <div className="flex items-center overflow-x-auto rounded-xl bg-white/60 p-1 ring-1 ring-black/10 dark:bg-white/5 dark:ring-white/10 max-w-full [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                  {(
+                    [
+                      { k: "my", label: "Mes communautés" },
+                      { k: "public", label: "Autres communautés" },
+                    ] as const
+                  ).map((o) => {
+                    const active = subTab === o.k;
+                    return (
+                      <button
+                        key={o.k}
+                        onClick={() => handleSwitchSubTab(o.k)}
+                        className={`inline-flex items-center rounded-lg px-3.5 py-2 text-sm font-medium transition whitespace-nowrap flex-shrink-0 ${
+                          active
+                            ? "bg-violet-600 text-white"
+                            : "text-slate-700 hover:bg-black/5 dark:text-slate-200 dark:hover:bg-white/10"
+                        }`}
+                      >
+                        {o.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Liste des posts */}
@@ -256,19 +296,30 @@ export default function TabFeed() {
             </div>
 
             {/* Colonne droite */}
-            <aside className="hidden lg:block">
-              <div className="sticky top-24 space-y-4">
-                <SidebarCard
-                  title="Communautés similaires"
-                  icon={<Users className="h-5 w-5 text-violet-600" />}
-                  actionLabel="Explorer"
-                  onAction={() => {}}
-                >
-                  <SimilarCommunities />
-                </SidebarCard>
-                <div className="h-4" />
-              </div>
-            </aside>
+            {!isSidebarCollapsed && (
+              <aside className="hidden lg:block">
+                <div className="sticky top-24 space-y-4">
+                  <SidebarCard
+                    title="Les tops communautés"
+                    icon={<Users className="h-5 w-5 text-violet-600" />}
+                    actionLabel="Explorer"
+                    onAction={() => {}}
+                    headerAction={
+                      <button
+                        onClick={toggleSidebar}
+                        className="rounded-lg p-1 text-slate-400 hover:bg-black/5 hover:text-slate-600 dark:hover:bg-white/10 dark:hover:text-slate-200"
+                        title="Réduire"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    }
+                  >
+                    <SimilarCommunities />
+                  </SidebarCard>
+                  <div className="h-4" />
+                </div>
+              </aside>
+            )}
           </div>
         </div>
       </section>

@@ -68,7 +68,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="w-full relative isolate bg-skin-bg text-skin-base overflow-hidden [contain:layout_paint_style] border-t border-skin-border/20">
+    <footer className="w-full relative isolate bg-[#0a0a0a] text-white overflow-hidden [contain:layout_paint_style] border-t border-white/10">
       {/* décor */}
       <div
         aria-hidden="true"
@@ -114,9 +114,9 @@ export default function Footer() {
           </div>
 
           {/* texte + socials */}
-          <div className="rounded-2xl ring-1 ring-skin-border/20 bg-skin-surface/40 backdrop-blur-sm p-8 shadow-dropdown">
-            <h3 className="text-2xl font-extrabold text-skin-base">FullMargin</h3>
-            <p className="mt-2 text-base text-skin-muted max-w-md">
+          <div className="rounded-2xl ring-1 ring-white/10 bg-neutral-900/60 backdrop-blur-sm p-8 shadow-dropdown">
+            <h3 className="text-2xl font-extrabold text-white">FullMargin</h3>
+            <p className="mt-2 text-base text-neutral-400 max-w-md">
               La plateforme pour les traders, créateurs et communautés. Unifiez
               vos outils, boostez vos performances et connectez-vous autrement.
             </p>
@@ -126,7 +126,7 @@ export default function Footer() {
                 href="https://www.instagram.com/fullmargin_ltd?igsh=OG1idGRrZGhxYzkz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center justify-center gap-2 rounded-xl ring-1 ring-skin-border/30 bg-skin-surface px-3.5 py-3 text-base font-semibold text-skin-base hover:bg-skin-border/20 transition-colors"
+                className="group inline-flex items-center justify-center gap-2 rounded-xl ring-1 ring-white/10 bg-neutral-900 px-3.5 py-3 text-base font-semibold text-white hover:bg-neutral-800 transition-colors"
               >
                 <Instagram className="w-5 h-5 opacity-85 group-hover:opacity-100" />
                 <span className="hidden sm:inline">Instagram</span>
@@ -135,7 +135,7 @@ export default function Footer() {
                 href="https://youtube.com/@fullmargin-net?si=YE6SOmH9zawJpehD"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center justify-center gap-2 rounded-xl ring-1 ring-skin-border/30 bg-skin-surface px-3.5 py-3 text-base font-semibold text-skin-base hover:bg-skin-border/20 transition-colors"
+                className="group inline-flex items-center justify-center gap-2 rounded-xl ring-1 ring-white/10 bg-neutral-900 px-3.5 py-3 text-base font-semibold text-white hover:bg-neutral-800 transition-colors"
               >
                 <Youtube className="w-5 h-5 opacity-85 group-hover:opacity-100" />
                 <span className="hidden sm:inline">YouTube</span>
@@ -144,7 +144,7 @@ export default function Footer() {
                 href="https://www.facebook.com/share/178mjdQowx/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center justify-center gap-2 rounded-xl ring-1 ring-skin-border/30 bg-skin-surface px-3.5 py-3 text-base font-semibold text-skin-base hover:bg-skin-border/20 transition-colors"
+                className="group inline-flex items-center justify-center gap-2 rounded-xl ring-1 ring-white/10 bg-neutral-900 px-3.5 py-3 text-base font-semibold text-white hover:bg-neutral-800 transition-colors"
               >
                 <Facebook className="w-5 h-5 opacity-85 group-hover:opacity-100" />
                 <span className="hidden sm:inline">Facebook</span>
@@ -155,63 +155,63 @@ export default function Footer() {
 
         {/* liens 4 colonnes / 2 lignes */}
         <div className="pb-10 lg:pb-14 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="space-y-2 text-base text-skin-muted">
+          <div className="space-y-2 text-base text-neutral-400">
             {/* Full Metrix avec même logique d'accès que dans AccountList */}
             <button
               type="button"
               onClick={handleFullMetrixClick}
               disabled={redirectingFM}
-              className="block text-left hover:text-skin-base disabled:opacity-60"
+              className="block text-left hover:text-white disabled:opacity-60"
             >
               {redirectingFM ? "Connexion à Full Metrix…" : "Full Metrix"}
             </button>
 
-            <Link to="/marketplace?cat=all" className="block hover:text-skin-base">
+            <Link to="/marketplace?cat=all" className="block hover:text-white">
               Marketplace
             </Link>
           </div>
 
-          <div className="space-y-2 text-base text-skin-muted">
-            <Link to="/communaute" className="block hover:text-skin-base">
+          <div className="space-y-2 text-base text-neutral-400">
+            <Link to="/communaute" className="block hover:text-white">
               Communauté
             </Link>
-            <Link to="/a-propos" className="block hover:text-skin-base">
+            <Link to="/a-propos" className="block hover:text-white">
               À propos
             </Link>
           </div>
-          <div className="space-y-2 text-base text-skin-muted">
-            <Link to="/conditions" className="block hover:text-skin-base">
+          <div className="space-y-2 text-base text-neutral-400">
+            <Link to="/conditions" className="block hover:text-white">
               Conditions d’utilisation
             </Link>
-            <Link to="/charte-vendeur" className="block hover:text-skin-base">
+            <Link to="/charte-vendeur" className="block hover:text-white">
               Charte vendeur
             </Link>
           </div>
 
           {/* ordre selon ton image : 1 = FM Metrix, puis Politique de remboursement */}
-          <div className="space-y-2 text-base text-skin-muted">
-            <Link to="/remboursement" className="block hover:text-skin-base">
+          <div className="space-y-2 text-base text-neutral-400">
+            <Link to="/remboursement" className="block hover:text-white">
               Politique de remboursement
             </Link>
-            <Link to="/cgv" className="block hover:text-skin-base">
+            <Link to="/cgv" className="block hover:text-white">
               CGV Marketplace
             </Link>
           </div>
         </div>
 
         {/* bas */}
-        <div className="py-7 border-t border-skin-border/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="text-base text-skin-muted">
+        <div className="py-7 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="text-base text-neutral-400">
             © {year}{" "}
-            <span className="font-semibold text-skin-base">FullMargin</span>. Tous
+            <span className="font-semibold text-white">FullMargin</span>. Tous
             droits réservés.
           </div>
-          <div className="flex flex-wrap items-center gap-3 text-sm text-skin-muted">
-            <Link to="/mentions-legales" className="hover:text-skin-base">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-400">
+            <Link to="/mentions-legales" className="hover:text-white">
               Mentions légales
             </Link>
             <span className="opacity-40">•</span>
-            <Link to="/confidentialite" className="hover:text-skin-base">
+            <Link to="/confidentialite" className="hover:text-white">
               Politique de confidentialité
             </Link>
           </div>

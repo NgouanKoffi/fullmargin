@@ -16,6 +16,7 @@ import {
   createNote,
   updateNote,
   deleteNote,
+  batchDeleteNotes,
   type NoteListItem,
 } from "./api";
 
@@ -25,6 +26,7 @@ import { convertPreviewImagesToDataURLs } from "./lib/upload";
 import NotesList from "./components/NotesList";
 import EditorFullScreen from "./components/EditorFullScreen";
 import ConfirmModal from "./components/modals/ConfirmModal";
+import DeleteFolderConfirmModal from "./components/modals/DeleteFolderConfirmModal";
 import PromptModal from "./components/modals/PromptModal";
 import { buildShareURL } from "./lib/share";
 
@@ -83,6 +85,8 @@ export default function NotesPage() {
 
   const [deleteFolderOpen, setDeleteFolderOpen] = useState(false);
   const [deleteFolderId, setDeleteFolderId] = useState<string | null>(null);
+
+  const [batchDeleteIds, setBatchDeleteIds] = useState<string[] | null>(null);
 
   const tempUploadsRef = useRef<Map<string, File>>(new Map()); // ObjectURL -> File
   const editorRef = useRef<BNEditor | null>(null);
@@ -279,6 +283,33 @@ export default function NotesPage() {
     }
   };
 
+  const reallyDeleteNotes = async (ids: string[]) => {
+    try {
+      await batchDeleteNotes(ids);
+      setRows((prev) => prev.filter((r) => !ids.includes(r.id)));
+      const cp = { ...note2folder };
+      ids.forEach((id) => {
+        delete cp[id];
+        if (id === noteId) {
+          closeEditor();
+          setTitle("");
+          setSeedDoc([{ type: "paragraph", content: "" } as PartialBlock]);
+          setNoteId("");
+          setEditorKey("new");
+        }
+      });
+      setNote2folder(cp);
+      toast(`${ids.length} notes supprimées`, "success");
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 401) {
+        toast("Session expirée. Connecte-toi.", "warning");
+        window.dispatchEvent(new CustomEvent("fm:open-account"));
+      } else {
+        toast("Suppression impossible", "error");
+      }
+    }
+  };
+
   const shareNote = async (id: string) => {
     try {
       let doc: PartialBlock[];
@@ -449,6 +480,7 @@ export default function NotesPage() {
             onOpenNote={(id) => void openEdit(id)}
             onShareNote={(id) => void shareNote(id)}
             onDeleteNote={(id) => setDeleteNoteId(id)}
+            onDeleteNotes={(ids) => setBatchDeleteIds(ids)}
             onOpenFolder={(id) => setSelectedFolderId(id)}
             onRenameFolder={handleRenameFolder}
             onDeleteFolder={handleDeleteFolder}
@@ -527,20 +559,34 @@ export default function NotesPage() {
       />
 
       {/* Supprimer dossier */}
-      <ConfirmModal
+      <DeleteFolderConfirmModal
         open={deleteFolderOpen}
         title="Supprimer le dossier ?"
-        message="Le dossier et ses sous-dossiers seront supprimés. Les notes ne sont pas supprimées : elles seront replacées à la racine."
-        confirmLabel="Supprimer"
-        tone="danger"
         onCancel={() => setDeleteFolderOpen(false)}
-        onConfirm={async () => {
+        onConfirm={async (deleteNotes) => {
           if (!deleteFolderId) return setDeleteFolderOpen(false);
-          await deleteFolder(deleteFolderId);
+          await deleteFolder(deleteFolderId, deleteNotes);
           setDeleteFolderOpen(false);
           await refreshFolders();
           if (selectedFolderId === deleteFolderId) setSelectedFolderId(null);
+          if (deleteNotes) {
+            void fetchList(q.trim());
+          }
           toast("Dossier supprimé", "success");
+        }}
+      />
+
+      {/* Suppression groupée */}
+      <ConfirmModal
+        open={!!batchDeleteIds}
+        title={`Supprimer ${batchDeleteIds?.length} notes ?`}
+        message="Cette action est définitive pour toutes les notes sélectionnées."
+        confirmLabel="Supprimer tout"
+        tone="danger"
+        onCancel={() => setBatchDeleteIds(null)}
+        onConfirm={() => {
+          if (batchDeleteIds) void reallyDeleteNotes(batchDeleteIds);
+          setBatchDeleteIds(null);
         }}
       />
     </div>

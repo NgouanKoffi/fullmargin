@@ -198,6 +198,7 @@ export default function JournalPage() {
       <TutorialVideoModal
         isOpen={showTutorialModal}
         onClose={() => setShowTutorialModal(false)}
+        videoUrl="https://www.youtube.com/embed/EjEnRt2MZ5U"
       />
     </main>
   );

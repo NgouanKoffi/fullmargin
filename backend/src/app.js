@@ -14,10 +14,14 @@ const app = express();
    Sécurité & logs
 -------------------------------------------------------- */
 applySecurity(app);
+
+// Détecter l'origine de la requête (Mobile vs Web)
+app.use(require("./middlewares/mobileDetector").mobileDetector);
+
 applyLogger(app);
 
 /* -------------------------------------------------------
-   🔵 WEBHOOK STRIPE (RAW BODY — AVANT express.json)
+   WEBHOOK STRIPE (RAW BODY — AVANT express.json)
 -------------------------------------------------------- */
 try {
   const { stripeWebhookCore } = require("./routes/payments/stripe.core");
@@ -124,7 +128,7 @@ if (NODE_ENV !== "test") {
     );
   }
 
-  // ✅ NOUVEAU JOB : FM Metrix Cron (Avertissement J-3 & Expirations)
+  // NOUVEAU JOB : FM Metrix Cron (Avertissement J-3 & Expirations)
   try {
     // Plus besoin d'importer checkExpiringSubscriptions, juste le starter
     const { startFmMetrixCron } = require("./cron/fmmetrix.cron");

@@ -102,7 +102,10 @@ module.exports = (router) => {
                   continue;
                 }
 
-                if (it.type === "video") {
+                const isVideo = it.type === "video" || it.subtype === "video";
+                const isImage = it.type === "image" || it.subtype === "image";
+
+                if (isVideo) {
                   const up = await uploadVideoBuffer(f.buffer, {
                     folder: "courses/videos",
                     publicId: `vid_${Date.now()}`,
@@ -111,6 +114,13 @@ module.exports = (router) => {
                   it.publicId = up.public_id || "";
                   const d = Number(up.duration || 0);
                   it.durationMin = d ? Math.round(d / 60) : undefined;
+                } else if (isImage) {
+                  const up = await uploadImageBuffer(f.buffer, {
+                    folder: "courses/images",
+                    publicId: `img_${Date.now()}`,
+                  });
+                  it.url = up.secure_url || "";
+                  it.publicId = up.public_id || "";
                 } else {
                   const up = await uploadPdfBuffer(f.buffer, {
                     folder: "courses/pdfs",

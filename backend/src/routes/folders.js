@@ -201,11 +201,31 @@ router.delete("/:id", requireAuth, async (req, res) => {
       { $set: { deletedAt: new Date() } }
     );
 
-    // remettre les notes à la racine
-    await NoteFolder.updateMany(
-      { user: req.auth.userId, folder: { $in: ids } },
-      { $set: { folder: null } }
-    );
+    const deleteNotes = req.query.deleteNotes === "true";
+
+    if (deleteNotes) {
+      // Supprimer toutes les notes liées à ces dossiers
+      const mappings = await NoteFolder.find({
+        user: req.auth.userId,
+        folder: { $in: ids },
+      })
+        .select("note")
+        .lean();
+      const noteIds = mappings.map((m) => m.note);
+
+      if (noteIds.length > 0) {
+        await Note.updateMany(
+          { _id: { $in: noteIds }, user: req.auth.userId },
+          { $set: { deletedAt: new Date() } }
+        );
+      }
+    } else {
+      // remettre les notes à la racine
+      await NoteFolder.updateMany(
+        { user: req.auth.userId, folder: { $in: ids } },
+        { $set: { folder: null } }
+      );
+    }
 
     return res.status(200).json({ ok: true, data: { deleted: true } });
   } catch (e) {

@@ -2,7 +2,7 @@
 
 export type CurriculumItem = {
   id: string;
-  type: "video" | "pdf" | "image"; // côté back on a encore "pdf" pour certains cas
+  type: "video" | "pdf" | "image" | "text" | "html"; // côté back on a encore "pdf" pour certains cas
   subtype?: string | null; // "doc" | "image" | "link" | "video"
   title: string;
   url?: string;

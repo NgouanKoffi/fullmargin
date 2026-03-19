@@ -1,9 +1,7 @@
 // src/features/fm-metrix/sections/FmMetrixFooter.tsx
-import { Github, Twitter, Linkedin, Sparkles, ChevronRight } from "lucide-react";
+import { Sparkles, ChevronRight } from "lucide-react";
 import FadeIn from "../components/FadeIn";
-import { Link } from "react-router-dom";
 
-import BgFooter from "@assets/fmmetrix/bg_footer_starry.jpg";
 
 type Props = {
   goToFM: () => void;

@@ -1,12 +1,12 @@
 // src/pages/journal/api.ts
 import { api, ApiError } from "@core/api/client";
-import type { JournalEntry, Currency } from "./types";
+import type { JournalEntry, Currency, AccountTransaction } from "./types";
 
 /* =============================================================================
  * Types exposés
  * ========================================================================== */
 
-// ❗ on étend la version "liste" pour que la page performance ait tout
+// on étend la version "liste" pour que la page performance ait tout
 export type JournalListItem = {
   id: string;
   date: string;
@@ -25,7 +25,7 @@ export type JournalListItem = {
 
   createdAt: string; // [NEW] Needed for JournalEntryExt compatibility
 
-  // 🔥 champs dont la vue performance a besoin
+  // champs dont la vue performance a besoin
   invested: string; // montant investi
   order: "Buy" | "Sell" | "";
   lot: string;    // [NEW]
@@ -44,7 +44,7 @@ export type JournalListItem = {
   images?: string[];
 };
 
-// 🔴 ICI : on ajoute images?: string[] au type du document
+// ICI : on ajoute images?: string[] au type du document
 export type JournalDoc = JournalEntry & {
   images?: string[];
 };
@@ -302,7 +302,7 @@ function pickJournalList(j: unknown): {
   return { items, nextCursor: next };
 }
 
-// ✅ doc : même chose, on garde noms + 5 images
+// doc : même chose, on garde noms + 5 images
 function pickJournalEntry(j: unknown): JournalDoc {
   const d = normalize<unknown>(j);
   const fallback =
@@ -349,7 +349,7 @@ function pickJournalEntry(j: unknown): JournalDoc {
     imageDataUrl: String(r.imageDataUrl ?? r.imageUrl ?? ""),
     imageUrl: String(r.imageUrl ?? ""),
 
-    // 👇 important : on renvoie au front le tableau complet
+    // important : on renvoie au front le tableau complet
     images,
 
     date: String(r.date ?? ""),
@@ -689,6 +689,39 @@ export async function setAllJournalAccountsCurrency(currency: Currency) {
     currency: serverCur,
   });
   return normalize<{ updated: number }>(j);
+}
+
+/* =============================================================================
+ * API — transactions de capital (Dépôts / Retraits)
+ * ========================================================================== */
+
+export async function createAccountTransaction(payload: {
+  accountId: string;
+  type: "deposit" | "withdrawal";
+  amount: number;
+  date: string;
+  note?: string;
+}) {
+  const j = await api.post("/journal/transactions", payload);
+  return normalize<{
+    id: string;
+    accountId: string;
+    type: "deposit" | "withdrawal";
+    amount: number;
+    date: string;
+    note: string;
+    createdAt: string;
+  }>(j);
+}
+
+export async function deleteAccountTransaction(id: string) {
+  const j = await api.delete(`/journal/transactions/${id}`);
+  return pickDeleted(j);
+}
+
+export async function listAccountTransactions() {
+  const j = await api.get("/journal/transactions", { cache: "no-store" });
+  return normalize<{ items: AccountTransaction[] }>(j);
 }
 
 /* =============================================================================

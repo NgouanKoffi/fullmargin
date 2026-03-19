@@ -11,7 +11,13 @@ import QuickLauncher from "./sheets/QuickLauncher";
 import { buildHeaderNav } from "./navConfig";
 import { useHeaderState } from "./hooks/useHeaderState";
 
+// 👇 1. L'import correct pour React (Vite/Create React App)
+import { useNavigate } from "react-router-dom";
+
 export default function Header() {
+  // 👇 2. Initialisation du hook de navigation
+  const navigate = useNavigate();
+
   const {
     status,
     signOut,
@@ -120,7 +126,8 @@ export default function Header() {
         open={accountQuickOpen}
         onClose={() => setAccountQuickOpen(false)}
         avatarSrc={avatarSrc || logo}
-        onGoProfile={() => window.dispatchEvent(new Event("fm:open-account-quick"))}
+        // 👇 3. On utilise navigate pour changer de page
+        onGoProfile={() => navigate("/profil")}
         onSignOut={signOut}
       />
 

@@ -158,6 +158,7 @@ export default function FinancePage() {
       <TutorialVideoModal
         isOpen={showTutorialModal}
         onClose={() => setShowTutorialModal(false)}
+        videoUrl="https://www.youtube.com/embed/KoU8tCw42go"
       />
     </main>
   );

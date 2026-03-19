@@ -187,77 +187,98 @@ export default function ShopPublic() {
   const handleBuyNow = (p: PublicProductLite) => console.log("buyNow", p.id);
 
   return (
-    <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-5">
-      {/* 🔙 BOUTON RETOUR */}
-      <div className="mb-4">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 rounded-full border border-black/10 dark:border-white/15 bg-white/80 dark:bg-neutral-900/70 px-3 py-1.5 text-xs sm:text-sm font-medium text-neutral-800 dark:text-neutral-50 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Retour</span>
-        </button>
-      </div>
+    <div className="bg-neutral-50/50 dark:bg-[#0a0a0a] min-h-screen pb-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
+        
+        {/* BOUTON RETOUR */}
+        <div className="mb-6">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-neutral-900 px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition shadow-sm"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Retour</span>
+          </button>
+        </div>
 
-      {/* HERO (cliquable pour ouvrir le lightbox) */}
-      <section
-        className="relative h-72 w-full overflow-hidden rounded-3xl ring-1 ring-black/10 dark:ring-white/10 cursor-zoom-in"
-        onClick={() => cover && setCoverOpen(true)}
-        title={cover ? "Cliquer pour agrandir" : undefined}
-      >
-        {cover ? (
-          <img
-            src={cover}
-            alt={`${shop.name} – couverture`}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-neutral-900" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
+        {/* SHOP HERO CARD */}
+        <div className="bg-white dark:bg-neutral-900 rounded-[2rem] p-4 sm:p-6 lg:p-8 shadow-sm ring-1 ring-black/5 dark:ring-white/5 relative animate-in fade-in zoom-in-[0.98] duration-700 ease-out">
+          
+          {/* Cover */}
+          <div 
+            className="w-full h-32 sm:h-40 md:h-48 lg:h-56 rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-950 ring-1 ring-black/5 dark:ring-white/5 relative cursor-zoom-in group"
+            onClick={() => cover && setCoverOpen(true)}
+            title={cover ? "Cliquer pour agrandir la couverture" : undefined}
+          >
+            {cover ? (
+              <img src={cover} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" alt="Couverture de la boutique" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/20 group-hover:scale-105 transition-transform duration-700 ease-out" />
+            )}
+          </div>
 
-        <div className="absolute bottom-5 left-4 right-4 sm:left-6 sm:right-6 md:left-8 md:right-8">
-          <div className="flex items-end gap-4">
-            <div className="h-20 w-20 rounded-2xl overflow-hidden ring-2 ring-white/90 bg-white/40 backdrop-blur-sm shrink-0 grid place-items-center text-white/90 text-lg font-semibold">
-              {avatar ? (
-                <img
-                  src={avatar}
-                  alt={`${shop.name} avatar`}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
-              ) : (
-                <span className="tracking-wide">
-                  {shop.name
-                    .split(/\s+/)
-                    .slice(0, 2)
-                    .map((s) => s[0]?.toUpperCase() ?? "")
-                    .join("") || "FM"}
-                </span>
-              )}
+          {/* Profil Info Layout */}
+          <div className="relative mt-4 sm:mt-6 lg:mt-8 px-2 sm:px-4 lg:px-6 flex flex-col md:flex-row gap-5 md:gap-8 items-start">
+            
+            {/* Avatar */}
+            <div className="shrink-0 -mt-12 sm:-mt-16 relative z-10 hidden md:block animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 fill-mode-both">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-[2rem] overflow-hidden p-[5px] sm:p-1.5 bg-white dark:bg-neutral-900 shadow-md ring-1 ring-black/5 dark:ring-white/10 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                <div className="w-full h-full rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 grid place-items-center text-3xl font-bold text-neutral-400">
+                  {avatar ? (
+                    <img src={avatar} className="w-full h-full object-cover" alt="Avatar" />
+                  ) : (
+                    shop.name.slice(0,2).toUpperCase()
+                  )}
+                </div>
+              </div>
             </div>
 
-            <div className="min-w-0 text-white">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl md:text-3xl font-bold truncate drop-shadow-sm">
-                  {shop.name}
-                </h1>
-                <RatingBadge rating={ratingAvg} count={ratingCount} />
+            {/* Avatar Mobile (Overlap center slightly) */}
+            <div className="shrink-0 -mt-12 sm:-mt-14 relative z-10 block md:hidden self-start animate-in fade-in slide-in-from-bottom-6 duration-700 delay-150 fill-mode-both">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl overflow-hidden p-1 bg-white dark:bg-neutral-900 shadow-sm ring-1 ring-black/5 dark:ring-white/10 hover:-translate-y-1 transition-transform">
+                <div className="w-full h-full rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 grid place-items-center text-xl sm:text-2xl font-bold text-neutral-400">
+                  {avatar ? (
+                    <img src={avatar} className="w-full h-full object-cover" alt="Avatar" />
+                  ) : (
+                    shop.name.slice(0,2).toUpperCase()
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Details */}
+            <div className="flex-1 min-w-0 pb-2 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-neutral-900 dark:text-white">
+                    {shop.name}
+                  </h1>
+                  <div className="mt-1 sm:mt-2 text-neutral-500 dark:text-neutral-400 text-xs sm:text-sm font-medium uppercase tracking-wider">
+                    {shop.signature || "Boutique certifiée"}
+                  </div>
+                </div>
+                
+                <div className="flex shrink-0">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-neutral-50/80 dark:bg-neutral-800/80 backdrop-blur-sm rounded-xl ring-1 ring-black/5 dark:ring-white/5 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+                    <RatingBadge rating={ratingAvg} count={ratingCount} />
+                  </div>
+                </div>
               </div>
 
-              {shop.desc ? (
-                <p className="mt-1 text-sm md:text-base/5 opacity-95 line-clamp-2">
+              {shop.desc && (
+                <p className="mt-4 sm:mt-5 text-sm sm:text-base text-neutral-600 dark:text-neutral-300 leading-relaxed max-w-3xl">
                   {shop.desc}
                 </p>
-              ) : null}
+              )}
 
               {chips.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {chips.map((c) => (
-                    <span
-                      key={c}
-                      className="text-[11px] font-medium px-2 py-1 rounded-full bg-white/95 text-neutral-900 ring-1 ring-black/10"
+                <div className="mt-5 sm:mt-6 flex flex-wrap gap-2">
+                  {chips.map((c, i) => (
+                    <span 
+                      key={c} 
+                      className="text-xs font-medium px-3 py-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800/80 text-neutral-700 dark:text-neutral-300 animate-in fade-in slide-in-from-left-2 fill-mode-both"
+                      style={{ animationDuration: '500ms', animationDelay: `${400 + (i * 100)}ms` }}
                     >
                       {c}
                     </span>
@@ -267,139 +288,131 @@ export default function ShopPublic() {
             </div>
           </div>
         </div>
-      </section>
 
-      {/* A PROPOS */}
-      <section className="mt-6 md:mt-8 rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-neutral-900/60 p-4 sm:p-5">
-        <div className="flex flex-col gap-2 text-[13px] md:text-[14px]">
-          <div className="font-medium">À propos</div>
-          <div className="opacity-80">
-            {shop.desc || "Aucune description fournie."}
-          </div>
-        </div>
-      </section>
-
-      {/* TABS */}
-      <div className="mt-6 flex items-center gap-2">
-        <button
-          onClick={() => setActive("products")}
-          className={`px-3 py-1.5 rounded-full text-sm ring-1 ring-black/10 dark:ring-white/10 ${
-            active === "products"
-              ? "bg-violet-600 text-white"
-              : "bg-transparent hover:bg-neutral-50 dark:hover:bg-neutral-800"
-          }`}
-        >
-          Produits
-        </button>
-        <button
-          onClick={() => setActive("reviews")}
-          className={`px-3 py-1.5 rounded-full text-sm ring-1 ring-black/10 dark:ring-white/10 ${
-            active === "reviews"
-              ? "bg-violet-600 text-white"
-              : "bg-transparent hover:bg-neutral-50 dark:hover:bg-neutral-800"
-          }`}
-        >
-          Avis
-        </button>
-      </div>
-
-      {/* CONTENU TABS */}
-      {active === "products" ? (
-        <section className="mt-6 md:mt-8">
-          <div className="mb-4 sm:mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="text-lg md:text-xl font-semibold">Produits</h2>
-              <p className="text-xs md:text-sm opacity-70">
-                {loadingProducts
-                  ? "Chargement…"
-                  : `${products.length} au total`}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="relative">
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Rechercher un produit…"
-                  className="h-10 w-64 rounded-xl pl-9 pr-3 text-sm bg-white/80 dark:bg-neutral-900/60 backdrop-blur ring-1 ring-black/10 dark:ring-white/10 outline-none focus:ring-2 focus:ring-indigo-500/40"
-                />
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-60 pointer-events-none" />
-              </div>
-
-              <div className="relative">
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value as SortKey)}
-                  className="h-10 rounded-xl px-3 text-sm font-medium bg-white/80 dark:bg-neutral-900/60 backdrop-blur ring-1 ring-black/10 dark:ring-white/10 outline-none focus:ring-2 focus:ring-indigo-500/40 appearance-none pr-8"
-                >
-                  <option value="title_asc">Titre A → Z</option>
-                  <option value="price_asc">Prix croissant</option>
-                  <option value="price_desc">Prix décroissant</option>
-                </select>
-                {sort === "price_desc" ? (
-                  <SortDesc className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-60" />
-                ) : (
-                  <SortAsc className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-60" />
-                )}
-              </div>
-            </div>
-          </div>
-
-          {loadingProducts ? (
-            <ProductsSkeleton count={6} />
-          ) : filteredProducts.length === 0 ? (
-            <div className="rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-neutral-900/60 p-6 text-sm opacity-75">
-              Aucun produit ne correspond à votre recherche.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filteredProducts.map((p) => (
-                <ProductCardPublic
-                  key={p.id}
-                  product={p}
-                  rating={(p as WithRating).rating}
-                  onAddToCart={handleAddToCart}
-                  onToggleFavorite={handleToggleFavorite}
-                  onBuyNow={handleBuyNow}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-      ) : (
-        <ShopReviewsPanel slugOrId={slugOrId!} />
-      )}
-
-      {/* LIGHTBOX COUVERTURE */}
-      {coverOpen && cover && (
-        <div
-          className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm px-4 py-8 overflow-y-auto"
-          onClick={() => setCoverOpen(false)}
-        >
-          <div
-            className="relative mx-auto w-full max-w-5xl bg-white dark:bg-neutral-950 rounded-2xl shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex justify-end p-3">
+        {/* TABS & SEARCH SECTION */}
+        <div className="mt-8 lg:mt-12">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+            
+            {/* TABS */}
+            <div className="flex items-center gap-2">
               <button
-                type="button"
-                onClick={() => setCoverOpen(false)}
-                className="inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium bg-neutral-900 text-white hover:bg-black dark:bg-neutral-800"
+                onClick={() => setActive("products")}
+                className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${
+                  active === "products"
+                    ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-sm"
+                    : "bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 ring-1 ring-black/5 dark:ring-white/5"
+                }`}
               >
-                Fermer
+                Produits <span className="ml-1 opacity-70">({products.length})</span>
+              </button>
+              <button
+                onClick={() => setActive("reviews")}
+                className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${
+                  active === "reviews"
+                    ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-sm"
+                    : "bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 ring-1 ring-black/5 dark:ring-white/5"
+                }`}
+              >
+                Avis <span className="ml-1 opacity-70">({ratingCount})</span>
               </button>
             </div>
 
-            <div className="px-4 pb-6 sm:px-6">
-              <div className="flex justify-center">
-                <img
-                  src={cover}
-                  alt={`${shop.name} – couverture agrandie`}
-                  className="max-h-[80vh] w-auto object-contain"
-                />
+            {/* SEARCH & SORT (Seulement si tab = produits) */}
+            {active === "products" && (
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative group flex-1 sm:w-64">
+                  <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Rechercher..."
+                    className="h-10 w-full rounded-xl pl-9 pr-4 text-sm bg-white dark:bg-neutral-900 ring-1 ring-black/5 dark:ring-white/10 outline-none focus:ring-2 focus:ring-violet-500/30 transition shadow-sm"
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 group-focus-within:text-violet-500 transition-colors" />
+                </div>
+
+                <div className="relative group sm:w-48">
+                  <select
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value as SortKey)}
+                    className="h-10 w-full rounded-xl px-4 pr-10 text-sm font-medium bg-white dark:bg-neutral-900 ring-1 ring-black/5 dark:ring-white/10 outline-none focus:ring-2 focus:ring-violet-500/30 shadow-sm appearance-none transition cursor-pointer"
+                  >
+                    <option value="title_asc">Titre A → Z</option>
+                    <option value="price_asc">Prix croissant</option>
+                    <option value="price_desc">Prix décroissant</option>
+                  </select>
+                  {sort === "price_desc" ? (
+                    <SortDesc className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
+                  ) : (
+                    <SortAsc className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* TAB CONTENT */}
+          {active === "products" ? (
+            <div className="animate-in fade-in duration-500">
+              {loadingProducts ? (
+                <ProductsSkeleton count={6} />
+              ) : filteredProducts.length === 0 ? (
+                <div className="rounded-3xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-white/50 dark:bg-neutral-900/30 p-12 text-center flex flex-col items-center">
+                  <div className="inline-flex size-14 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 mb-4">
+                    <Search className="size-6 text-neutral-400" />
+                  </div>
+                  <p className="text-neutral-600 dark:text-neutral-400 font-medium">Aucun produit ne correspond à votre recherche.</p>
+                  <button onClick={() => setQuery("")} className="mt-4 text-sm font-semibold text-neutral-900 dark:text-white hover:underline transition">Réinitialiser la recherche</button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {filteredProducts.map((p) => (
+                    <ProductCardPublic
+                      key={p.id}
+                      product={p}
+                      rating={(p as WithRating).rating}
+                      onAddToCart={handleAddToCart}
+                      onToggleFavorite={handleToggleFavorite}
+                      onBuyNow={handleBuyNow}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="animate-in fade-in duration-500">
+              {/* Le ReviewsPanel aura le même fond global et ne jurera pas */}
+              <div className="bg-white dark:bg-neutral-900 rounded-[2rem] p-6 lg:p-8 shadow-sm ring-1 ring-black/5 dark:ring-white/5">
+                <ShopReviewsPanel slugOrId={slugOrId!} />
               </div>
             </div>
+          )}
+        </div>
+      </div>
+
+      {coverOpen && cover && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm px-4 py-8 overflow-y-auto flex items-center justify-center animate-in fade-in duration-200"
+          onClick={() => setCoverOpen(false)}
+        >
+          <div
+            className="relative mx-auto w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden ring-1 ring-white/10 bg-neutral-950"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="absolute top-4 right-4 z-10">
+              <button
+                type="button"
+                onClick={() => setCoverOpen(false)}
+                className="inline-flex items-center justify-center size-10 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all"
+                title="Fermer"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <img
+              src={cover}
+              alt={`${shop.name} – couverture agrandie`}
+              className="w-full max-h-[85vh] object-contain"
+            />
           </div>
         </div>
       )}

@@ -21,7 +21,6 @@ import {
   publicProductUrl,
 } from "@features/marketplace/lib/publicShopApi";
 
-const CAT_LS = "fm:market:pubCat";
 const DEFAULT_CAT: CategoryKey = "all";
 const normalizeCategory = (raw?: string | null): CategoryKey => {
   const v = (raw || "").trim();
@@ -37,12 +36,9 @@ export default function MarketplacePublic() {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const urlCat = params.get("cat");
-  const lsCat =
-    (typeof localStorage !== "undefined" && localStorage.getItem(CAT_LS)) ||
-    null;
   const category: CategoryKey = useMemo(
-    () => normalizeCategory(urlCat || lsCat),
-    [urlCat, lsCat],
+    () => normalizeCategory(urlCat),
+    [urlCat],
   );
 
   useEffect(() => {
@@ -51,7 +47,6 @@ export default function MarketplacePublic() {
       next.set("cat", category);
       setParams(next, { replace: true });
     }
-    localStorage.setItem(CAT_LS, category);
   }, [urlCat, category, params, setParams]);
 
   const setCat = useCallback(
@@ -66,7 +61,6 @@ export default function MarketplacePublic() {
       q.set("cat", nextCat);
       q.delete("page");
       setParams(q);
-      localStorage.setItem(CAT_LS, nextCat);
     },
     [params, setParams],
   );

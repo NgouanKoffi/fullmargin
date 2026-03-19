@@ -127,12 +127,12 @@ const ProductCardPublic = memo(function ProductCardPublic({
 
   return (
     <article
-      className="relative rounded-2xl p-[2px] bg-gradient-to-tr from-violet-500/60 to-cyan-400/60"
+      className="group relative rounded-2xl p-[2px] bg-gradient-to-tr from-violet-500/60 to-cyan-400/60 shadow-sm hover:shadow-md transition-all duration-300"
       title={product.title}
     >
       <div className="relative overflow-hidden rounded-2xl ring-1 ring-black/10 dark:ring-white/10 bg-white dark:bg-neutral-900">
         <div className="relative">
-          <div className="aspect-[16/10] bg-neutral-100 dark:bg-neutral-800">
+          <div className="aspect-[16/10] bg-neutral-100 dark:bg-neutral-800 relative overflow-hidden">
             {mainSrc ? (
               <img
                 src={mainSrc}
@@ -141,10 +141,17 @@ const ProductCardPublic = memo(function ProductCardPublic({
                 alt={product.title}
                 loading="lazy"
                 decoding="async"
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover scale-100 group-hover:scale-110 transition-transform duration-700 ease-out"
                 onClick={goDetails}
               />
             ) : null}
+            
+            {/* HOVER OVERLAY: Voir le produit */}
+            <div className="absolute inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out flex items-center justify-center pointer-events-none z-[5]">
+                <span className="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out px-6 py-2.5 rounded-full bg-white/95 dark:bg-neutral-900/95 text-neutral-900 dark:text-white text-sm font-bold shadow-xl ring-1 ring-black/5 dark:ring-white/10">
+                   Voir le produit
+                </span>
+            </div>
           </div>
 
           {/* Badges côté gauche */}

@@ -363,6 +363,9 @@ router.get("/", async (req, res) => {
     const featuredOnly = ["1", "true", "yes"].includes(
       String(req.query.featuredOnly || "").toLowerCase(),
     );
+    const badgeEligibleOnly = ["1", "true", "yes"].includes(
+      String(req.query.badgeEligible || "").toLowerCase(),
+    );
 
     const ALLOWED_TYPES = new Set([
       "robot_trading",
@@ -381,6 +384,7 @@ router.get("/", async (req, res) => {
     if (ALLOWED_TYPES.has(type)) filter.type = type;
     if (categoryKey) filter.category = categoryKey;
     if (featuredOnly) filter.featured = true;
+    if (badgeEligibleOnly) filter.badgeEligible = true;
 
     let shopDoc = null;
     if (shopKey) {

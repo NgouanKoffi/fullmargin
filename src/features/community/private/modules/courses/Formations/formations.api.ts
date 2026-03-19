@@ -33,7 +33,7 @@ export type CourseSaved = {
       description?: string;
       items?: Array<{
         id: string;
-        type: "video" | "pdf" | "image";
+        type: "video" | "pdf" | "image" | "text" | "html";
         subtype?: string | null;
         title: string;
         url?: string;

@@ -235,3 +235,8 @@ export async function deleteNote(id: string) {
   const j = await api.delete(`/notes/${id}`);
   return pickDeleted(j);
 }
+
+export async function batchDeleteNotes(ids: string[]) {
+  const j = await api.post("/notes/batch-delete", { ids });
+  return pickDeleted(j);
+}

@@ -484,10 +484,10 @@ export default function Confidentialite() {
             <p className="mt-2">
               Pour toute question ou exercice de droit :{" "}
               <a
-                href="mailto:privacy@fullmargin.net"
+                href="mailto:support@fullmargin.net"
                 className="text-fm-primary hover:underline"
               >
-                privacy@fullmargin.net
+                support@fullmargin.net
               </a>
             </p>
           </article>

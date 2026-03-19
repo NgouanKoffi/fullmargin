@@ -186,7 +186,30 @@ export default function Step2Curriculum({ modules, onChange }: Props) {
     );
     const items = Array.isArray(l?.items) ? (l!.items as UIItem[]) : [];
     setLesson(mid, lid, {
-      items: items.filter((it) => it.id !== iid) as unknown as CurriculumItem[],
+      items: items.filter((it: UIItem) => it.id !== iid) as unknown as CurriculumItem[],
+    });
+  };
+  
+  const moveItem = (mid: string, lid: string, fromIdx: number, toIdx: number) => {
+    const m = safeModules.find((x) => x.id === mid);
+    const l = (Array.isArray(m?.lessons) ? m!.lessons : []).find(
+      (x) => x.id === lid
+    );
+    const items = Array.isArray(l?.items) ? [...l!.items] : [];
+    
+    if (toIdx < 0 || toIdx >= items.length) return;
+    
+    const [moved] = items.splice(fromIdx, 1);
+    items.splice(toIdx, 0, moved);
+    
+    setLesson(mid, lid, {
+      items: items as unknown as CurriculumItem[],
+    });
+  };
+
+  const reorderItems = (mid: string, lid: string, nextItems: UIItem[]) => {
+    setLesson(mid, lid, {
+      items: nextItems as unknown as CurriculumItem[],
     });
   };
 
@@ -356,6 +379,8 @@ export default function Step2Curriculum({ modules, onChange }: Props) {
               onAddResource={(lid) => addResource(m.id, lid)}
               onChangeItem={(lid, iid, patch) => setItem(m.id, lid, iid, patch)}
               onRemoveItem={(lid, iid) => removeItem(m.id, lid, iid)}
+              onMoveItem={(lid, from, to) => moveItem(m.id, lid, from, to)}
+              onReorderItems={(lid, items) => reorderItems(m.id, lid, items)}
               onLessonItemFile={(lid, iid, baseType, f) =>
                 handleLessonItemFile(m.id, lid, iid, baseType, f)
               }

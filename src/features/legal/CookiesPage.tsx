@@ -225,10 +225,10 @@ export default function PolitiqueCookies() {
           <p>
             📧{" "}
             <a
-              href="mailto:privacy@fullmargin.net"
+              href="mailto:support@fullmargin.net"
               className="text-indigo-500 hover:underline"
             >
-              privacy@fullmargin.net
+              support@fullmargin.net
             </a>
           </p>
         </div>

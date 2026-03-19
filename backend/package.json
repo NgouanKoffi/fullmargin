@@ -44,6 +44,7 @@
     "hpp": "^0.2.3",
     "imapflow": "^1.0.196",
     "jsonwebtoken": "^9.0.2",
+    "livekit-server-sdk": "^2.15.0",
     "mailparser": "^3.7.4",
     "mongoose": "^8.18.0",
     "morgan": "^1.10.1",

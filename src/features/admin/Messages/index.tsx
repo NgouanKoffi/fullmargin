@@ -1,4 +1,3 @@
-// C:\Users\ADMIN\Desktop\fullmargin-site\src\pages\admin\Messages\index.tsx
 import { useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
@@ -14,6 +13,8 @@ import { useAuth } from "@core/auth/AuthContext";
 import SignatureTab from "./SignatureTab";
 import TemplatesTab from "./TemplatesTab";
 import DiffusionTab from "./DiffusionTab";
+import ProgrammationTab from "./ProgrammationTab";
+import MailboxTab from "./MailboxTab";
 
 type TabKey =
   | "signature"
@@ -34,14 +35,6 @@ const ALL_TABS: {
   { key: "diffusion", label: "Diffusion", Icon: Megaphone },
 ];
 
-function Placeholder({ title, text }: { title: string; text: string }) {
-  return (
-    <div className="space-y-2">
-      <div className="text-sm font-semibold">{title}</div>
-      <div className="text-sm text-skin-muted">{text}</div>
-    </div>
-  );
-}
 
 export default function AdminMessages() {
   const { status, user } = useAuth();
@@ -199,19 +192,9 @@ export default function AdminMessages() {
           {active === "templates" && <TemplatesTab />}
           {active === "diffusion" && <DiffusionTab />}
 
-          {active === "mail" && (
-            <Placeholder
-              title="Boîte mail"
-              text="Branche ici ton composant Mailbox (lecture/réponse). Pour l’instant, cet onglet est un placeholder."
-            />
-          )}
+          {active === "mail" && <MailboxTab />}
 
-          {active === "programmation" && (
-            <Placeholder
-              title="Programmation"
-              text="Branche ici ton composant de planification (campaign scheduler). Pour l’instant, cet onglet est un placeholder."
-            />
-          )}
+          {active === "programmation" && <ProgrammationTab />}
         </section>
       </div>
     </main>

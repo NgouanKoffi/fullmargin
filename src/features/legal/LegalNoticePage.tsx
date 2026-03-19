@@ -203,24 +203,6 @@ export default function MentionsLegales() {
                 support@fullmargin.net
               </a>
             </li>
-            <li>
-              Protection des données :{" "}
-              <a
-                href="mailto:privacy@fullmargin.net"
-                className="text-indigo-500 hover:underline"
-              >
-                privacy@fullmargin.net
-              </a>
-            </li>
-            <li>
-              Réclamations Marketplace :{" "}
-              <a
-                href="mailto:marketplace@fullmargin.net"
-                className="text-indigo-500 hover:underline"
-              >
-                marketplace@fullmargin.net
-              </a>
-            </li>
           </ul>
           <p className="mt-3">
             Nous nous efforçons de répondre à toutes les demandes dans un délai

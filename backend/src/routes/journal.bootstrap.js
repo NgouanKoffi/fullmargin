@@ -5,6 +5,8 @@ const { requireAuth } = require("./_crudFactory");
 const Market = require("../models/market.model");
 const Strategy = require("../models/strategy.model");
 const JournalAccount = require("../models/journalAccount.model");
+// 1. Import du nouveau modèle
+const AccountTransaction = require("../models/accountTransaction.model");
 
 const toISO = (d) => {
   try {
@@ -18,11 +20,16 @@ router.get("/", requireAuth, async (req, res) => {
   const t0 = Date.now();
   try {
     const userId = req.auth.userId;
-    const [markets, strategies, accounts] = await Promise.all([
+    // 2. On ajoute 'transactions' à la déstructuration
+    const [markets, strategies, accounts, transactions] = await Promise.all([
       Market.find({ user: userId, deletedAt: null }).sort({ name: 1 }).lean(),
       Strategy.find({ user: userId, deletedAt: null }).sort({ name: 1 }).lean(),
       JournalAccount.find({ user: userId, deletedAt: null })
         .sort({ name: 1 })
+        .lean(),
+      // 3. On fetch les transactions du compte de l'utilisateur
+      AccountTransaction.find({ user: userId, deletedAt: null })
+        .sort({ date: 1 })
         .lean(),
     ]);
 
@@ -49,6 +56,15 @@ router.get("/", requireAuth, async (req, res) => {
           initial: Number(a.initial) || 0,
           description: a.description || "",
           updatedAt: toISO(a.updatedAt),
+        })),
+        // 4. On mappe les transactions pour les renvoyer au front
+        transactions: transactions.map((t) => ({
+          id: String(t._id),
+          accountId: String(t.accountId),
+          type: t.type,
+          amount: Number(t.amount) || 0,
+          date: t.date,
+          note: t.note || "",
         })),
       },
     });

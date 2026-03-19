@@ -16,7 +16,7 @@ export function TabsHeader({
   showDeletedTab?: boolean;
 }) {
   return (
-    <div className="mb-4 flex items-center gap-2 overflow-x-auto">
+    <div className="mb-4 flex items-center gap-2 overflow-x-auto max-w-full [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       <button
         onClick={() => setActive("feed")}
         type="button"

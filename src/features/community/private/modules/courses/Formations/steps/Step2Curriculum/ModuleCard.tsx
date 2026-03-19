@@ -30,6 +30,8 @@ type ModuleCardProps = {
     baseType: CurriculumItemType, // ⬅️ au lieu de "video" | "pdf"
     file: File | null | undefined
   ) => void;
+  onMoveItem: (lessonId: string, fromIdx: number, toIdx: number) => void;
+  onReorderItems: (lessonId: string, items: UIItem[]) => void;
 };
 
 export default function ModuleCard({
@@ -48,6 +50,8 @@ export default function ModuleCard({
   onChangeItem,
   onRemoveItem,
   onLessonItemFile,
+  onMoveItem,
+  onReorderItems,
 }: ModuleCardProps) {
   const altBg =
     index % 2 === 0
@@ -135,6 +139,8 @@ export default function ModuleCard({
                   onChangeItem(l.id, itemId, patch)
                 }
                 onRemoveItem={(itemId) => onRemoveItem(l.id, itemId)}
+                onMoveItem={(from, to) => onMoveItem(l.id, from, to)}
+                onReorderItems={(items) => onReorderItems(l.id, items)}
                 onLessonItemFile={(itemId, baseType, file) =>
                   onLessonItemFile(l.id, itemId, baseType, file)
                 }

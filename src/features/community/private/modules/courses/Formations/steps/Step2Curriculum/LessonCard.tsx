@@ -1,5 +1,6 @@
 // src/pages/communaute/private/community-details/tabs/Formations/steps/Step2Curriculum/LessonCard.tsx
 import { Plus, Trash2 } from "lucide-react";
+import { Reorder } from "framer-motion";
 import type { Lesson, CurriculumItemType } from "../../types";
 import type { UIItem } from "./helpers";
 import ResourceCard from "./ResourceCard";
@@ -22,6 +23,8 @@ type LessonCardProps = {
     baseType: CurriculumItemType,
     file: File | null | undefined
   ) => void;
+  onMoveItem: (fromIdx: number, toIdx: number) => void;
+  onReorderItems: (items: UIItem[]) => void;
 };
 
 export default function LessonCard({
@@ -33,6 +36,8 @@ export default function LessonCard({
   onChangeItem,
   onRemoveItem,
   onLessonItemFile,
+  onMoveItem,
+  onReorderItems,
 }: LessonCardProps) {
   return (
     <div className="rounded-xl p-3 ring-1 ring-slate-200 dark:ring-slate-700 bg-slate-50/70 dark:bg-slate-800/60">
@@ -89,19 +94,34 @@ export default function LessonCard({
         )}
 
         {items.length > 0 && (
-          <div className="grid gap-3 md:grid-cols-2">
-            {items.map((it) => (
-              <ResourceCard
+          <Reorder.Group
+            axis="y"
+            values={items}
+            onReorder={onReorderItems}
+            className="space-y-3"
+          >
+            {items.map((it, idx) => (
+              <Reorder.Item
                 key={it.id}
-                item={it}
-                onChangeItem={(patch) => onChangeItem(it.id, patch)}
-                onRemove={() => onRemoveItem(it.id)}
-                onFileChange={(baseType, file) =>
-                  onLessonItemFile(it.id, baseType, file)
-                }
-              />
+                value={it}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+              >
+                <ResourceCard
+                  item={it}
+                  index={idx}
+                  totalItems={items.length}
+                  onChangeItem={(patch) => onChangeItem(it.id, patch)}
+                  onRemove={() => onRemoveItem(it.id)}
+                  onMoveItem={(toIdx) => onMoveItem(idx, toIdx)}
+                  onFileChange={(baseType, file) =>
+                    onLessonItemFile(it.id, baseType, file)
+                  }
+                />
+              </Reorder.Item>
             ))}
-          </div>
+          </Reorder.Group>
         )}
       </div>
 

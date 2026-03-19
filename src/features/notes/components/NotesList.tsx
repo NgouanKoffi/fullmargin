@@ -6,7 +6,7 @@ import FolderCard from "./FolderCard";
 import { exportNoteAsPDF } from "../utils/exportPdf";
 import MoveNoteModal from "./modals/MoveNoteModal";
 import InfoModal from "./modals/InfoModal";
-import { FolderPlus, Square, CheckSquare, MoveRight } from "lucide-react";
+import { FolderPlus, Square, CheckSquare, Trash2 } from "lucide-react";
 
 /** mêmes accents pour les traits de couleur */
 const accents = [
@@ -25,6 +25,7 @@ export default function NotesList({
   onOpenNote,
   onShareNote,
   onDeleteNote,
+  onDeleteNotes, // ⬅️ suppression groupée
   onOpenFolder,
   onRenameFolder,
   onDeleteFolder,
@@ -38,6 +39,7 @@ export default function NotesList({
   onOpenNote: (id: string) => void;
   onShareNote: (id: string) => void;
   onDeleteNote: (id: string) => void;
+  onDeleteNotes: (ids: string[]) => void;
   onOpenFolder: (id: string) => void;
   onRenameFolder: (id: string) => void;
   onDeleteFolder: (id: string) => void;
@@ -137,12 +139,16 @@ export default function NotesList({
             <button
               type="button"
               disabled={selectedCount === 0}
-              onClick={() => setMoveManyOpen(true)}
-              className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white disabled:opacity-50"
-              title="Déplacer la sélection"
+              onClick={() => {
+                onDeleteNotes(Array.from(selected));
+                setSelectMode(false);
+                setSelected(new Set());
+              }}
+              className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold bg-red-600 text-white disabled:opacity-50"
+              title="Supprimer la sélection"
             >
-              <MoveRight className="w-4 h-4" />
-              Déplacer ({selectedCount})
+              <Trash2 className="w-4 h-4" />
+              Supprimer ({selectedCount})
             </button>
           </>
         ) : (

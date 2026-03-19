@@ -113,8 +113,11 @@ export async function moveFolder(
   await api.patch(`/folders/${id}`, { parentId });
 }
 
-export async function deleteFolder(id: string): Promise<void> {
-  await api.delete(`/folders/${id}`);
+export async function deleteFolder(
+  id: string,
+  deleteNotes = false
+): Promise<void> {
+  await api.delete(`/folders/${id}`, { query: { deleteNotes: String(deleteNotes) } });
 }
 
 export async function listNoteFolderMap(): Promise<

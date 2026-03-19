@@ -107,7 +107,7 @@ export default function IntroVideo() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="text-center mb-6 sm:mb-8"
         >
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-skin-base pb-2">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-skin-base pb-2">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-skin-base via-skin-muted to-skin-base bg-[length:200%_auto] animate-[fm-text-shimmer_4s_linear_infinite]">
               Prenez une longueur d’avance.
             </span>
@@ -117,11 +117,12 @@ export default function IntroVideo() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="mt-3 max-w-2xl mx-auto text-skin-muted text-sm sm:text-base leading-relaxed"
+            // 👇 C'est ici que les classes ont été modifiées pour agrandir le texte (text-base sm:text-lg md:text-xl)
+            className="mt-4 max-w-2xl mx-auto text-skin-muted text-base sm:text-lg md:text-xl leading-relaxed"
           >
             En moins de 60 secondes, découvrez comment nous combinons l’analyse,
             l’exécution et la communauté pour décupler votre efficacité.
-            <br className="hidden sm:block" />
+            <br className="hidden md:block" />
             Une plateforme — tous vos leviers de progression, sans friction.
           </motion.p>
         </motion.div>

@@ -168,3 +168,15 @@ export const SESSION_OPTIONS = [
   { value: "asiatique", label: "Asiatique" },
 ] as const;
 export type SessionValue = (typeof SESSION_OPTIONS)[number]["value"];
+
+/* ===== Transactions de Capital (Dépôts / Retraits) ===== */
+export type TransactionType = "deposit" | "withdrawal";
+
+export type AccountTransaction = {
+  id: string;
+  accountId: string;
+  type: TransactionType;
+  amount: number;
+  date: string; // Format YYYY-MM-DD
+  note: string;
+};

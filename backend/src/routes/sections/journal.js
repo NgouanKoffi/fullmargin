@@ -6,6 +6,14 @@ module.exports = function journalSection(router) {
     console.error("Failed to mount /journal/accounts routes:", e?.message || e);
   }
 
+  // 👇 NOUVEAU BLOC : Ajout des routes de transactions de capital (Dépôts/Retraits)
+  try {
+    router.use("/journal/transactions", require("../journal.transactions"));
+  } catch (e) {
+    console.error("Failed to mount /journal/transactions routes:", e?.message || e);
+  }
+  // 👆 FIN DU NOUVEAU BLOC
+
   try {
     router.use("/journal/markets", require("../journal.markets"));
   } catch (e) {
