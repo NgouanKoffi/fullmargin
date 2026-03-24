@@ -118,6 +118,8 @@ export const getNotificationTitle = (notif: Notification): string => {
       return `💰 Nouvelle vente : ${payload.productTitle || "Produit"}`;
     case "marketplace_purchase_made":
       return `Achat effectué`;
+    case "marketplace_payment_rejected":
+      return `❌ Paiement refusé (Marketplace)`;
     case "finance_withdrawal_requested":
       return `Retrait demandé`;
     case "finance_withdrawal_approved":

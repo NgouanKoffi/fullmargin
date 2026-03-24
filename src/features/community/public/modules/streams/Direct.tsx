@@ -1,4 +1,3 @@
-// C:\Users\ADMIN\Desktop\fullmargin-site\src\pages\communaute\public\sections\Direct.tsx
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PlayCircle } from "lucide-react";
@@ -41,6 +40,7 @@ export function TabDirect() {
 
   const navigate = useNavigate();
 
+
   // Charger les lives publics en cours
   useEffect(() => {
     const fetchLives = async () => {
@@ -81,6 +81,7 @@ export function TabDirect() {
     void fetchLives();
   }, []);
 
+
   // Filtrage par recherche
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -115,6 +116,14 @@ export function TabDirect() {
 
   return (
     <>
+      {/* Header avec bouton de lancement */}
+      <div className="mt-6">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Directs</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Regarde les lives en cours sur FullMargin.
+        </p>
+      </div>
+
       {/* Barre de recherche */}
       <SearchBar
         className="mt-4"

@@ -280,6 +280,24 @@ export default function CoursePlayer() {
       />
 
       <div className="mt-4">
+        {/* Bouton de retour */}
+        <div className="mb-4 flex items-center">
+          <button
+            onClick={() => {
+              // S'il y a un historique, on recule, sinon on renvoie vers l'onglet formations
+              if (window.history.length > 2) {
+                navigate(-1);
+              } else {
+                navigate("/communaute?tab=formations");
+              }
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Retour
+          </button>
+        </div>
+
         {/* En-tête : infos cours (sans photo de couverture) */}
         <div className="relative mb-5">
           {/* bouton programme mobile en haut à droite */}

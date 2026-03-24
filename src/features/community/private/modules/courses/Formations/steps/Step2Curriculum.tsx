@@ -462,7 +462,7 @@ export default function Step2Curriculum({ modules, onChange }: Props) {
                     {notice.showCompressHelp && (
                       <div className="mt-4 rounded-xl border border-red-500/25 bg-red-500/10 px-3 py-3 text-red-100">
                         <div className="text-sm font-semibold text-red-200">
-                          Où compresser ta vidéo (en gardant la qualité) ?
+                          Où compresser ta vidéo (en gardantla qualité) ?
                         </div>
                         <p className="mt-1 text-xs text-red-200/80">
                           Essaie un de ces outils, puis ré-uploade la vidéo :
@@ -512,6 +512,12 @@ export default function Step2Curriculum({ modules, onChange }: Props) {
                           Astuce : si ta vidéo est sensible, utilise plutôt{" "}
                           <b>HandBrake</b> ou <b>Shutter Encoder</b>{" "}
                           (compression en local, sans upload).
+                        </p>
+
+                        <p className="mt-4 text-[13px] font-medium leading-snug text-red-400">
+                          Si votre video est hébergé sur une autre plateforme
+                          (vimeo, youtube etc...) vous pouvez l'insérer sous forme
+                          de lien.
                         </p>
                       </div>
                     )}

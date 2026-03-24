@@ -7,8 +7,8 @@ const curriculumItemSchema = new mongoose.Schema(
   {
     id: { type: String, required: true }, // uid front
 
-    // ✅ on autorise image
-    type: { type: String, enum: ["video", "pdf", "image"], required: true },
+    // ✅ on autorise image, texte, html
+    type: { type: String, enum: ["video", "pdf", "image", "text", "html"], required: true },
 
     // ✅ on stocke aussi un subtype pour l'UI (doc, image, link, etc.)
     subtype: { type: String, default: "" },

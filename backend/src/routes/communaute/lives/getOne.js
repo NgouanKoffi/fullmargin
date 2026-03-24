@@ -16,7 +16,10 @@ module.exports = (router) => {
     const { id } = req.params;
 
     try {
-      const live = await CommunityLive.findById(id);
+      const live = await CommunityLive.findById(id).populate({
+        path: "createdBy",
+        select: { fullName: 1, avatarUrl: 1 },
+      });
       if (!live) {
         return res.status(404).json({ ok: false, error: "Live introuvable." });
       }
@@ -25,8 +28,9 @@ module.exports = (router) => {
 
       const check = await assertCanView(
         userId,
-        String(live.communityId),
-        !!live.isPublic
+        live.communityId || null,
+        !!live.isPublic,
+        live.createdBy
       );
       if (!check.ok) {
         return res.status(403).json({ ok: false, error: check.error });

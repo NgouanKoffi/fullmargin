@@ -12,4 +12,9 @@ export type CommunityLive = {
   roomName: string;
   endedAt?: string | null;
   isPublic?: boolean;
+  isOwner?: boolean;
+  createdBy?: string;
+  communityName?: string;
+  communitySlug?: string | null;
+  communityAvatar?: string | null;
 };

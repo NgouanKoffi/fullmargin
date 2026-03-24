@@ -9,6 +9,19 @@ import { RichTextBN } from "./RichTextBN";
 
 /* ============ Utils viewer ============ */
 
+function extractVimeoId(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("vimeo.com") || u.hostname.includes("vimeo.fr")) {
+      const match = u.pathname.match(/^\/(\d+)/);
+      if (match) return match[1];
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 function extractYoutubeId(url: string): string | null {
   try {
     const u = new URL(url);
@@ -98,7 +111,16 @@ export function ResourceViewer({
   const url = item.url || "";
   const isLink = item.subtype === "link";
   const isImage = item.type === "image" || item.subtype === "image";
-  const isPdf = item.type === "pdf" && !isImage;
+  const isTextOrHtml = item.type === "text" || item.type === "html" || item.subtype === "text" || item.subtype === "html";
+  const isPdf = item.type === "pdf" && !isImage && !isTextOrHtml && !isLink;
+
+  // Vimeo embed
+  const vimeoEmbedUrl = useMemo(() => {
+    if (!url) return null;
+    const id = extractVimeoId(url);
+    if (!id) return null;
+    return `https://player.vimeo.com/video/${id}`;
+  }, [url]);
 
   // YouTube embed (fallback)
   const youtubeEmbedUrl = useMemo(() => {
@@ -130,7 +152,7 @@ export function ResourceViewer({
     if (!courseId || !item) return;
 
     // Vidéos, liens, texte & html → pas de fetch base64
-    if (item.type === "video" || isLink || item.type === "text" || item.type === "html") {
+    if (item.type === "video" || isLink || isTextOrHtml) {
       setFileSrc(null);
       setFileError(null);
       setFileLoading(false);
@@ -222,7 +244,7 @@ export function ResourceViewer({
     };
   }, [courseId, item, isPdf, isImage, isLink]);
 
-  const isTextOrHtml = item.type === "text" || item.type === "html";
+
 
   const outerClass = fullscreen
     ? "absolute inset-0 bg-black"
@@ -261,6 +283,20 @@ export function ResourceViewer({
           src={youtubeEmbedUrl}
           title={item.title || "Vidéo YouTube"}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      );
+    }
+
+    // 1.5) Vimeo
+    if (vimeoEmbedUrl) {
+      return (
+        <iframe
+          key={vimeoEmbedUrl + (isFull ? "-full" : "-normal")}
+          className="absolute inset-0 w-full h-full border-none"
+          src={vimeoEmbedUrl}
+          title={item.title || "Vidéo Vimeo"}
+          allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
         />
       );
@@ -372,7 +408,7 @@ export function ResourceViewer({
     }
 
     // 6) Texte riche (BlockNote)
-    if (item.type === "text") {
+    if (item.type === "text" || item.subtype === "text") {
       return (
         <div className="w-full text-slate-900 dark:text-slate-100">
           <RichTextBN json={url} />
@@ -381,11 +417,18 @@ export function ResourceViewer({
     }
 
     // 7) Code HTML / Embed
-    if (item.type === "html") {
+    if (item.type === "html" || item.subtype === "html") {
+      let safeHtml = url || "";
+      // Remplace les liens raw vimeo par le player embed au cas où ils mettent juste src="https://vimeo.com/XXX"
+      safeHtml = safeHtml.replace(
+        /src=["']https?:\/\/(?:www\.)?vimeo\.com\/(\d+)["']/g,
+        'src="https://player.vimeo.com/video/$1"'
+      );
+
       return (
         <div
-          className="w-full"
-          dangerouslySetInnerHTML={{ __html: url }}
+          className="w-full max-w-full overflow-hidden [&_iframe]:w-full [&_iframe]:max-w-full [&_iframe]:aspect-video [&_iframe]:h-auto [&_iframe]:border-none"
+          dangerouslySetInnerHTML={{ __html: safeHtml }}
         />
       );
     }

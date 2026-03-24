@@ -1,5 +1,5 @@
 // backend/src/routes/communaute/lives/livekitToken.js
-const { AccessToken } = require("livekit-server-sdk");
+const { AccessToken, TrackSource } = require("livekit-server-sdk");
 const { requireAuth, assertCanView, CommunityLive } = require("./_shared");
 
 function safeName(raw) {
@@ -26,19 +26,22 @@ module.exports = (router) => {
       const live = await CommunityLive.findById(id).lean();
       if (!live) return res.status(404).json({ ok: false, error: "Live introuvable." });
 
-      const check = await assertCanView(userId, String(live.communityId), !!live.isPublic);
+      const check = await assertCanView(userId, live.communityId || null, !!live.isPublic, live.createdBy);
       if (!check.ok) return res.status(403).json({ ok: false, error: check.error });
 
       const community = check.community;
-      const isOwner = !!((community && String(community.ownerId) === String(userId)) || String(live.createdBy) === String(userId));
+      const creatorId = live.createdBy?._id || live.createdBy;
+      const isOwner = !!((community && String(community.ownerId) === String(userId)) || String(creatorId) === String(userId));
       
       const displayName = safeName(req.query.name) || "Membre FullMargin";
       const exactRoom = String(live.roomName);
 
       // ✅ Initialisation du Token
+      const meta = JSON.stringify({ mic: true, screen: isOwner });
       const at = new AccessToken(API_KEY, API_SECRET, {
         identity: userId,
         name: displayName,
+        metadata: meta,
       });
 
       // ✅ Configuration des permissions de base
@@ -46,6 +49,7 @@ module.exports = (router) => {
         roomJoin: true,
         room: exactRoom,
         canPublish: true,       // Activer micro/caméra
+        canPublishSources: isOwner ? [TrackSource.CAMERA, TrackSource.MICROPHONE, TrackSource.SCREEN_SHARE, TrackSource.SCREEN_SHARE_AUDIO] : [TrackSource.CAMERA, TrackSource.MICROPHONE],
         canSubscribe: true,     // Voir/entendre les autres
         canPublishData: true,   // Utiliser le chat
       };

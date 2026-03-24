@@ -116,10 +116,16 @@ function normalizeModules(mods) {
             ? l.items.map((it, ii) => {
                 const isImage = it.type === "image" || it.subtype === "image";
                 const isVideo = it.type === "video" || it.subtype === "video";
+                const isText = it.type === "text" || it.subtype === "text";
+                const isHtml = it.type === "html" || it.subtype === "html";
                 const normalizedType = isImage
                   ? "image"
                   : isVideo
                   ? "video"
+                  : isText
+                  ? "text"
+                  : isHtml
+                  ? "html"
                   : "pdf";
 
                 return {

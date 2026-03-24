@@ -2,7 +2,7 @@
 import { API_BASE } from "@core/api/client";
 import { loadSession } from "../lib/storage";
 
-export const PRESENCE_INTERVAL_MS = 30_000;
+export const PRESENCE_INTERVAL_MS = 120_000;
 
 export type PresenceKind = "online" | "heartbeat" | "away" | "offline";
 

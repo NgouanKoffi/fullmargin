@@ -1,4 +1,3 @@
-// C:\Users\ADMIN\Desktop\fullmargin-site\src\components\Header\navConfig.ts
 import { type ReactNode } from "react";
 
 export type AuthStatus = "authenticated" | "anonymous" | "loading";
@@ -24,6 +23,7 @@ export type HeaderNavItem = {
   requiresAuth?: boolean;
   /** item visible seulement si user a une boutique */
   requiresShop?: boolean;
+  onClick?: () => void;
 };
 
 export type HeaderNavGroup = {
@@ -46,7 +46,6 @@ export function buildHeaderNav({
   authStatus: AuthStatus;
   hasShop: boolean;
   myCommunitySlug?: string;
-  // ❌ communityCounts retiré - plus de badges dans les menus
 }): HeaderNavGroup[] {
   const isAuthed = authStatus === "authenticated";
 
@@ -75,6 +74,11 @@ export function buildHeaderNav({
         { key: "tools-finances", label: "Finance", href: "/finance" },
         { key: "tools-journal", label: "Journal de trading", href: "/journal" },
         // { key: "tools-live", label: "Lancer un live", href: "https://live.fullmargin.net/" },
+        { 
+          key: "tools-launch-live", 
+          label: "Lancer un direct", 
+          href: `/communaute/${myCommunitySlug || "mon-espace"}?tab=direct`,
+        },
         { key: "tools-podcasts", label: "Podcasts", href: "/podcasts" },
       ],
     },

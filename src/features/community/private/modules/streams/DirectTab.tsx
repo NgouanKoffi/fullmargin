@@ -12,12 +12,7 @@ import MembersOnlyAlert from "@shared/components/community/MembersOnlyAlert";
 type Props = {
   communityId: string;
   isOwner: boolean;
-  isMember: boolean;
   isAuthenticated: boolean;
-  /** pour adapter le texte du bouton (public / private) */
-  communityVisibility?: "public" | "private";
-  /** appelé quand l’utilisateur clique sur “Rejoindre la communauté” */
-  onJoinCommunity?: () => void;
 };
 
 type LivesApiResponse = {
@@ -48,10 +43,7 @@ function openAuthModal() {
 export default function DirectTab({
   communityId,
   isOwner,
-  isMember,
   isAuthenticated,
-  communityVisibility = "public",
-  onJoinCommunity,
 }: Props) {
   const [lives, setLives] = useState<CommunityLive[]>([]);
   const [loading, setLoading] = useState(false);
@@ -75,32 +67,37 @@ export default function DirectTab({
   const [launchIsPublic, setLaunchIsPublic] = useState(false);
   const [launching, setLaunching] = useState(false);
 
-  const hasAccess = isOwner || isMember;
+  const hasAccess = isAuthenticated;
 
   /* ---------- Chargement des lives ---------- */
   useEffect(() => {
-    if (!isAuthenticated || !hasAccess) return;
+    if (!isAuthenticated || (communityId && !hasAccess)) return;
 
     const fetchLives = async () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(
-          `${API_BASE}/communaute/lives/by-community/${communityId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              ...authHeaders(),
-            },
-          }
-        );
+        // On adapte l'URL si pas de communityId (on pourrait charger les lives personnels de l'user)
+        const url = communityId 
+          ? `${API_BASE}/communaute/lives/by-community/${communityId}`
+          : `${API_BASE}/communaute/lives/my-lives`; // TODO: implémenter cette route si besoin, ou juste ne rien charger
+        
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ...authHeaders(),
+          },
+        });
         const json = (await res.json()) as LivesApiResponse;
         if (!json.ok) throw new Error(json.error || "Chargement impossible");
         const items = json.data?.items ?? [];
         setLives(items);
       } catch (e) {
-        setError((e as Error).message || "Impossible de charger les directs.");
+        // Si on n'a pas de communityId, on n'affiche pas forcément d'erreur de chargement
+        if (communityId) {
+          setError((e as Error).message || "Impossible de charger les directs.");
+        }
       } finally {
         setLoading(false);
       }
@@ -142,7 +139,7 @@ export default function DirectTab({
   /* ---------- Modale de lancement ---------- */
 
   const openInstantLaunchModal = () => {
-    if (!isOwner) return;
+    if (!hasAccess) return;
     setLaunchMode("instant");
     setLaunchTarget(null);
     setLaunchTitle(buildInstantTitle());
@@ -151,7 +148,7 @@ export default function DirectTab({
   };
 
   const openLaunchFromScheduled = (live: CommunityLive) => {
-    if (!isOwner) return;
+    if (!hasAccess) return;
     setLaunchMode("scheduled");
     setLaunchTarget(live);
     setLaunchTitle(live.title);
@@ -166,7 +163,7 @@ export default function DirectTab({
   };
 
   const handleConfirmLaunch = async () => {
-    if (!isOwner) return;
+    if (!hasAccess) return;
     if (!launchTitle.trim()) return;
     setLaunching(true);
     try {
@@ -180,7 +177,7 @@ export default function DirectTab({
             ...authHeaders(),
           },
           body: JSON.stringify({
-            communityId,
+            communityId: communityId || null,
             title: launchTitle.trim(),
             isPublic: launchIsPublic,
           }),
@@ -239,7 +236,7 @@ export default function DirectTab({
   };
 
   const handleSchedule = async () => {
-    if (!isOwner) return;
+    if (!hasAccess) return;
     if (!scheduleTitle || !scheduleDate || !scheduleTime) return;
 
     const startsAt = new Date(`${scheduleDate}T${scheduleTime}:00`);
@@ -305,7 +302,7 @@ export default function DirectTab({
   };
 
   const handleEditScheduled = (live: CommunityLive) => {
-    if (!isOwner) return;
+    if (!hasAccess) return;
     setEditingId(live.id);
     setScheduleTitle(live.title);
     if (live.startsAt) {
@@ -320,7 +317,7 @@ export default function DirectTab({
   };
 
   const handleCancelScheduled = async (liveId: string) => {
-    if (!isOwner) return;
+    if (!hasAccess) return;
     try {
       setError(null);
       const res = await fetch(`${API_BASE}/communaute/lives/${liveId}/cancel`, {
@@ -367,34 +364,7 @@ export default function DirectTab({
     }
   };
 
-  /* ---------- Helpers CTA ---------- */
 
-  const joinLabel =
-    communityVisibility === "private"
-      ? "Demander l’accès"
-      : "Rejoindre la communauté";
-
-  const handleJoinClick = () => {
-    if (onJoinCommunity) {
-      onJoinCommunity();
-      return;
-    }
-
-    // fallback : si jamais pas de callback, on essaie au moins
-    // d’ouvrir le compte ou de renvoyer vers l’onglet Aperçu
-    if (!isAuthenticated) {
-      openAuthModal();
-      return;
-    }
-    try {
-      const sp = new URLSearchParams(window.location.search);
-      sp.set("tab", "apercu");
-      window.history.replaceState(null, "", `?${sp.toString()}`);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch {
-      /* ignore */
-    }
-  };
 
   /* ---------- Rendu ---------- */
 
@@ -412,19 +382,9 @@ export default function DirectTab({
     );
   }
 
-  // 2) Connecté mais pas membre → message + CTA rejoindre
-  if (!hasAccess) {
-    return (
-      <div className="w-full">
-        <MembersOnlyAlert
-          title="Directs réservés aux membres"
-          description="Deviens membre de cette communauté pour participer aux directs."
-          ctaLabel={joinLabel}
-          onCtaClick={handleJoinClick}
-        />
-      </div>
-    );
-  }
+  // 2) Connecté mais pas membre (sur une page commu) -> On peut quand même créer, mais on voit un avertissement pour la liste ?
+  // En fait l'utilisateur veut que n'importe qui puisse CREER.
+  // Donc on ne bloque plus le rendu global si !hasAccess.
 
   // 3) Accès OK → contenu complet
   return (
@@ -459,28 +419,21 @@ export default function DirectTab({
             </div>
           )}
 
-          {isOwner ? (
-            <OwnerDirectActions
-              onOpenInstantLaunchModal={openInstantLaunchModal}
-              scheduleTitle={scheduleTitle}
-              scheduleDate={scheduleDate}
-              scheduleTime={scheduleTime}
-              scheduleIsPublic={scheduleIsPublic}
-              editingId={editingId}
-              scheduling={scheduling}
-              onChangeScheduleTitle={setScheduleTitle}
-              onChangeScheduleDate={setScheduleDate}
-              onChangeScheduleTime={setScheduleTime}
-              onChangeScheduleVisibility={setScheduleIsPublic}
-              onSubmitSchedule={() => void handleSchedule()}
-              onResetEditing={resetScheduleForm}
-            />
-          ) : (
-            <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-700 p-4 text-sm text-slate-500 dark:text-slate-400">
-              Les directs sont gérés par les admins de la communauté. Tu pourras
-              les rejoindre ici dès qu’un live sera planifié.
-            </div>
-          )}
+          <OwnerDirectActions
+            onOpenInstantLaunchModal={openInstantLaunchModal}
+            scheduleTitle={scheduleTitle}
+            scheduleDate={scheduleDate}
+            scheduleTime={scheduleTime}
+            scheduleIsPublic={scheduleIsPublic}
+            editingId={editingId}
+            scheduling={scheduling}
+            onChangeScheduleTitle={setScheduleTitle}
+            onChangeScheduleDate={setScheduleDate}
+            onChangeScheduleTime={setScheduleTime}
+            onChangeScheduleVisibility={setScheduleIsPublic}
+            onSubmitSchedule={() => void handleSchedule()}
+            onResetEditing={resetScheduleForm}
+          />
 
           <LiveListsSection
             loading={loading}

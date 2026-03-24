@@ -1,7 +1,7 @@
 // backend/src/routes/communaute/lives/startNow.js
 const {
   requireAuth,
-  assertIsOwner,
+  assertCanManageLives,
   mapLive,
   CommunityLive,
   CommunityMember,
@@ -21,18 +21,19 @@ module.exports = (router) => {
       endsAt,
     } = req.body || {};
 
-    if (!communityId) {
-      return res.status(400).json({ ok: false, error: "communityId requis dans le body." });
-    }
-
-    const check = await assertIsOwner(userId, communityId);
+    const check = await assertCanManageLives(userId, communityId || null);
     if (!check.ok) return res.status(403).json({ ok: false, error: check.error });
 
     const community = check.community;
 
     try {
+      const targetCommunityId = community ? communityId : null;
       await CommunityLive.updateMany(
-        { communityId, status: "live" },
+        { 
+          communityId: targetCommunityId, 
+          status: "live",
+          ...(targetCommunityId ? {} : { createdBy: userId })
+        },
         { $set: { status: "ended", endedAt: new Date() } },
       );
 
@@ -49,12 +50,12 @@ module.exports = (router) => {
 
       const finalTitle = title || `Live du ${now.toLocaleDateString("fr-FR")} à ${now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`;
 
-      // 🔴 ID DE SALLE PROPRE : Minuscules et chiffres uniquement, court, Jitsi ne plantera plus dessus
+      // ID DE SALLE PROPRE : Minuscules et chiffres uniquement, court, Jitsi ne plantera plus dessus
       const shortId = Date.now().toString(36).toLowerCase();
       const roomName = `fmlive${shortId}`; 
 
       const live = await CommunityLive.create({
-        communityId,
+        communityId: community ? communityId : null,
         title: finalTitle,
         description: description || "",
         status: "live",
@@ -65,30 +66,32 @@ module.exports = (router) => {
         isPublic: !!isPublic,
       });
 
-      const members = await CommunityMember.find({
-        communityId,
-        $or: [{ status: "active" }, { status: { $exists: false } }],
-      }).select({ userId: 1 }).lean();
+      if (communityId && community) {
+        const members = await CommunityMember.find({
+          communityId,
+          $or: [{ status: "active" }, { status: { $exists: false } }],
+        }).select({ userId: 1 }).lean();
 
-      const toNotify = members.map((m) => String(m.userId)).filter((uid) => uid !== userId);
+        const toNotify = members.map((m) => String(m.userId)).filter((uid) => uid !== userId);
 
-      await Promise.all(
-        toNotify.map((uid) =>
-          createNotif({
-            userId: uid,
-            kind: "community_live_started",
-            communityId: String(communityId),
-            payload: {
-              liveId: String(live._id),
-              communityName: community?.name || "",
-              title: live.title,
-              isPublic: !!live.isPublic,
-              startsAt: live.startsAt,
-              plannedEndAt: live.plannedEndAt,
-            },
-          }),
-        ),
-      );
+        await Promise.all(
+          toNotify.map((uid) =>
+            createNotif({
+              userId: uid,
+              kind: "community_live_started",
+              communityId: String(communityId),
+              payload: {
+                liveId: String(live._id),
+                communityName: community?.name || "",
+                title: live.title,
+                isPublic: !!live.isPublic,
+                startsAt: live.startsAt,
+                plannedEndAt: live.plannedEndAt,
+              },
+            }),
+          ),
+        );
+      }
 
       return res.json({ ok: true, data: { live: mapLive(live, userId) } });
     } catch (e) {

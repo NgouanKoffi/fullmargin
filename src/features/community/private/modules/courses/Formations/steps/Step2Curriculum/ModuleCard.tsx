@@ -1,5 +1,5 @@
 // src/pages/communaute/private/community-details/tabs/Formations/steps/Step2Curriculum/ModuleCard.tsx
-import { ChevronDown, ChevronRight, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import type { Lesson, Module, CurriculumItemType } from "../../types"; // ⬅️ ajoute CurriculumItemType
 import type { UIItem } from "./helpers";
 import LessonCard from "./LessonCard";
@@ -73,11 +73,11 @@ export default function ModuleCard({
               title={isOpen ? "Replier" : "Déplier"}
               aria-label={isOpen ? "Replier" : "Déplier"}
             >
-              {isOpen ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              />
             </button>
 
             <input

@@ -54,6 +54,7 @@ type Props = {
   revealOnHover?: boolean;
   hiddenKeys?: string[];
   fmMetrixUnreadCount?: number;
+  myCommunitySlug?: string;
 };
 
 type MenuItem = {
@@ -68,6 +69,7 @@ export default function AccountList({
   revealOnHover = false,
   hiddenKeys = ["notifications", "logout"],
   fmMetrixUnreadCount = 0,
+  myCommunitySlug,
 }: Props) {
   const { status, user } = useAuth();
   const roles = user?.roles ?? [];
@@ -82,7 +84,7 @@ export default function AccountList({
   const [podcastNewCount, setPodcastNewCount] = useState(0);
 
   const isBelow520 = useIsBelow520();
-  const rawItems = useMenu("account", { status, roles }) as MenuItem[];
+  const rawItems = useMenu("account", { status, roles, myCommunitySlug }) as MenuItem[];
 
   // ✅ 1. Compteur temps réel des messages
   const { items: messageThreads } = useConversations({

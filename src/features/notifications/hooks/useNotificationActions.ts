@@ -149,10 +149,18 @@ export function useNotificationActions(markAsRead: (id: string) => void) {
 
     if (
       [
+        "marketplace_purchase_made",
+        "marketplace_payment_rejected",
+      ].includes(kind)
+    ) {
+      return navigate("/marketplace/dashboard?tab=orders&subtab=orders");
+    }
+
+    if (
+      [
         "marketplace_product_submitted",
         "marketplace_product_approved",
         "marketplace_product_rejected",
-        "marketplace_purchase_made",
       ].includes(kind)
     ) {
       return navigate("/marketplace/dashboard?tab=products");

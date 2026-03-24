@@ -22,8 +22,49 @@ function requireAuth(req, res, next) {
   }
 }
 
+/* Vérifie que l’utilisateur peut gérer les directs (owner, membre actif, ou créateur d'un live perso) */
+async function assertCanManageLives(userId, communityId) {
+  if (!communityId || communityId === "null" || communityId === "undefined") {
+    // Live personnel : n'importe quel utilisateur authentifié peut le gérer s'il est le créateur
+    // ou s'il en crée un nouveau.
+    return { ok: true, community: null };
+  }
+
+  const c = await Community.findOne({ _id: communityId, deletedAt: null })
+    .select({ ownerId: 1, name: 1 })
+    .lean();
+
+  if (!c) {
+    return { ok: false, error: "Communauté introuvable." };
+  }
+
+  // Owner : accès total
+  if (String(c.ownerId) === String(userId)) {
+    return { ok: true, community: c };
+  }
+
+  // Vérifier si membre actif
+  const membership = await CommunityMember.findOne({
+    communityId,
+    userId,
+    $or: [{ status: "active" }, { status: { $exists: false } }],
+  }).lean();
+
+  if (!membership) {
+    // ⚠️ NEW: Si l'utilisateur n'est pas membre, on l'autorise quand même
+    // à lancer un direct, mais il n'aura pas le contexte community.
+    return { ok: true, community: null };
+  }
+
+  return { ok: true, community: c };
+}
+
 /* Vérifie que l’utilisateur est owner de la communauté */
 async function assertIsOwner(userId, communityId) {
+  if (!communityId || communityId === "null" || communityId === "undefined") {
+    return { ok: false, error: "Cette action nécessite un contexte de communauté." };
+  }
+
   const c = await Community.findOne({ _id: communityId, deletedAt: null })
     .select({ ownerId: 1, name: 1 })
     .lean();
@@ -43,7 +84,16 @@ async function assertIsOwner(userId, communityId) {
 }
 
 /* Vérifie que l’utilisateur peut voir les lives (membre ou owner) */
-async function assertCanView(userId, communityId, isPublic) {
+async function assertCanView(userId, communityId, isPublic, createdBy) {
+  if (!communityId || communityId === "null" || communityId === "undefined") {
+    // Le créateur peut toujours voir son live personnel, même s'il est privé
+    const creatorId = createdBy?._id || createdBy;
+    const isCreator = creatorId && String(creatorId) === String(userId);
+    if (isPublic || isCreator) return { ok: true, community: null };
+
+    return { ok: false, error: "Ce direct privé est inaccessible." };
+  }
+
   const c = await Community.findOne({ _id: communityId, deletedAt: null })
     .select({ ownerId: 1, name: 1 })
     .lean();
@@ -91,26 +141,47 @@ async function assertCanView(userId, communityId, isPublic) {
 function mapLive(l, currentUserId) {
   const live = l && typeof l.toObject === "function" ? l.toObject() : l;
 
-  const communityId = String(live.communityId);
-  const ownerId = live.ownerId || live.createdBy || null;
+  let communityId = null;
+  let communityName = "Direct Personnel";
+  let communitySlug = null;
+  let communityAvatar = null;
+
+  if (live.communityId) {
+    communityId = String(live.communityId._id || live.communityId);
+    // Si l'objet est peuplé (on a le nom)
+    if (live.communityId.name) {
+      communityName = live.communityId.name;
+      communitySlug = live.communitySlug || live.communityId.slug;
+      communityAvatar = live.communityAvatar || live.communityId.avatar;
+    }
+  } else if (live.createdBy && live.createdBy.fullName) {
+    // 🟠 NEW: Pour les directs personnels, on affiche le nom du créateur
+    communityName = live.createdBy.fullName;
+    communityAvatar = live.createdBy.avatarUrl || null;
+  }
+
+  const creatorId = live.createdBy?._id || live.createdBy || null;
 
   let isOwner = false;
-  if (currentUserId && ownerId) {
-    isOwner = String(currentUserId) === String(ownerId);
+  if (currentUserId && creatorId) {
+    isOwner = String(currentUserId) === String(creatorId);
   }
 
   return {
     id: String(live._id),
     communityId,
-    title: live.title,
+    communityName,
+    communitySlug,
+    communityAvatar,
+    title: live.title || "",
     description: live.description || "",
     status: live.status,
     startsAt: live.startsAt ? live.startsAt.toISOString() : null,
     plannedEndAt: live.plannedEndAt ? live.plannedEndAt.toISOString() : null,
-    roomName: live.roomName,
-    isPublic: !!live.isPublic,
     endedAt: live.endedAt ? live.endedAt.toISOString() : null,
-    // 👇 nouveau, sans casser l’existant
+    isPublic: !!live.isPublic,
+    roomName: live.roomName,
+    createdBy: String(live.createdBy?._id || live.createdBy),
     isOwner,
   };
 }
@@ -153,6 +224,7 @@ async function autoEndLiveIfExpired(live) {
 module.exports = {
   requireAuth,
   assertIsOwner,
+  assertCanManageLives,
   assertCanView,
   mapLive,
   autoEndExpiredLivesForCommunity,

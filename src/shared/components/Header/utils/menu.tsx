@@ -20,6 +20,7 @@ import {
   CreditCard,
   Users,
   MessageSquareText,
+  Radio,
 } from "lucide-react";
 import { API_BASE } from "@core/api/client";
 import { loadSession } from "@core/auth/lib/storage";
@@ -76,6 +77,7 @@ function authedItems(
   roles: string[],
   onSignOut?: () => void,
   hasShop: boolean = false,
+  myCommunitySlug?: string,
 ): MenuItem[] {
   const isAdminOrAgent = roles.includes("admin") || roles.includes("agent");
 
@@ -192,6 +194,11 @@ function authedItems(
       void handleFMMetrixClick();
     },
   });
+  items.push({
+    label: "Lancer un direct",
+    icon: <Radio className="w-5 h-5" />,
+    href: `/communaute/${myCommunitySlug || "mon-espace"}?tab=direct`,
+  });
   items.push({ label: "Podcasts", icon: <Mic />, href: "/podcasts" });
 
   // ✅ Correction de l'URL
@@ -214,7 +221,12 @@ function authedItems(
 
 export function useMenu(
   kind: Kind,
-  ctx: { status: string; roles: string[]; onSignOut?: () => void },
+  ctx: {
+    status: string;
+    roles: string[];
+    onSignOut?: () => void;
+    myCommunitySlug?: string;
+  },
 ): MenuItem[] {
   const [hasShop, setHasShop] = useState(
     () =>
@@ -242,17 +254,34 @@ export function useMenu(
 
   return useMemo(() => {
     if (ctx.status !== "authenticated") return guestItems();
-    return authedItems(kind, ctx.roles || [], ctx.onSignOut, hasShop);
-  }, [kind, ctx.status, ctx.roles, ctx.onSignOut, hasShop]);
+    return authedItems(
+      kind,
+      ctx.roles || [],
+      ctx.onSignOut,
+      hasShop,
+      ctx.myCommunitySlug,
+    );
+  }, [kind, ctx.status, ctx.roles, ctx.onSignOut, hasShop, ctx.myCommunitySlug]);
 }
 
 export function buildMenu(
   kind: Kind,
-  ctx: { status: string; roles: string[]; onSignOut?: () => void },
+  ctx: {
+    status: string;
+    roles: string[];
+    onSignOut?: () => void;
+    myCommunitySlug?: string;
+  },
 ): MenuItem[] {
   const hasShop =
     typeof window !== "undefined" &&
     sessionStorage.getItem("fm:shop:exists") === "1";
   if (ctx.status !== "authenticated") return guestItems();
-  return authedItems(kind, ctx.roles || [], ctx.onSignOut, hasShop);
+  return authedItems(
+    kind,
+    ctx.roles || [],
+    ctx.onSignOut,
+    hasShop,
+    ctx.myCommunitySlug,
+  );
 }

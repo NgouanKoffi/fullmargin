@@ -14,17 +14,32 @@ module.exports = (router) => {
   router.get("/by-community/:communityId", requireAuth, async (req, res) => {
     const userId = String(req.auth.userId);
     const { communityId } = req.params;
+    const effectiveCommunityId = (communityId === "null" || communityId === "undefined" || !communityId) 
+      ? null 
+      : communityId;
 
     try {
-      await autoEndExpiredLivesForCommunity(communityId);
+      if (effectiveCommunityId) {
+        await autoEndExpiredLivesForCommunity(effectiveCommunityId);
+      }
 
-      const lives = await CommunityLive.find({ communityId })
+      // On cherche les lives de la communauté, PLUS les directs personnels de l'utilisateur actuel
+      const lives = await CommunityLive.find({
+        $or: [
+          { communityId: effectiveCommunityId },
+          { createdBy: userId, communityId: null },
+        ],
+      })
+        .populate({
+          path: "createdBy",
+          select: { fullName: 1, avatarUrl: 1 },
+        })
         .sort({ startsAt: -1, createdAt: -1 })
         .lean();
 
       const visible = [];
       for (const l of lives) {
-        const check = await assertCanView(userId, communityId, !!l.isPublic);
+        const check = await assertCanView(userId, l.communityId, !!l.isPublic, l.createdBy);
         if (check.ok) {
           visible.push(l);
         }

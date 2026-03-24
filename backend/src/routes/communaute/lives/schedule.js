@@ -1,7 +1,7 @@
 // backend/src/routes/communaute/lives/schedule.js
 const {
   requireAuth,
-  assertIsOwner,
+  assertCanManageLives,
   mapLive,
   CommunityLive,
 } = require("./_shared");
@@ -31,7 +31,7 @@ module.exports = (router) => {
       });
     }
 
-    const check = await assertIsOwner(userId, communityId);
+    const check = await assertCanManageLives(userId, communityId || null);
     if (!check.ok) {
       return res.status(403).json({ ok: false, error: check.error });
     }
@@ -57,7 +57,7 @@ module.exports = (router) => {
       const roomName = `fm_${communityId}_${Date.now()}`;
 
       const live = await CommunityLive.create({
-        communityId,
+        communityId: check.community ? communityId : null,
         title,
         description: description || "",
         status: "scheduled",
@@ -69,18 +69,20 @@ module.exports = (router) => {
       });
 
       // 🔔 notif live programmé
-      await createNotif({
-        userId,
-        kind: "live_scheduled",
-        communityId: String(communityId),
-        payload: {
-          liveId: String(live._id),
-          title: live.title,
-          startsAt: live.startsAt,
-          plannedEndAt: live.plannedEndAt,
-          isPublic: !!live.isPublic,
-        },
-      });
+      if (communityId && check.community) {
+        await createNotif({
+          userId,
+          kind: "live_scheduled",
+          communityId: String(communityId),
+          payload: {
+            liveId: String(live._id),
+            title: live.title,
+            startsAt: live.startsAt,
+            plannedEndAt: live.plannedEndAt,
+            isPublic: !!live.isPublic,
+          },
+        });
+      }
 
       return res.json({
         ok: true,

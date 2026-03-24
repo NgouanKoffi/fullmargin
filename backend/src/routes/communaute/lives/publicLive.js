@@ -18,20 +18,15 @@ module.exports = (router) => {
           path: "communityId",
           select: { name: 1, slug: 1, avatarUrl: 1, coverUrl: 1 },
         })
+        .populate({
+          path: "createdBy",
+          select: { fullName: 1, avatarUrl: 1 },
+        })
         .lean();
 
-      const items = lives.map((l) => ({
-        id: String(l._id),
-        title: l.title,
-        communityId: String(l.communityId?._id || l.communityId),
-        communityName: l.communityId?.name || "Communauté",
-        communitySlug: l.communityId?.slug || null,
-        communityAvatar:
-          l.communityId?.avatarUrl || l.communityId?.coverUrl || null,
-        startsAt: l.startsAt ? l.startsAt.toISOString() : null,
-        plannedEndAt: l.plannedEndAt ? l.plannedEndAt.toISOString() : null,
-        isPublic: !!l.isPublic,
-      }));
+      const { mapLive } = require("./_shared");
+      const items = lives.map((l) => mapLive(l, userId));
+
 
       return res.json({ ok: true, data: { items } });
     } catch (e) {

@@ -255,19 +255,10 @@ export default function CommunityContentSwitch({
 
   /* 🔹 Onglet DIRECT */
   if (active === "direct") {
-    if (!community) {
-      return (
-        <div className="rounded-2xl bg-white/90 p-6 text-slate-600">
-          Crée d'abord ta communauté pour lancer des directs.
-        </div>
-      );
-    }
-
     return (
       <DirectTab
-        communityId={community.id}
+        communityId={community?.id || ""}
         isOwner={isOwner}
-        isMember={isMember}
         isAuthenticated={isAuthenticated}
       />
     );

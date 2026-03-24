@@ -25,7 +25,6 @@ const LiveListsSection: FC<LiveListsSectionProps> = ({
   upcomingLives,
   pastLives,
   isOwner,
-  communityId,
   onEndLive,
   onLaunchFromScheduled,
   onEditScheduled,
@@ -63,9 +62,16 @@ const LiveListsSection: FC<LiveListsSectionProps> = ({
           <p className="text-xs font-semibold">
             Live en cours : {currentLive.title}
           </p>
-          <p className="text-[11px] text-slate-600 dark:text-slate-300">
-            Lance le lecteur pour rejoindre la session en direct.
-          </p>
+          <div className="flex items-center gap-2 mt-0.5">
+            <p className="text-[11px] text-slate-600 dark:text-slate-300">
+              Lance le lecteur pour rejoindre la session en direct.
+            </p>
+            {(!currentLive.communityId || currentLive.communityId === "null") && (
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-100 dark:border-blue-800 font-medium">
+                Direct personnel
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -75,7 +81,7 @@ const LiveListsSection: FC<LiveListsSectionProps> = ({
           >
             Rejoindre
           </button>
-          {isOwner && (
+          {(isOwner || currentLive.isOwner) && (
             <button
               type="button"
               onClick={() => onEndLive(currentLive.id)}
@@ -115,8 +121,18 @@ const LiveListsSection: FC<LiveListsSectionProps> = ({
           >
             <div className="flex-1">
               <p className="font-medium">{l.title}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-[10px] text-slate-400">
+                  {l.isPublic ? "Public" : "Privé"}
+                </span>
+                {(!l.communityId || l.communityId === "null") && (
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-100 dark:border-blue-800 font-medium">
+                    Direct personnel
+                  </span>
+                )}
+              </div>
               {l.startsAt && (
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                   {new Date(l.startsAt).toLocaleString("fr-FR", {
                     weekday: "short",
                     day: "2-digit",
@@ -126,12 +142,9 @@ const LiveListsSection: FC<LiveListsSectionProps> = ({
                   })}
                 </p>
               )}
-              <p className="text-[10px] text-slate-400 mt-0.5">
-                {l.isPublic ? "Public" : "Privé"}
-              </p>
             </div>
 
-            {isOwner ? (
+            {(isOwner || l.isOwner) ? (
               <div className="flex flex-col items-end gap-1">
                 <button
                   type="button"
@@ -207,6 +220,11 @@ const LiveListsSection: FC<LiveListsSectionProps> = ({
                 {l.status === "ended" && (
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-800/60 dark:text-slate-200 dark:border-slate-700">
                     Terminé
+                  </span>
+                )}
+                {(!l.communityId || l.communityId === "null") && (
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-100 dark:border-blue-800 font-medium">
+                    Direct personnel
                   </span>
                 )}
               </p>
@@ -287,9 +305,9 @@ const LiveListsSection: FC<LiveListsSectionProps> = ({
         <div className="space-y-2">{content}</div>
       )}
 
-      <p className="mt-1 text-[11px] text-slate-400">
+      {/* <p className="mt-1 text-[11px] text-slate-400">
         ID communauté : <code className="font-mono">{communityId}</code>
-      </p>
+      </p> */}
     </section>
   );
 };

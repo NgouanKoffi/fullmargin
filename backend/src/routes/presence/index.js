@@ -20,8 +20,8 @@ function requireAuth(req, res, next) {
 }
 
 /* ---------- Const ---------- */
-// Ping front ≈ 30s ⇒ on tolère 75s avant timeout de la session.
-const TIMEOUT_MS = 75_000;
+// Ping front ≈ 120s ⇒ on tolère 300s (5min) avant timeout de la session.
+const TIMEOUT_MS = 300_000;
 
 /* ---------- Utils ---------- */
 async function closeActiveSession(pres, endAt, reason = "") {

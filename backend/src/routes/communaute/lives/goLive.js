@@ -1,7 +1,7 @@
 // backend/src/routes/communaute/lives/goLive.js
 const {
   requireAuth,
-  assertIsOwner,
+  assertCanManageLives,
   mapLive,
   CommunityLive,
   CommunityMember,
@@ -25,9 +25,14 @@ module.exports = (router) => {
         return res.status(404).json({ ok: false, error: "Live introuvable." });
       }
 
-      const check = await assertIsOwner(userId, String(live.communityId));
-      if (!check.ok) {
-        return res.status(403).json({ ok: false, error: check.error });
+      const check = await assertCanManageLives(userId, live.communityId || null);
+      if (!check.ok) return res.status(403).json({ ok: false, error: check.error });
+
+      // Modérateur si créateur ou proprio commu
+      const creatorId = live.createdBy?._id || live.createdBy;
+      const isModerator = !!(String(creatorId) === userId || (check.community && String(check.community.ownerId) === userId));
+      if (!isModerator) {
+        return res.status(403).json({ ok: false, error: "Seul le créateur ou l'administrateur peut lancer ce direct." });
       }
 
       if (live.status !== "scheduled") {
@@ -38,7 +43,11 @@ module.exports = (router) => {
       }
 
       await CommunityLive.updateMany(
-        { communityId: live.communityId, status: "live" },
+        { 
+          communityId: live.communityId || null, 
+          status: "live",
+          ...(live.communityId ? {} : { createdBy: userId })
+        },
         { $set: { status: "ended", endedAt: new Date() } }
       );
 

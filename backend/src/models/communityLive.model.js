@@ -5,7 +5,7 @@ const CommunityLiveSchema = new mongoose.Schema(
     communityId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Community",
-      required: true,
+      required: false,
     },
     title: { type: String, required: true },
     description: { type: String },

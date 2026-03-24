@@ -19,6 +19,12 @@ import {
   MessageSquareText,
   Settings2,
   Sparkles,
+  Radio,
+  FileText,
+  KanbanSquare,
+  LineChart,
+  Book,
+  Mic,
 } from "lucide-react";
 
 // 🔹 imports ajoutés pour la Balance
@@ -163,6 +169,25 @@ function renderSubIcon(groupKey: string, label: string) {
         return <Settings2 className="w-4 h-4" />;
       default:
         return <Users className="w-4 h-4" />;
+    }
+  }
+
+  if (groupKey === "mes-outils") {
+    switch (label) {
+      case "Mes notes":
+        return <FileText className="w-4 h-4" />;
+      case "Tâches & projets":
+        return <KanbanSquare className="w-4 h-4" />;
+      case "Finance":
+        return <LineChart className="w-4 h-4" />;
+      case "Journal de trading":
+        return <Book className="w-4 h-4" />;
+      case "Lancer un direct":
+        return <Radio className="w-4 h-4" />;
+      case "Podcasts":
+        return <Mic className="w-4 h-4" />;
+      default:
+        return <Settings2 className="w-4 h-4" />;
     }
   }
 
@@ -413,6 +438,13 @@ export default function MobileDrawer({ open, groups, onClose }: Props) {
                                 e.stopPropagation();
                                 onClose();
                                 openAuth("signin");
+                                return;
+                              }
+                              if (it.onClick) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                onClose();
+                                it.onClick();
                                 return;
                               }
                               onClose();

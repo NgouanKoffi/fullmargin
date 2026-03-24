@@ -139,6 +139,7 @@ export default function Header() {
         onCloseAccount={() => setAccountOpen(false)}
         onCloseCommunity={() => {}}
         avatarSrc={avatarSrc || logo}
+        myCommunitySlug={myCommunitySlug}
       />
 
       <MessagesMount />

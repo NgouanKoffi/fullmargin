@@ -21,6 +21,7 @@ type Props = {
   onCloseAccount: () => void;
 
   avatarSrc: string; // compat
+  myCommunitySlug?: string;
 };
 
 function filterMenuItems<T extends { key?: string; label?: string }>(arr: T[]) {
@@ -61,6 +62,7 @@ export default function SectionsDock({
   onCloseMarket,
   onCloseCommunity,
   onCloseAccount,
+  myCommunitySlug,
 }: Props) {
   const navigate = useNavigate();
   const prev = useRef({ marketOpen, communityOpen, accountOpen });
@@ -120,13 +122,13 @@ export default function SectionsDock({
   const hasItems = useCallback(
     (k: Kind) => {
       if (status === "loading") return true;
-      const original = buildMenu(k, { status, roles }) as Array<{
+      const original = buildMenu(k, { status, roles, myCommunitySlug }) as Array<{
         key?: string;
         label?: string;
       }>;
       return filterMenuItems(original).length > 0;
     },
-    [status, roles],
+    [status, roles, myCommunitySlug],
   );
 
   const DURATION = 260;
@@ -258,6 +260,7 @@ export default function SectionsDock({
               <AccountList
                 hiddenKeys={["notifications", "logout"]}
                 fmMetrixUnreadCount={fmMetrixUnreadCount}
+                myCommunitySlug={myCommunitySlug}
               />
             )}
           </>

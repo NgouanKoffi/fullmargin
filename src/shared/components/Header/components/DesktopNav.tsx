@@ -243,6 +243,13 @@ export default function DesktopNav({ groups }: Props) {
                         openAuth("signin");
                         return;
                       }
+                      if (it.onClick) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setOpenKey(null);
+                        it.onClick();
+                        return;
+                      }
                       if (!isExternal) {
                         setOpenKey(null);
                       }
